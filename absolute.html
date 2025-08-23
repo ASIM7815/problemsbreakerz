@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Floating Navbar Responsive</title>
+  <title>Floating Navbar with Slider</title>
   <style>
     * {
       margin: 0;
@@ -93,7 +93,7 @@
       color: #ff4b2b;
     }
 
-    /* Hamburger Menu Icon */
+    /* Hamburger Menu */
     .hamburger {
       display: none;
       flex-direction: column;
@@ -108,12 +108,10 @@
       transition: all 0.3s ease;
     }
 
-    /* Indian Flag Colors for Hamburger */
     .hamburger div:nth-child(1) { background-color: #FF9933; }
     .hamburger div:nth-child(2) { background-color: #FFFFFF; }
     .hamburger div:nth-child(3) { background-color: #138808; }
 
-    /* Hamburger Animation */
     .hamburger.active div:nth-child(1) { 
       transform: rotate(45deg) translate(5px, 5px); 
       background-color: black;
@@ -124,7 +122,7 @@
       background-color: black;
     }
 
-    /* Mobile Menu with Indian Flag Gradient and Smoke Effect */
+    /* Mobile Menu */
     .mobile-menu {
       display: none;
       position: fixed;
@@ -146,7 +144,6 @@
       backdrop-filter: blur(8px);
     }
 
-    /* Close button inside menu */
     .mobile-menu .close-btn {
       font-size: 2rem;
       font-weight: bold;
@@ -176,13 +173,71 @@
       .nav-links { display: none; }
       .hamburger { display: flex; }
     }
+
+    /* Image Slider */
+    .slider-container {
+      position: relative;
+      width: 80%;
+      max-width: 1000px;
+      height: 300px;
+      margin: 120px auto 50px auto; /* below navbar */
+      overflow: hidden;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.2);
+      backdrop-filter: blur(5px);
+      z-index: 500;
+    }
+
+    .slides {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.5s ease-in-out;
+    }
+
+    .slide {
+      min-width: 100%;
+      height: 100%;
+      background-position: center;
+      background-size: cover;
+      border-radius: 20px;
+    }
+
+    /* Slider Navigation */
+    .slider-nav {
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      transform: translateY(-50%);
+      padding: 0 15px;
+    }
+
+    .slider-nav button {
+      background: rgba(0,0,0,0.5);
+      border: none;
+      color: white;
+      font-size: 2rem;
+      cursor: pointer;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s;
+    }
+
+    .slider-nav button:hover {
+      background: rgba(0,0,0,0.8);
+    }
   </style>
 </head>
 <body>
 
   <video autoplay muted loop playsinline id="bg-video">
     <source src="realistic earth zoom highlight country india 4k stock footage.mp4" type="video/mp4">
-    Your browser does not support the video tag.
   </video>
 
   <nav id="navbar">
@@ -210,6 +265,21 @@
     <a href="#">Contact</a>
   </div>
 
+  <!-- Image Slider -->
+  <div class="slider-container">
+    <div class="slides" id="slides">
+      <div class="slide" style="background-image: url('image1.jpg');"></div>
+      <div class="slide" style="background-image: url('image2.jpg');"></div>
+      <div class="slide" style="background-image: url('image3.jpg');"></div>
+      <div class="slide" style="background-image: url('image4.jpg');"></div>
+    </div>
+
+    <div class="slider-nav">
+      <button id="prev">&#10094;</button>
+      <button id="next">&#10095;</button>
+    </div>
+  </div>
+
   <script>
     const navbar = document.getElementById('navbar');
     const hamburger = document.getElementById('hamburger');
@@ -222,25 +292,51 @@
       else { navbar.classList.remove('sticky'); }
     });
 
-    // Toggle mobile menu
+    // Hamburger Toggle
     hamburger.addEventListener('click', () => {
       mobileMenu.classList.toggle('show');
       hamburger.classList.toggle('active');
     });
 
-    // Close mobile menu when clicking close button
     closeBtn.addEventListener('click', () => {
       mobileMenu.classList.remove('show');
       hamburger.classList.remove('active');
     });
 
-    // Close mobile menu when clicking outside
     window.addEventListener('click', (e) => {
       if (e.target === mobileMenu || (!mobileMenu.contains(e.target) && !hamburger.contains(e.target))) {
         mobileMenu.classList.remove('show');
         hamburger.classList.remove('active');
       }
     });
+
+    // Image Slider Logic
+    const slides = document.getElementById('slides');
+    const slideCount = slides.children.length;
+    let index = 0;
+
+    const nextBtn = document.getElementById('next');
+    const prevBtn = document.getElementById('prev');
+
+    function showSlide(i) {
+      slides.style.transform = `translateX(-${i * 100}%)`;
+    }
+
+    nextBtn.addEventListener('click', () => {
+      index = (index + 1) % slideCount;
+      showSlide(index);
+    });
+
+    prevBtn.addEventListener('click', () => {
+      index = (index - 1 + slideCount) % slideCount;
+      showSlide(index);
+    });
+
+    // Auto-slide every 5 seconds
+    setInterval(() => {
+      index = (index + 1) % slideCount;
+      showSlide(index);
+    }, 5000);
   </script>
 
 </body>
