@@ -215,7 +215,7 @@
             }
         }
 
-        /* Slider */
+        /* SLIDER CSS */
         .slider-container {
             position: relative;
             width: 85%;
@@ -235,12 +235,24 @@
             height: 100%;
             transition: transform 0.5s ease-in-out;
         }
-
+        
         .slide {
             min-width: 100%;
             height: 100%;
             background-position: center;
-            background-size: cover;
+            background-size: cover; /* Ensures the image covers the entire slide area */
+            background-repeat: no-repeat;
+        }
+
+        /* NEW CSS FOR MOBILE OPTIMIZATION */
+        @media (max-width: 600px) {
+            .slider-container {
+                height: 200px; /* Adjust height for smaller screens */
+            }
+            .slide {
+                background-size: contain; /* Shrinks the image to fit fully within the slide */
+                background-position: center;
+            }
         }
 
         .slider-nav {
@@ -528,17 +540,12 @@
 
     <div class="slider-container">
         <div class="slides" id="slides">
-            <div class="slide" style="background-image: url('Gemini_Generated_Image_biohcabiohcabioh\ \(1\).png');"></div>
-            <div class="slide" style="background-image: url('Gemini_Generated_Image_d7ugy1d7ugy1d7ug\ \(1\).png');"></div>
-            <div class="slide" style="background-image: url('Gemini_Generated_Image_t9gnvdt9gnvdt9gn\ \(1\).png');"></div>
-            
-        </div>
+            </div>
         <div class="slider-nav">
             <button id="prev">&#10094;</button>
             <button id="next">&#10095;</button>
         </div>
     </div>
-
     <div class="quotes-container">
         <div class="quote active">
             “Education is the most powerful weapon ”
@@ -610,83 +617,111 @@
     </footer>
 
     <script>
-        const navbar = document.getElementById('navbar');
-        const hamburger = document.getElementById('hamburger');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const closeBtn = document.getElementById('close-btn');
-        const slides = document.getElementById('slides');
-        const slideCount = slides.children.length;
-        const bgVideo = document.getElementById('bg-video');
-        const nextBtn = document.getElementById('next');
-        const prevBtn = document.getElementById('prev');
-        let index = 0, autoSlideTimer;
+        document.addEventListener('DOMContentLoaded', function() {
+            const navbar = document.getElementById('navbar');
+            const hamburger = document.getElementById('hamburger');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const closeBtn = document.getElementById('close-btn');
+            const bgVideo = document.getElementById('bg-video');
 
-        // Sticky Navbar
-        window.addEventListener('scroll', () => {
-            navbar.classList.toggle('sticky', window.scrollY > 50);
-        });
+            // 🖼️ The image URLs are now in a single array!
+            const imageUrls = [
+                'Gemini_Generated_Image_biohcabiohcabioh (1).png',
+                'Gemini_Generated_Image_d7ugy1d7ugy1d7ug (1).png',
+                'Gemini_Generated_Image_t9gnvdt9gnvdt9gn (1).png'
+            ];
 
-        // Mobile Menu
-        hamburger.addEventListener('click', () => {
-            mobileMenu.classList.toggle('show');
-            hamburger.classList.toggle('active');
-        });
-        closeBtn.addEventListener('click', () => {
-            mobileMenu.classList.remove('show');
-            hamburger.classList.remove('active');
-        });
+            const slidesContainer = document.getElementById('slides');
+            const prevButton = document.getElementById('prev');
+            const nextButton = document.getElementById('next');
+            let currentSlide = 0;
+            let autoSlideTimer;
 
-        // Image Slider
-        function showSlide(i) {
-            slides.style.transform = `translateX(-${i * 100}%)`;
-        }
-        function nextSlide() {
-            index = (index + 1) % slideCount;
-            showSlide(index);
-        }
-        function prevSlideFn() {
-            index = (index - 1 + slideCount) % slideCount;
-            showSlide(index);
-        }
-        nextBtn.addEventListener('click', nextSlide);
-        prevBtn.addEventListener('click', prevSlideFn);
-
-        // Auto Slide
-        function autoSlide() {
-            clearTimeout(autoSlideTimer);
-            autoSlideTimer = setTimeout(() => {
-                nextSlide();
-                requestAnimationFrame(autoSlide);
-            }, 5000);
-        }
-        autoSlide();
-
-        // Fix Mobile Video Speed
-        function playVideoNormal() {
-            if (bgVideo) {
-                bgVideo.playbackRate = 1.0;
-                bgVideo.play().catch(() => {});
+            // Dynamically create slide elements from the imageUrls array
+            function createSlides() {
+                slidesContainer.innerHTML = ''; // Clear existing slides
+                imageUrls.forEach(url => {
+                    const slide = document.createElement('div');
+                    slide.classList.add('slide');
+                    slide.style.backgroundImage = `url('${url}')`;
+                    slidesContainer.appendChild(slide);
+                });
             }
-        }
-        document.addEventListener("DOMContentLoaded", playVideoNormal);
-        document.addEventListener("touchstart", playVideoNormal);
 
-        // Quotes Animation
-        const quotes = document.querySelectorAll('.quote');
-        let quoteIndex = 0;
+            function updateSlider() {
+                slidesContainer.style.transform = `translateX(${-currentSlide * 100}%)`;
+            }
 
-        function showNextQuote() {
-            quotes[quoteIndex].classList.remove('active');
-            quoteIndex = (quoteIndex + 1) % quotes.length;
-            quotes[quoteIndex].classList.add('active');
-        }
+            function nextSlide() {
+                currentSlide = (currentSlide < imageUrls.length - 1) ? currentSlide + 1 : 0;
+                updateSlider();
+            }
 
-        document.addEventListener("DOMContentLoaded", () => {
+            function prevSlide() {
+                currentSlide = (currentSlide > 0) ? currentSlide - 1 : imageUrls.length - 1;
+                updateSlider();
+            }
+
+            function autoSlide() {
+                clearTimeout(autoSlideTimer);
+                autoSlideTimer = setTimeout(() => {
+                    nextSlide();
+                    autoSlide(); // Call itself to loop
+                }, 5000);
+            }
+
+            prevButton.addEventListener('click', () => {
+                prevSlide();
+                autoSlide(); // Reset timer on manual navigation
+            });
+
+            nextButton.addEventListener('click', () => {
+                nextSlide();
+                autoSlide(); // Reset timer on manual navigation
+            });
+
+            // Sticky Navbar
+            window.addEventListener('scroll', () => {
+                navbar.classList.toggle('sticky', window.scrollY > 50);
+            });
+
+            // Mobile Menu
+            hamburger.addEventListener('click', () => {
+                mobileMenu.classList.toggle('show');
+                hamburger.classList.toggle('active');
+            });
+            closeBtn.addEventListener('click', () => {
+                mobileMenu.classList.remove('show');
+                hamburger.classList.remove('active');
+            });
+
+            // Fix Mobile Video Speed
+            function playVideoNormal() {
+                if (bgVideo) {
+                    bgVideo.playbackRate = 1.0;
+                    bgVideo.play().catch(() => {});
+                }
+            }
+            document.addEventListener("DOMContentLoaded", playVideoNormal);
+            document.addEventListener("touchstart", playVideoNormal);
+
+            // Quotes Animation
+            const quotes = document.querySelectorAll('.quote');
+            let quoteIndex = 0;
+            function showNextQuote() {
+                quotes[quoteIndex].classList.remove('active');
+                quoteIndex = (quoteIndex + 1) % quotes.length;
+                quotes[quoteIndex].classList.add('active');
+            }
             if (quotes.length > 0) {
                 quotes[0].classList.add("active");
+                setInterval(showNextQuote, 6000);
             }
+            
+            // Initialize slider
+            createSlides();
+            autoSlide();
         });
-        setInterval(showNextQuote, 6000);
     </script>
-</body>
+    </body>
 </html>
