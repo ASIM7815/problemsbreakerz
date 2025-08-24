@@ -1,305 +1,677 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fast Responsive Navbar with Slider</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Website</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* General Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
 
-    /* Background Video */
-    #bg-video {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      object-fit: cover;
-      z-index: -1;
-      preload: auto;
-      will-change: transform;
-    }
+        /* Body and Background */
+        body {
+            color: white;
+            background: #000;
+        }
 
-    body {
-      min-height: 2000px;
-      color: white;
-      background: #000; /* fallback */
-    }
+        #bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            z-index: -1;
+        }
 
-    /* Navbar */
-    nav {
-      position: fixed;
-      top: 15px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 92%;
-      max-width: 1100px;
-      padding: 12px 25px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(8px);
-      color: white;
-      transition: background 0.3s ease, color 0.3s ease;
-      z-index: 1000;
-    }
-    nav.sticky { background: #fff; color: #000; }
+        /* Navbar */
+        nav {
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 92%;
+            max-width: 1100px;
+            padding: 12px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(8px);
+            color: white;
+            transition: background 0.3s ease, color 0.3s ease;
+            z-index: 1000;
+        }
 
-    .logo {
-      font-size: 1.5rem;
-      font-weight: bold;
-      cursor: pointer;
-    }
+        nav.sticky {
+            background: #fff;
+            color: #000;
+        }
 
-    .nav-links {
-      display: flex;
-      gap: 25px;
-      list-style: none;
-    }
-    .nav-links li a {
-      text-decoration: none;
-      color: inherit;
-      font-size: 1rem;
-      position: relative;
-      transition: color 0.3s;
-    }
-    .nav-links li a::after {
-      content: "";
-      position: absolute;
-      bottom: -4px; left: 0;
-      width: 0; height: 2px;
-      background: #ff4b2b;
-      transition: width 0.3s;
-    }
-    .nav-links li a:hover::after { width: 100%; }
-    .nav-links li a:hover { color: #ff4b2b; }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
 
-    /* Hamburger Menu */
-    .hamburger {
-      display: none;
-      flex-direction: column;
-      gap: 4px;
-      cursor: pointer;
-      z-index: 1100;
-    }
-    .hamburger div {
-      width: 24px; height: 3px;
-      transition: all 0.3s ease;
-    }
-    .hamburger div:nth-child(1) { background: #FF9933; }
-    .hamburger div:nth-child(2) { background: #fff; }
-    .hamburger div:nth-child(3) { background: #138808; }
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+        }
 
-    .hamburger.active div:nth-child(1) { 
-      transform: rotate(45deg) translate(5px, 5px); background: black;
-    }
-    .hamburger.active div:nth-child(2) { opacity: 0; }
-    .hamburger.active div:nth-child(3) { 
-      transform: rotate(-45deg) translate(5px, -5px); background: black;
-    }
+        .nav-links li a {
+            text-decoration: none;
+            color: inherit;
+            font-size: 1rem;
+            position: relative;
+            transition: color 0.3s;
+        }
 
-    /* Mobile Menu */
-    .mobile-menu {
-      display: none;
-      position: fixed;
-      top: 0; right: -100%;
-      width: 70%; max-width: 280px;
-      height: 100vh;
-      padding: 50px 20px;
-      flex-direction: column;
-      gap: 20px;
-      transition: right 0.3s ease;
-      z-index: 1050;
-      background: linear-gradient(180deg,
-        rgba(255,153,51,0.95) 0%,
-        rgba(255,255,255,0.95) 50%,
-        rgba(19,136,8,0.95) 100%);
-      backdrop-filter: blur(6px);
-    }
-    .mobile-menu .close-btn {
-      font-size: 1.8rem;
-      font-weight: bold;
-      color: black;
-      align-self: flex-end;
-      cursor: pointer;
-      margin-bottom: 15px;
-    }
-    .mobile-menu a {
-      text-decoration: none;
-      font-size: 1.3rem;
-      font-weight: bold;
-      color: #000080;
-    }
-    .mobile-menu.show { right: 0; display: flex; }
+        .nav-links li a::after {
+            content: "";
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #ff4b2b;
+            transition: width 0.3s;
+        }
 
-    /* Responsive */
-    @media (max-width: 768px) {
-      nav { width: 95%; padding: 10px 15px; }
-      .nav-links { display: none; }
-      .hamburger { display: flex; }
-    }
+        .nav-links li a:hover::after {
+            width: 100%;
+        }
 
-    /* Slider */
-    .slider-container {
-      position: relative;
-      width: 85%; max-width: 900px;
-      height: 250px;
-      margin: 110px auto 40px auto;
-      overflow: hidden;
-      border-radius: 15px;
-      background: rgba(255,255,255,0.15);
-      backdrop-filter: blur(4px);
-      z-index: 500;
-      will-change: transform;
-    }
-    .slides {
-      display: flex;
-      width: 100%;
-      height: 100%;
-      transition: transform 0.5s ease-in-out;
-      will-change: transform;
-    }
-    .slide {
-      min-width: 100%;
-      height: 100%;
-      background-position: center;
-      background-size: cover;
-    }
+        .nav-links li a:hover {
+            color: #ff4b2b;
+        }
 
-    /* Slider Buttons */
-    .slider-nav {
-      position: absolute;
-      top: 50%; left: 0; width: 100%;
-      display: flex;
-      justify-content: space-between;
-      transform: translateY(-50%);
-      padding: 0 10px;
-    }
-    .slider-nav button {
-      background: rgba(0,0,0,0.4);
-      border: none;
-      color: white;
-      font-size: 1.6rem;
-      cursor: pointer;
-      border-radius: 50%;
-      width: 40px; height: 40px;
-      display: flex; align-items: center; justify-content: center;
-      transition: background 0.3s;
-    }
-    .slider-nav button:hover { background: rgba(0,0,0,0.75); }
-  </style>
+        /* Hamburger Menu */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            cursor: pointer;
+            z-index: 1100;
+        }
+
+        .hamburger div {
+            width: 24px;
+            height: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger div:nth-child(1) {
+            background: #FF9933;
+        }
+
+        .hamburger div:nth-child(2) {
+            background: #fff;
+        }
+
+        .hamburger div:nth-child(3) {
+            background: #138808;
+        }
+
+        .hamburger.active div:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+            background: black;
+        }
+
+        .hamburger.active div:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active div:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+            background: black;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 70%;
+            max-width: 280px;
+            height: 100vh;
+            padding: 50px 20px;
+            flex-direction: column;
+            gap: 20px;
+            transition: right 0.3s ease;
+            z-index: 1050;
+            background: linear-gradient(180deg,
+                rgba(255, 153, 51, 0.95) 0%,
+                rgba(255, 255, 255, 0.95) 50%,
+                rgba(19, 136, 8, 0.95) 100%);
+            backdrop-filter: blur(6px);
+        }
+
+        .mobile-menu .close-btn {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: black;
+            align-self: flex-end;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+
+        .mobile-menu a {
+            text-decoration: none;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #000080;
+        }
+
+        .mobile-menu.show {
+            right: 0;
+            display: flex;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                width: 95%;
+                padding: 10px 15px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+        }
+
+        /* Slider */
+        .slider-container {
+            position: relative;
+            width: 85%;
+            max-width: 900px;
+            height: 250px;
+            margin: 110px auto 40px auto;
+            overflow: hidden;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(4px);
+            z-index: 500;
+        }
+
+        .slides {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slide {
+            min-width: 100%;
+            height: 100%;
+            background-position: center;
+            background-size: cover;
+        }
+
+        .slider-nav {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            padding: 0 10px;
+        }
+
+        .slider-nav button {
+            background: rgba(0, 0, 0, 0.4);
+            border: none;
+            color: white;
+            font-size: 1.6rem;
+            cursor: pointer;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+
+        .slider-nav button:hover {
+            background: rgba(0, 0, 0, 0.75);
+        }
+
+        /* Quotes Section */
+        .quotes-container {
+            width: 80%;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 40px 20px;
+            border-radius: 15px;
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(8px);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 160px;
+        }
+
+        .quote {
+            font-size: 2rem;
+            font-weight: bold;
+            line-height: 1.5;
+            background: linear-gradient(90deg, #ff4b2b, #ff416c, #ff9933, #00c9ff, #92fe9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s ease;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) translateY(20px);
+            width: 90%;
+        }
+
+        .quote.active {
+            opacity: 1;
+            transform: translate(-50%, -50%) translateY(0);
+        }
+
+        /* Content Boxes Section */
+        .content-section {
+            width: 90%;
+            max-width: 1200px;
+            margin: 40px auto 100px auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            padding: 20px;
+        }
+
+        .content-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .content-box:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .content-box h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #fff;
+            background: linear-gradient(45deg, #f3ec78, #af4261);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        .content-box p {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+        }
+
+        /* Footer Styles */
+        .site-footer {
+            position: relative;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 60px 20px 20px;
+            color: #fff;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 40px;
+            padding-bottom: 30px;
+        }
+
+        .footer-about,
+        .footer-links,
+        .footer-contact {
+            flex: 1 1 250px;
+        }
+
+        .footer-about h3 {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff6a00, #ee0979);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .footer-about p {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .social-links {
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            margin-right: 10px;
+            color: #fff;
+            text-align: center;
+            line-height: 40px;
+            transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: linear-gradient(45deg, #ff6a00, #ee0979);
+            transform: translateY(-5px) scale(1.1);
+            color: #fff;
+        }
+
+        .footer-links h4,
+        .footer-contact h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .footer-links h4::after,
+        .footer-contact h4::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, #06beb6, #48c6ef);
+            margin-top: 5px;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links ul li a {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.8);
+            transition: color 0.3s ease;
+        }
+
+        .footer-links ul li a:hover {
+            color: #48c6ef;
+        }
+
+        .footer-contact p {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 10px;
+        }
+
+        .footer-contact p i {
+            margin-right: 10px;
+            color: #06beb6;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 20px;
+        }
+
+        .footer-bottom p {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* --- New Responsive CSS for Quotes and Boxes --- */
+        @media (max-width: 768px) {
+            .quotes-container {
+                /* Reduce padding on smaller screens */
+                padding: 20px;
+                min-height: 120px;
+            }
+            .quote {
+                /* Adjust font size to fit smaller screens */
+                font-size: clamp(1rem, 2.5vw + 1rem, 1.8rem);
+                width: 95%; /* Adjust width to prevent horizontal scroll */
+            }
+            .content-section {
+                padding: 10px;
+                gap: 20px; /* Reduce gap between boxes */
+            }
+        }
+        
+        /* --- Footer at the end of the page --- */
+        body {
+            /* This is the key to removing extra scroll space after the footer */
+            min-height: auto;
+        }
+    </style>
 </head>
 <body>
 
-  <!-- Background Video -->
-  <video autoplay muted loop playsinline preload="auto" id="bg-video">
-    <source src="realistic earth zoom highlight country india 4k stock footage.mp4" type="video/mp4">
-  </video>
+    <video autoplay muted loop playsinline preload="auto" id="bg-video">
+        <source src="realistic earth zoom highlight country india 4k stock footage.mp4" type="video/mp4">
+    </video>
 
-  <!-- Navbar -->
-  <nav id="navbar">
-    <div class="logo">MyLogo</div>
-    <ul class="nav-links">
-      <li><a href="#">Home</a></li>
-      <li><a href="#">About</a></li>
-      <li><a href="#">Portfolio</a></li>
-      <li><a href="#">Contact</a></li>
-    </ul>
-    <div class="hamburger" id="hamburger">
-      <div></div><div></div><div></div>
+    <nav id="navbar">
+        <div class="logo">MyLogo</div>
+        <ul class="nav-links">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Portfolio</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </nav>
+
+    <div class="mobile-menu" id="mobile-menu">
+        <div class="close-btn" id="close-btn">&times;</div>
+        <a href="#">Home</a>
+        <a href="#">About</a>
+        <a href="#">Portfolio</a>
+        <a href="#">Contact</a>
     </div>
-  </nav>
 
-  <!-- Mobile Menu -->
-  <div class="mobile-menu" id="mobile-menu">
-    <div class="close-btn" id="close-btn">&times;</div>
-    <a href="#">Home</a>
-    <a href="#">About</a>
-    <a href="#">Portfolio</a>
-    <a href="#">Contact</a>
-  </div>
-
-  <!-- Image Slider -->
-  <div class="slider-container">
-    <div class="slides" id="slides">
-      <div class="slide" style="background-image: url('image1.jpg');"></div>
-      <div class="slide" style="background-image: url('image2.jpg');"></div>
-      <div class="slide" style="background-image: url('image3.jpg');"></div>
-      <div class="slide" style="background-image: url('image4.jpg');"></div>
+    <div class="slider-container">
+        <div class="slides" id="slides">
+            <div class="slide" style="background-image: url('image1.jpg');"></div>
+            <div class="slide" style="background-image: url('image2.jpg');"></div>
+            <div class="slide" style="background-image: url('image3.jpg');"></div>
+            <div class="slide" style="background-image: url('image4.jpg');"></div>
+        </div>
+        <div class="slider-nav">
+            <button id="prev">&#10094;</button>
+            <button id="next">&#10095;</button>
+        </div>
     </div>
-    <div class="slider-nav">
-      <button id="prev">&#10094;</button>
-      <button id="next">&#10095;</button>
+
+    <div class="quotes-container">
+        <div class="quote active">
+            “Education is the most powerful weapon ”
+        </div>
+        <div class="quote">
+            “An investment is knowledge”
+        </div>
+        <div class="quote">
+            “The future belongs to inovators”
+        </div>
+        <div class="quote">
+            “Learning never exhausts the mind.”
+        </div>
     </div>
-  </div>
 
-  <script>
-    const navbar = document.getElementById('navbar');
-    const hamburger = document.getElementById('hamburger');
-    const mobileMenu = document.getElementById('mobile-menu');
-    const closeBtn = document.getElementById('close-btn');
-    const slides = document.getElementById('slides');
-    const slideCount = slides.children.length;
-    const bgVideo = document.getElementById('bg-video');
-    let index = 0, autoSlideTimer;
+    <section class="content-section">
+        <div class="content-box">
+            <h2>PYQs</h2>
+            <p>Access a collection of previous year's questions to practice and prepare for your exams.</p>
+        </div>
+        <div class="content-box">
+            <h2>Notes</h2>
+            <p>Download comprehensive notes on various topics to aid your studies and revisions.</p>
+        </div>
+        <div class="content-box">
+            <h2>Blogs</h2>
+            <p>Read insightful blogs and articles written by experts to deepen your understanding.</p>
+        </div>
+        <div class="content-box">
+            <h2>Video Lectures</h2>
+            <p>Watch video lectures and tutorials to learn at your own pace with engaging visuals.</p>
+        </div>
+    </section>
 
-    // Sticky Navbar
-    window.addEventListener('scroll', () => {
-      navbar.classList.toggle('sticky', window.scrollY > 50);
-    });
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-about">
+                <h3>MyLogo</h3>
+                <p>Providing the best resources for students to excel in their studies. Your success is our mission!</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
 
-    // Mobile Menu
-    hamburger.addEventListener('click', () => {
-      mobileMenu.classList.toggle('show');
-      hamburger.classList.toggle('active');
-    });
-    closeBtn.addEventListener('click', () => {
-      mobileMenu.classList.remove('show');
-      hamburger.classList.remove('active');
-    });
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Services</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
 
-    // Slider
-    const nextBtn = document.getElementById('next');
-    const prevBtn = document.getElementById('prev');
+            <div class="footer-contact">
+                <h4>Contact Info</h4>
+                <p><i class="fas fa-map-marker-alt"></i> 123 Education Lane, Learning City</p>
+                <p><i class="fas fa-phone"></i> +1 234 567 890</p>
+                <p><i class="fas fa-envelope"></i> info@mylogo.com</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 MyLogo. All Rights Reserved.</p>
+        </div>
+    </footer>
 
-    function showSlide(i) {
-      slides.style.transform = `translateX(-${i * 100}%)`;
-    }
-    function nextSlide() {
-      index = (index + 1) % slideCount;
-      showSlide(index);
-    }
-    function prevSlideFn() {
-      index = (index - 1 + slideCount) % slideCount;
-      showSlide(index);
-    }
-    nextBtn.addEventListener('click', nextSlide);
-    prevBtn.addEventListener('click', prevSlideFn);
+    <script>
+        const navbar = document.getElementById('navbar');
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const closeBtn = document.getElementById('close-btn');
+        const slides = document.getElementById('slides');
+        const slideCount = slides.children.length;
+        const bgVideo = document.getElementById('bg-video');
+        const nextBtn = document.getElementById('next');
+        const prevBtn = document.getElementById('prev');
+        let index = 0, autoSlideTimer;
 
-    // Auto Slide
-    function autoSlide() {
-      clearTimeout(autoSlideTimer);
-      autoSlideTimer = setTimeout(() => {
-        nextSlide();
-        requestAnimationFrame(autoSlide);
-      }, 5000);
-    }
-    autoSlide();
+        // Sticky Navbar
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('sticky', window.scrollY > 50);
+        });
 
-    // Fix Mobile Video Speed
-    function playVideoNormal() {
-      if (bgVideo) {
-        bgVideo.playbackRate = 1.0; // force normal speed
-        bgVideo.play().catch(()=>{}); // force play on mobile
-      }
-    }
-    document.addEventListener("DOMContentLoaded", playVideoNormal);
-    document.addEventListener("touchstart", playVideoNormal); // mobile trigger
-  </script>
+        // Mobile Menu
+        hamburger.addEventListener('click', () => {
+            mobileMenu.classList.toggle('show');
+            hamburger.classList.toggle('active');
+        });
+        closeBtn.addEventListener('click', () => {
+            mobileMenu.classList.remove('show');
+            hamburger.classList.remove('active');
+        });
+
+        // Image Slider
+        function showSlide(i) {
+            slides.style.transform = `translateX(-${i * 100}%)`;
+        }
+        function nextSlide() {
+            index = (index + 1) % slideCount;
+            showSlide(index);
+        }
+        function prevSlideFn() {
+            index = (index - 1 + slideCount) % slideCount;
+            showSlide(index);
+        }
+        nextBtn.addEventListener('click', nextSlide);
+        prevBtn.addEventListener('click', prevSlideFn);
+
+        // Auto Slide
+        function autoSlide() {
+            clearTimeout(autoSlideTimer);
+            autoSlideTimer = setTimeout(() => {
+                nextSlide();
+                requestAnimationFrame(autoSlide);
+            }, 5000);
+        }
+        autoSlide();
+
+        // Fix Mobile Video Speed
+        function playVideoNormal() {
+            if (bgVideo) {
+                bgVideo.playbackRate = 1.0;
+                bgVideo.play().catch(() => {});
+            }
+        }
+        document.addEventListener("DOMContentLoaded", playVideoNormal);
+        document.addEventListener("touchstart", playVideoNormal);
+
+        // Quotes Animation
+        const quotes = document.querySelectorAll('.quote');
+        let quoteIndex = 0;
+
+        function showNextQuote() {
+            quotes[quoteIndex].classList.remove('active');
+            quoteIndex = (quoteIndex + 1) % quotes.length;
+            quotes[quoteIndex].classList.add('active');
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            if (quotes.length > 0) {
+                quotes[0].classList.add("active");
+            }
+        });
+        setInterval(showNextQuote, 6000);
+    </script>
+
 </body>
 </html>
