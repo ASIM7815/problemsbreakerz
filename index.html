@@ -18,6 +18,7 @@
         body {
             color: white;
             background: #000;
+            min-height: auto;
         }
 
         #bg-video {
@@ -55,10 +56,32 @@
             color: #000;
         }
 
+        /* Text logo styling */
+        .text-logo {
+            font-size: 2rem;
+            font-weight: 700;
+            text-decoration: none;
+            background: linear-gradient(45deg, #ff0066, #ffcc00, #00ccff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: transform 0.3s, letter-spacing 0.3s;
+        }
+        
         .logo {
             font-size: 1.5rem;
             font-weight: bold;
             cursor: pointer;
+        }
+
+        .text-logo:hover {
+            transform: scale(1.1);
+            letter-spacing: 2px;
+        }
+        
+        .footer-about .text-logo {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            display: inline-block;
         }
 
         .nav-links {
@@ -459,25 +482,17 @@
         /* --- New Responsive CSS for Quotes and Boxes --- */
         @media (max-width: 768px) {
             .quotes-container {
-                /* Reduce padding on smaller screens */
                 padding: 20px;
                 min-height: 120px;
             }
             .quote {
-                /* Adjust font size to fit smaller screens */
                 font-size: clamp(1rem, 2.5vw + 1rem, 1.8rem);
-                width: 95%; /* Adjust width to prevent horizontal scroll */
+                width: 95%;
             }
             .content-section {
                 padding: 10px;
-                gap: 20px; /* Reduce gap between boxes */
+                gap: 20px;
             }
-        }
-        
-        /* --- Footer at the end of the page --- */
-        body {
-            /* This is the key to removing extra scroll space after the footer */
-            min-height: auto;
         }
     </style>
 </head>
@@ -488,7 +503,9 @@
     </video>
 
     <nav id="navbar">
-        <div class="logo">MyLogo</div>
+        <div class="logo">
+            <a href="#" class="text-logo">ASIMSAADZ</a>
+        </div>
         <ul class="nav-links">
             <li><a href="#">Home</a></li>
             <li><a href="#">About</a></li>
@@ -501,7 +518,6 @@
             <div></div>
         </div>
     </nav>
-
     <div class="mobile-menu" id="mobile-menu">
         <div class="close-btn" id="close-btn">&times;</div>
         <a href="#">Home</a>
@@ -560,7 +576,7 @@
     <footer class="site-footer">
         <div class="footer-container">
             <div class="footer-about">
-                <h3>MyLogo</h3>
+                <a href="#" class="text-logo">ASIMSAADZ</a>
                 <p>Providing the best resources for students to excel in their studies. Your success is our mission!</p>
                 <div class="social-links">
                     <a href="#"><i class="fab fa-facebook-f"></i></a>
@@ -583,13 +599,13 @@
 
             <div class="footer-contact">
                 <h4>Contact Info</h4>
-                <p><i class="fas fa-map-marker-alt"></i> 123 Education Lane, Learning City</p>
-                <p><i class="fas fa-phone"></i> +1 234 567 890</p>
-                <p><i class="fas fa-envelope"></i> info@mylogo.com</p>
+                <p><i class="fas fa-map-marker-alt"></i> Hyderabad</p>
+                <p><i class="fas fa-phone"></i> +917815979515</p>
+                <p><i class="fas fa-envelope"></i>mohammadasimsaad@gmail.com</p>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2025 MyLogo. All Rights Reserved.</p>
+            <p>&copy; 2025. All Rights Reserved.</p>
         </div>
     </footer>
 
@@ -672,6 +688,5 @@
         });
         setInterval(showNextQuote, 6000);
     </script>
-
 </body>
 </html>
