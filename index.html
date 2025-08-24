@@ -20,12 +20,13 @@
       object-fit: cover;
       z-index: -1;
       preload: auto;
+      will-change: transform;
     }
 
     body {
       min-height: 2000px;
       color: white;
-      background: #000; /* fallback if video not supported */
+      background: #000; /* fallback */
     }
 
     /* Navbar */
@@ -196,7 +197,7 @@
 <body>
 
   <!-- Background Video -->
-  <video autoplay muted loop playsinline id="bg-video">
+  <video autoplay muted loop playsinline preload="auto" id="bg-video">
     <source src="realistic earth zoom highlight country india 4k stock footage.mp4" type="video/mp4">
   </video>
 
@@ -244,6 +245,7 @@
     const closeBtn = document.getElementById('close-btn');
     const slides = document.getElementById('slides');
     const slideCount = slides.children.length;
+    const bgVideo = document.getElementById('bg-video');
     let index = 0, autoSlideTimer;
 
     // Sticky Navbar
@@ -279,7 +281,7 @@
     nextBtn.addEventListener('click', nextSlide);
     prevBtn.addEventListener('click', prevSlideFn);
 
-    // Auto Slide using requestAnimationFrame
+    // Auto Slide
     function autoSlide() {
       clearTimeout(autoSlideTimer);
       autoSlideTimer = setTimeout(() => {
@@ -288,6 +290,16 @@
       }, 5000);
     }
     autoSlide();
+
+    // Fix Mobile Video Speed
+    function playVideoNormal() {
+      if (bgVideo) {
+        bgVideo.playbackRate = 1.0; // force normal speed
+        bgVideo.play().catch(()=>{}); // force play on mobile
+      }
+    }
+    document.addEventListener("DOMContentLoaded", playVideoNormal);
+    document.addEventListener("touchstart", playVideoNormal); // mobile trigger
   </script>
 </body>
 </html>
