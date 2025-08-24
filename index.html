@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Floating Navbar with Slider</title>
+  <title>Fast Responsive Navbar with Slider</title>
   <style>
     * {
       margin: 0;
@@ -15,248 +15,206 @@
     /* Background Video */
     #bg-video {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
       object-fit: cover;
       z-index: -1;
+      preload: auto;
     }
 
     body {
       min-height: 2000px;
       color: white;
+      background: #000; /* fallback if video not supported */
     }
 
     /* Navbar */
     nav {
       position: fixed;
-      top: 20px;
+      top: 15px;
       left: 50%;
       transform: translateX(-50%);
-      width: 90%;
+      width: 92%;
       max-width: 1100px;
-      padding: 15px 40px;
+      padding: 12px 25px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-radius: 15px;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(8px);
       color: white;
-      transition: all 0.3s ease;
+      transition: background 0.3s ease, color 0.3s ease;
       z-index: 1000;
     }
-
-    nav.sticky {
-      background: #ffffff;
-      color: black;
-    }
+    nav.sticky { background: #fff; color: #000; }
 
     .logo {
-      font-size: 1.8rem;
+      font-size: 1.5rem;
       font-weight: bold;
-      letter-spacing: 2px;
       cursor: pointer;
     }
 
     .nav-links {
       display: flex;
-      gap: 30px;
+      gap: 25px;
       list-style: none;
     }
-
     .nav-links li a {
       text-decoration: none;
       color: inherit;
-      font-size: 1.1rem;
+      font-size: 1rem;
       position: relative;
       transition: color 0.3s;
     }
-
     .nav-links li a::after {
       content: "";
       position: absolute;
-      bottom: -5px;
-      left: 0;
-      width: 0;
-      height: 2px;
+      bottom: -4px; left: 0;
+      width: 0; height: 2px;
       background: #ff4b2b;
-      transition: width 0.3s ease;
+      transition: width 0.3s;
     }
-
-    .nav-links li a:hover::after {
-      width: 100%;
-    }
-
-    .nav-links li a:hover {
-      color: #ff4b2b;
-    }
+    .nav-links li a:hover::after { width: 100%; }
+    .nav-links li a:hover { color: #ff4b2b; }
 
     /* Hamburger Menu */
     .hamburger {
       display: none;
       flex-direction: column;
-      gap: 5px;
+      gap: 4px;
       cursor: pointer;
       z-index: 1100;
     }
-
     .hamburger div {
-      width: 25px;
-      height: 3px;
+      width: 24px; height: 3px;
       transition: all 0.3s ease;
     }
-
-    .hamburger div:nth-child(1) { background-color: #FF9933; }
-    .hamburger div:nth-child(2) { background-color: #FFFFFF; }
-    .hamburger div:nth-child(3) { background-color: #138808; }
+    .hamburger div:nth-child(1) { background: #FF9933; }
+    .hamburger div:nth-child(2) { background: #fff; }
+    .hamburger div:nth-child(3) { background: #138808; }
 
     .hamburger.active div:nth-child(1) { 
-      transform: rotate(45deg) translate(5px, 5px); 
-      background-color: black;
+      transform: rotate(45deg) translate(5px, 5px); background: black;
     }
     .hamburger.active div:nth-child(2) { opacity: 0; }
     .hamburger.active div:nth-child(3) { 
-      transform: rotate(-45deg) translate(5px, -5px); 
-      background-color: black;
+      transform: rotate(-45deg) translate(5px, -5px); background: black;
     }
 
     /* Mobile Menu */
     .mobile-menu {
       display: none;
       position: fixed;
-      top: 0;
-      right: -100%;
-      width: 70%;
-      max-width: 300px;
+      top: 0; right: -100%;
+      width: 70%; max-width: 280px;
       height: 100vh;
-      padding: 60px 20px;
+      padding: 50px 20px;
       flex-direction: column;
-      gap: 25px;
+      gap: 20px;
       transition: right 0.3s ease;
       z-index: 1050;
-      background: linear-gradient(180deg, 
-          rgba(255,153,51,0.9) 0%,
-          rgba(255,255,255,0.9) 50%,
-          rgba(19,136,8,0.9) 100%
-      );
-      backdrop-filter: blur(8px);
+      background: linear-gradient(180deg,
+        rgba(255,153,51,0.95) 0%,
+        rgba(255,255,255,0.95) 50%,
+        rgba(19,136,8,0.95) 100%);
+      backdrop-filter: blur(6px);
     }
-
     .mobile-menu .close-btn {
-      font-size: 2rem;
+      font-size: 1.8rem;
       font-weight: bold;
       color: black;
       align-self: flex-end;
       cursor: pointer;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
     }
-
     .mobile-menu a {
       text-decoration: none;
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       font-weight: bold;
-      color: #000080; /* Ashoka Chakra blue */
+      color: #000080;
     }
-
-    .mobile-menu a:hover {
-      transform: scale(1.05);
-      transition: transform 0.3s ease;
-    }
-
     .mobile-menu.show { right: 0; display: flex; }
 
     /* Responsive */
     @media (max-width: 768px) {
-      nav { width: 95%; padding: 10px 20px; }
+      nav { width: 95%; padding: 10px 15px; }
       .nav-links { display: none; }
       .hamburger { display: flex; }
     }
 
-    /* Image Slider */
+    /* Slider */
     .slider-container {
       position: relative;
-      width: 80%;
-      max-width: 1000px;
-      height: 300px;
-      margin: 120px auto 50px auto; /* below navbar */
+      width: 85%; max-width: 900px;
+      height: 250px;
+      margin: 110px auto 40px auto;
       overflow: hidden;
-      border-radius: 20px;
-      background: rgba(255,255,255,0.2);
-      backdrop-filter: blur(5px);
+      border-radius: 15px;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(4px);
       z-index: 500;
+      will-change: transform;
     }
-
     .slides {
       display: flex;
       width: 100%;
       height: 100%;
       transition: transform 0.5s ease-in-out;
+      will-change: transform;
     }
-
     .slide {
       min-width: 100%;
       height: 100%;
       background-position: center;
       background-size: cover;
-      border-radius: 20px;
     }
 
-    /* Slider Navigation */
+    /* Slider Buttons */
     .slider-nav {
       position: absolute;
-      top: 50%;
-      width: 100%;
+      top: 50%; left: 0; width: 100%;
       display: flex;
       justify-content: space-between;
       transform: translateY(-50%);
-      padding: 0 15px;
+      padding: 0 10px;
     }
-
     .slider-nav button {
-      background: rgba(0,0,0,0.5);
+      background: rgba(0,0,0,0.4);
       border: none;
       color: white;
-      font-size: 2rem;
+      font-size: 1.6rem;
       cursor: pointer;
       border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      width: 40px; height: 40px;
+      display: flex; align-items: center; justify-content: center;
       transition: background 0.3s;
     }
-
-    .slider-nav button:hover {
-      background: rgba(0,0,0,0.8);
-    }
+    .slider-nav button:hover { background: rgba(0,0,0,0.75); }
   </style>
 </head>
 <body>
 
+  <!-- Background Video -->
   <video autoplay muted loop playsinline id="bg-video">
     <source src="realistic earth zoom highlight country india 4k stock footage.mp4" type="video/mp4">
   </video>
 
+  <!-- Navbar -->
   <nav id="navbar">
     <div class="logo">MyLogo</div>
-
     <ul class="nav-links">
       <li><a href="#">Home</a></li>
       <li><a href="#">About</a></li>
       <li><a href="#">Portfolio</a></li>
       <li><a href="#">Contact</a></li>
     </ul>
-
     <div class="hamburger" id="hamburger">
-      <div></div>
-      <div></div>
-      <div></div>
+      <div></div><div></div><div></div>
     </div>
   </nav>
 
+  <!-- Mobile Menu -->
   <div class="mobile-menu" id="mobile-menu">
     <div class="close-btn" id="close-btn">&times;</div>
     <a href="#">Home</a>
@@ -273,7 +231,6 @@
       <div class="slide" style="background-image: url('image3.jpg');"></div>
       <div class="slide" style="background-image: url('image4.jpg');"></div>
     </div>
-
     <div class="slider-nav">
       <button id="prev">&#10094;</button>
       <button id="next">&#10095;</button>
@@ -285,59 +242,52 @@
     const hamburger = document.getElementById('hamburger');
     const mobileMenu = document.getElementById('mobile-menu');
     const closeBtn = document.getElementById('close-btn');
+    const slides = document.getElementById('slides');
+    const slideCount = slides.children.length;
+    let index = 0, autoSlideTimer;
 
     // Sticky Navbar
     window.addEventListener('scroll', () => {
-      if (window.scrollY > 50) { navbar.classList.add('sticky'); } 
-      else { navbar.classList.remove('sticky'); }
+      navbar.classList.toggle('sticky', window.scrollY > 50);
     });
 
-    // Hamburger Toggle
+    // Mobile Menu
     hamburger.addEventListener('click', () => {
       mobileMenu.classList.toggle('show');
       hamburger.classList.toggle('active');
     });
-
     closeBtn.addEventListener('click', () => {
       mobileMenu.classList.remove('show');
       hamburger.classList.remove('active');
     });
 
-    window.addEventListener('click', (e) => {
-      if (e.target === mobileMenu || (!mobileMenu.contains(e.target) && !hamburger.contains(e.target))) {
-        mobileMenu.classList.remove('show');
-        hamburger.classList.remove('active');
-      }
-    });
-
-    // Image Slider Logic
-    const slides = document.getElementById('slides');
-    const slideCount = slides.children.length;
-    let index = 0;
-
+    // Slider
     const nextBtn = document.getElementById('next');
     const prevBtn = document.getElementById('prev');
 
     function showSlide(i) {
       slides.style.transform = `translateX(-${i * 100}%)`;
     }
-
-    nextBtn.addEventListener('click', () => {
+    function nextSlide() {
       index = (index + 1) % slideCount;
       showSlide(index);
-    });
-
-    prevBtn.addEventListener('click', () => {
+    }
+    function prevSlideFn() {
       index = (index - 1 + slideCount) % slideCount;
       showSlide(index);
-    });
+    }
+    nextBtn.addEventListener('click', nextSlide);
+    prevBtn.addEventListener('click', prevSlideFn);
 
-    // Auto-slide every 5 seconds
-    setInterval(() => {
-      index = (index + 1) % slideCount;
-      showSlide(index);
-    }, 5000);
+    // Auto Slide using requestAnimationFrame
+    function autoSlide() {
+      clearTimeout(autoSlideTimer);
+      autoSlideTimer = setTimeout(() => {
+        nextSlide();
+        requestAnimationFrame(autoSlide);
+      }, 5000);
+    }
+    autoSlide();
   </script>
-
 </body>
 </html>
