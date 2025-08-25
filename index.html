@@ -10,67 +10,191 @@
         body { color: white; background: #000; min-height: auto; }
         #bg-video { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -1; }
         nav {
-            position: fixed; top: 15px; left: 50%; transform: translateX(-50%);
-            width: 92%; max-width: 1100px; padding: 12px 25px;
-            display: flex; justify-content: space-between; align-items: center;
-            border-radius: 12px; background: rgba(255,255,255,0.08); backdrop-filter: blur(8px);
-            color: white; transition: background 0.3s ease, color 0.3s ease; z-index: 1000;
+            position: fixed;
+            top: 32px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 96%;
+            max-width: 1200px;
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 18px;
+            background: rgba(10,10,20,0.32);
+            box-shadow: 0 4px 24px rgba(30,30,40,0.12), 0 1.5px 8px rgba(0,0,0,0.10);
+            color: #fff;
+            z-index: 1000;
+            border: 1.5px solid rgba(255,255,255,0.10);
+            backdrop-filter: blur(12px);
+            transition: background 0.3s, box-shadow 0.3s, color 0.3s;
         }
-        nav.sticky { background: #fff; color: #000; }
-        .text-logo {
-            font-size: 2rem; font-weight: 700; text-decoration: none;
-            background: linear-gradient(45deg,#ff0066,#ffcc00,#00ccff);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            transition: transform 0.3s, letter-spacing 0.3s;
+        nav.sticky {
+            background: linear-gradient(90deg, #1CB5E0 0%, #000851 100%);
+            color: #fff;
+            box-shadow: 0 8px 32px rgba(28,181,224,0.13), 0 2px 12px rgba(0,8,81,0.12);
         }
-        .logo { font-size: 1.5rem; font-weight: bold; cursor: pointer; }
-        .text-logo:hover { transform: scale(1.1); letter-spacing: 2px; }
-        .footer-about .text-logo { font-size: 2.2rem; margin-bottom: 15px; display: inline-block; }
-        .nav-links { display: flex; gap: 25px; list-style: none; }
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        .logo-img {
+            height: 110px;
+            width: auto;
+            max-width: 420px;
+            object-fit: contain;
+            display: block;
+            filter: drop-shadow(0 2px 12px rgba(20,20,40,0.18));
+            transition: transform 0.22s;
+        }
+        .logo-img:hover {
+            transform: scale(1.09);
+        }
+        .footer-about .logo-img {
+            height: 84px;
+            margin-bottom: 15px;
+            max-width: 420px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            list-style: none;
+            align-items: center;
+        }
+        .nav-links li {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
         .nav-links li a {
-            text-decoration: none; color: inherit; font-size: 1rem; position: relative; transition: color 0.3s;
+            text-decoration: none;
+            color: #fff;
+            font-size: 1.18rem;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+            padding: 10px 22px;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #1CB5E0 0%, #000851 100%);
+            box-shadow: 0 2px 14px rgba(28,181,224,0.13);
+            border: none;
+            outline: none;
+            transition: color 0.27s, background 0.27s, box-shadow 0.27s, transform 0.20s;
+        }
+        .nav-links li a:hover,
+        .nav-links li a.active {
+            background: linear-gradient(90deg,#ff9933 0%,#ff416c 100%);
+            color: #fff;
+            box-shadow: 0 6px 20px rgba(255,73,108,0.17);
+            transform: translateY(-2px) scale(1.05);
         }
         .nav-links li a::after {
-            content: ""; position: absolute; bottom: -4px; left: 0;
-            width: 0; height: 2px; background: #ff4b2b; transition: width 0.3s;
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: -7px;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg,#1CB5E0,#000851);
+            border-radius: 2px;
+            transition: width 0.3s;
         }
-        .nav-links li a:hover::after { width: 100%; }
-        .nav-links li a:hover { color: #ff4b2b; }
-        .hamburger { display: none; flex-direction: column; gap: 4px; cursor: pointer; z-index: 1100; }
-        .hamburger div { width: 24px; height: 3px; transition: all 0.3s ease; }
-        .hamburger div:nth-child(1) { background: #FF9933; }
-        .hamburger div:nth-child(2) { background: #fff; }
-        .hamburger div:nth-child(3) { background: #138808; }
-        .hamburger.active div:nth-child(1) { transform: rotate(45deg) translate(5px,5px); background: black; }
+        .nav-links li a:hover::after,
+        .nav-links li a.active::after {
+            width: 80%;
+        }
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            cursor: pointer;
+            z-index: 1100;
+        }
+        .hamburger div {
+            width: 32px;
+            height: 3px;
+            border-radius: 2px;
+            background: linear-gradient(90deg,#1CB5E0,#000851);
+            transition: all 0.3s;
+        }
+        .hamburger.active div:nth-child(1) {
+            transform: rotate(45deg) translate(7px,7px);
+            background: #fff;
+        }
         .hamburger.active div:nth-child(2) { opacity: 0; }
-        .hamburger.active div:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); background: black; }
-        .mobile-menu {
-            display: none; position: fixed; top: 0; right: -100%; width: 70%; max-width: 280px; height: 100vh;
-            padding: 50px 20px; flex-direction: column; gap: 20px; transition: right 0.3s ease;
-            z-index: 1050; background: linear-gradient(180deg,rgba(255,153,51,0.95) 0%,rgba(255,255,255,0.95) 50%,rgba(19,136,8,0.95) 100%);
-            backdrop-filter: blur(6px);
+        .hamburger.active div:nth-child(3) {
+            transform: rotate(-45deg) translate(8px,-8px);
+            background: #fff;
         }
-        .mobile-menu .close-btn { font-size: 1.8rem; font-weight: bold; color: black; align-self: flex-end; cursor: pointer; margin-bottom: 15px; }
-        .mobile-menu a { text-decoration: none; font-size: 1.3rem; font-weight: bold; color: #000080; }
-        .mobile-menu.show { right: 0; display: flex; }
+        .mobile-menu {
+            display: none; position: fixed; top: 0; right: -100%; width: 80%; max-width: 340px; height: 100vh;
+            padding: 64px 32px;
+            flex-direction: column; gap: 32px; transition: right 0.34s cubic-bezier(.7,.2,.2,1);
+            z-index: 1050;
+            background: linear-gradient(180deg,#232526 0%,#414345 100%);
+            box-shadow: -2px 0 20px rgba(30,30,40,0.11);
+            backdrop-filter: blur(10px);
+        }
+        .mobile-menu .close-btn {
+            font-size: 2.3rem;
+            font-weight: bold;
+            color: #fff;
+            align-self: flex-end;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: color 0.3s;
+        }
+        .mobile-menu .close-btn:hover { color: #1CB5E0; }
+        .mobile-menu a {
+            text-decoration: none;
+            font-size: 1.32rem;
+            font-weight: 600;
+            color: #fff;
+            padding: 10px 0;
+            border-radius: 8px;
+            background: linear-gradient(90deg, #1CB5E0 0%, #000851 100%);
+            margin-bottom: 8px;
+            transition: background 0.2s, color 0.2s;
+        }
+        .mobile-menu a:hover {
+            background: linear-gradient(90deg,#ff9933 0%,#ff416c 100%);
+            color: #fff;
+        }
+        .mobile-menu.show {
+            right: 0;
+            display: flex;
+        }
+        @media (max-width: 900px) {
+            nav { width: 98%; padding: 10px 10px; top: 18px; }
+            .logo-img { height: 78px; }
+            .nav-links { gap: 16px; }
+        }
         @media (max-width: 768px) {
-            nav { width: 95%; padding: 10px 15px; }
+            nav { width: 98%; padding: 8px 8px; top: 8px; }
             .nav-links { display: none; }
             .hamburger { display: flex; }
+            .logo-img { height: 55px; }
+        }
+        @media (max-width: 500px) {
+            .logo-img { height: 36px; }
         }
         .slider-container {
             position: relative; width: 85%; max-width: 900px; height: 250px;
-            margin: 110px auto 40px auto; overflow: hidden; border-radius: 15px;
+            margin: 220px auto 40px auto; /* Increased margin-top to give more space below navbar */
+            overflow: hidden; border-radius: 15px;
             background: rgba(255,255,255,0.15); backdrop-filter: blur(4px); z-index: 500;
+        }
+        @media (max-width: 900px) {
+            .slider-container { margin-top: 120px; }
+        }
+        @media (max-width: 600px) {
+            .slider-container { height: 200px; margin-top: 90px; }
+            .slide { background-size: contain; background-position: center; }
         }
         .slides { display: flex; width: 100%; height: 100%; transition: transform 0.5s ease-in-out; }
         .slide {
             min-width: 100%; height: 100%; background-position: center;
             background-size: cover; background-repeat: no-repeat;
-        }
-        @media (max-width: 600px) {
-            .slider-container { height: 200px; }
-            .slide { background-size: contain; background-position: center; }
         }
         .slider-nav {
             position: absolute; top: 50%; left: 0; width: 100%;
@@ -84,7 +208,6 @@
         }
         .slider-nav button:hover { background: rgba(0,0,0,0.75); }
 
-        /* Quotes Section - Cool Animations */
         .quotes-container {
             width: 80%; max-width: 900px; margin: 40px auto; padding: 40px 20px;
             border-radius: 15px; background: rgba(0,0,0,0.35); backdrop-filter: blur(8px);
@@ -117,15 +240,11 @@
             filter: blur(12px) brightness(0.8);
             z-index: 1;
         }
-
-        /* Responsive Quotes & Boxes */
         @media (max-width: 768px) {
             .quotes-container { padding: 20px; min-height: 120px; }
             .quote { font-size: clamp(1rem,2.5vw+1rem,1.8rem); width: 95%; }
             .content-section { padding: 10px; gap: 20px; }
         }
-
-        /* Content Boxes Section */
         .content-section {
             width: 90%; max-width: 1200px; margin: 40px auto 100px auto;
             display: grid; grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
@@ -147,8 +266,6 @@
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 700;
         }
         .content-box p { font-size: 1rem; color: rgba(255,255,255,0.8); line-height: 1.6; }
-
-        /* Footer Styles */
         .site-footer {
             position: relative; width: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(10px);
             border-top: 1px solid rgba(255,255,255,0.2); padding: 60px 20px 20px;
@@ -203,10 +320,12 @@
 
     <nav id="navbar">
         <div class="logo">
-            <a href="#" class="text-logo">ASIMSAADZ</a>
+            <a href="#">
+                <img src="Picsart_25-08-25_00-24-39-838.png" alt="ASIMSAADZ Logo" class="logo-img" />
+            </a>
         </div>
         <ul class="nav-links">
-            <li><a href="#">Home</a></li>
+            <li><a href="#" class="active">Home</a></li>
             <li><a href="#">About</a></li>
             <li><a href="#">Portfolio</a></li>
             <li><a href="#">Contact</a></li>
@@ -226,8 +345,7 @@
     </div>
 
     <div class="slider-container">
-        <div class="slides" id="slides">
-            </div>
+        <div class="slides" id="slides"></div>
         <div class="slider-nav">
             <button id="prev">&#10094;</button>
             <button id="next">&#10095;</button>
@@ -279,7 +397,9 @@
     <footer class="site-footer">
         <div class="footer-container">
             <div class="footer-about">
-                <a href="#" class="text-logo">ASIMSAADZ</a>
+                <a href="#">
+                    <img src="Picsart_25-08-25_00-24-39-838.png" alt="ASIMSAADZ Logo" class="logo-img" />
+                </a>
                 <p>Providing the best resources for students to excel in their studies. Your success is our mission!</p>
                 <div class="social-links">
                     <a href="#"><i class="fab fa-facebook-f"></i></a>
@@ -333,7 +453,6 @@
             let currentSlide = 0;
             let autoSlideTimer;
 
-            // Dynamically create slide elements from the imageUrls array
             function createSlides() {
                 slidesContainer.innerHTML = '';
                 imageUrls.forEach(url => {
@@ -375,26 +494,24 @@
                 mobileMenu.classList.remove('show');
                 hamburger.classList.remove('active');
             });
+
             function playVideoNormal() {
                 if (bgVideo) { bgVideo.playbackRate = 1.0; bgVideo.play().catch(() => {}); }
             }
             document.addEventListener("DOMContentLoaded", playVideoNormal);
             document.addEventListener("touchstart", playVideoNormal);
 
-            // --- Quotes Animation with Cool Transitions & Faster Speed ---
+            // --- Quotes Animation ---
             const quotes = document.querySelectorAll('.quote');
             let quoteIndex = 0;
             let quoteTimer;
 
             function showQuote(nextIndex) {
-                // Animate exit for current quote
                 quotes[quoteIndex].classList.remove('active');
                 quotes[quoteIndex].classList.add('exit');
                 setTimeout(() => {
                     quotes[quoteIndex].classList.remove('exit');
-                }, 400);  // exit animation duration
-
-                // Animate enter for next quote
+                }, 400);
                 quoteIndex = nextIndex;
                 quotes[quoteIndex].classList.add('active');
             }
@@ -408,16 +525,14 @@
                 quoteTimer = setTimeout(() => {
                     nextQuote();
                     autoQuote();
-                }, 2200); // FASTER speed (2.2 seconds)
+                }, 2200);
             }
 
-            // Allow manual skip with click
             document.querySelector('.quotes-container').addEventListener('click', () => {
                 nextQuote();
                 autoQuote();
             });
 
-            // Initial quote
             if (quotes.length > 0) {
                 quotes[0].classList.add("active");
                 autoQuote();
