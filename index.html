@@ -6,546 +6,193 @@
     <title>Dynamic Website</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* General Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        /* Body and Background */
-        body {
-            color: white;
-            background: #000;
-            min-height: auto;
-        }
-
-        #bg-video {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            object-fit: cover;
-            z-index: -1;
-        }
-
-        /* Navbar */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { color: white; background: #000; min-height: auto; }
+        #bg-video { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -1; }
         nav {
-            position: fixed;
-            top: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 92%;
-            max-width: 1100px;
-            padding: 12px 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(8px);
-            color: white;
-            transition: background 0.3s ease, color 0.3s ease;
-            z-index: 1000;
+            position: fixed; top: 15px; left: 50%; transform: translateX(-50%);
+            width: 92%; max-width: 1100px; padding: 12px 25px;
+            display: flex; justify-content: space-between; align-items: center;
+            border-radius: 12px; background: rgba(255,255,255,0.08); backdrop-filter: blur(8px);
+            color: white; transition: background 0.3s ease, color 0.3s ease; z-index: 1000;
         }
-
-        nav.sticky {
-            background: #fff;
-            color: #000;
-        }
-
-        /* Text logo styling */
+        nav.sticky { background: #fff; color: #000; }
         .text-logo {
-            font-size: 2rem;
-            font-weight: 700;
-            text-decoration: none;
-            background: linear-gradient(45deg, #ff0066, #ffcc00, #00ccff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 2rem; font-weight: 700; text-decoration: none;
+            background: linear-gradient(45deg,#ff0066,#ffcc00,#00ccff);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             transition: transform 0.3s, letter-spacing 0.3s;
         }
-        
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .text-logo:hover {
-            transform: scale(1.1);
-            letter-spacing: 2px;
-        }
-        
-        .footer-about .text-logo {
-            font-size: 2.2rem;
-            margin-bottom: 15px;
-            display: inline-block;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 25px;
-            list-style: none;
-        }
-
+        .logo { font-size: 1.5rem; font-weight: bold; cursor: pointer; }
+        .text-logo:hover { transform: scale(1.1); letter-spacing: 2px; }
+        .footer-about .text-logo { font-size: 2.2rem; margin-bottom: 15px; display: inline-block; }
+        .nav-links { display: flex; gap: 25px; list-style: none; }
         .nav-links li a {
-            text-decoration: none;
-            color: inherit;
-            font-size: 1rem;
-            position: relative;
-            transition: color 0.3s;
+            text-decoration: none; color: inherit; font-size: 1rem; position: relative; transition: color 0.3s;
         }
-
         .nav-links li a::after {
-            content: "";
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: #ff4b2b;
-            transition: width 0.3s;
+            content: ""; position: absolute; bottom: -4px; left: 0;
+            width: 0; height: 2px; background: #ff4b2b; transition: width 0.3s;
         }
-
-        .nav-links li a:hover::after {
-            width: 100%;
-        }
-
-        .nav-links li a:hover {
-            color: #ff4b2b;
-        }
-
-        /* Hamburger Menu */
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            gap: 4px;
-            cursor: pointer;
-            z-index: 1100;
-        }
-
-        .hamburger div {
-            width: 24px;
-            height: 3px;
-            transition: all 0.3s ease;
-        }
-
-        .hamburger div:nth-child(1) {
-            background: #FF9933;
-        }
-
-        .hamburger div:nth-child(2) {
-            background: #fff;
-        }
-
-        .hamburger div:nth-child(3) {
-            background: #138808;
-        }
-
-        .hamburger.active div:nth-child(1) {
-            transform: rotate(45deg) translate(5px, 5px);
-            background: black;
-        }
-
-        .hamburger.active div:nth-child(2) {
-            opacity: 0;
-        }
-
-        .hamburger.active div:nth-child(3) {
-            transform: rotate(-45deg) translate(5px, -5px);
-            background: black;
-        }
-
-        /* Mobile Menu */
+        .nav-links li a:hover::after { width: 100%; }
+        .nav-links li a:hover { color: #ff4b2b; }
+        .hamburger { display: none; flex-direction: column; gap: 4px; cursor: pointer; z-index: 1100; }
+        .hamburger div { width: 24px; height: 3px; transition: all 0.3s ease; }
+        .hamburger div:nth-child(1) { background: #FF9933; }
+        .hamburger div:nth-child(2) { background: #fff; }
+        .hamburger div:nth-child(3) { background: #138808; }
+        .hamburger.active div:nth-child(1) { transform: rotate(45deg) translate(5px,5px); background: black; }
+        .hamburger.active div:nth-child(2) { opacity: 0; }
+        .hamburger.active div:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); background: black; }
         .mobile-menu {
-            display: none;
-            position: fixed;
-            top: 0;
-            right: -100%;
-            width: 70%;
-            max-width: 280px;
-            height: 100vh;
-            padding: 50px 20px;
-            flex-direction: column;
-            gap: 20px;
-            transition: right 0.3s ease;
-            z-index: 1050;
-            background: linear-gradient(180deg,
-                rgba(255, 153, 51, 0.95) 0%,
-                rgba(255, 255, 255, 0.95) 50%,
-                rgba(19, 136, 8, 0.95) 100%);
+            display: none; position: fixed; top: 0; right: -100%; width: 70%; max-width: 280px; height: 100vh;
+            padding: 50px 20px; flex-direction: column; gap: 20px; transition: right 0.3s ease;
+            z-index: 1050; background: linear-gradient(180deg,rgba(255,153,51,0.95) 0%,rgba(255,255,255,0.95) 50%,rgba(19,136,8,0.95) 100%);
             backdrop-filter: blur(6px);
         }
-
-        .mobile-menu .close-btn {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: black;
-            align-self: flex-end;
-            cursor: pointer;
-            margin-bottom: 15px;
-        }
-
-        .mobile-menu a {
-            text-decoration: none;
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #000080;
-        }
-
-        .mobile-menu.show {
-            right: 0;
-            display: flex;
-        }
-
+        .mobile-menu .close-btn { font-size: 1.8rem; font-weight: bold; color: black; align-self: flex-end; cursor: pointer; margin-bottom: 15px; }
+        .mobile-menu a { text-decoration: none; font-size: 1.3rem; font-weight: bold; color: #000080; }
+        .mobile-menu.show { right: 0; display: flex; }
         @media (max-width: 768px) {
-            nav {
-                width: 95%;
-                padding: 10px 15px;
-            }
-
-            .nav-links {
-                display: none;
-            }
-
-            .hamburger {
-                display: flex;
-            }
+            nav { width: 95%; padding: 10px 15px; }
+            .nav-links { display: none; }
+            .hamburger { display: flex; }
         }
-
-        /* SLIDER CSS */
         .slider-container {
-            position: relative;
-            width: 85%;
-            max-width: 900px;
-            height: 250px;
-            margin: 110px auto 40px auto;
-            overflow: hidden;
-            border-radius: 15px;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(4px);
-            z-index: 500;
+            position: relative; width: 85%; max-width: 900px; height: 250px;
+            margin: 110px auto 40px auto; overflow: hidden; border-radius: 15px;
+            background: rgba(255,255,255,0.15); backdrop-filter: blur(4px); z-index: 500;
         }
-
-        .slides {
-            display: flex;
-            width: 100%;
-            height: 100%;
-            transition: transform 0.5s ease-in-out;
-        }
-        
+        .slides { display: flex; width: 100%; height: 100%; transition: transform 0.5s ease-in-out; }
         .slide {
-            min-width: 100%;
-            height: 100%;
-            background-position: center;
-            background-size: cover; /* Ensures the image covers the entire slide area */
-            background-repeat: no-repeat;
+            min-width: 100%; height: 100%; background-position: center;
+            background-size: cover; background-repeat: no-repeat;
         }
-
-        /* NEW CSS FOR MOBILE OPTIMIZATION */
         @media (max-width: 600px) {
-            .slider-container {
-                height: 200px; /* Adjust height for smaller screens */
-            }
-            .slide {
-                background-size: contain; /* Shrinks the image to fit fully within the slide */
-                background-position: center;
-            }
+            .slider-container { height: 200px; }
+            .slide { background-size: contain; background-position: center; }
         }
-
         .slider-nav {
-            position: absolute;
-            top: 50%;
-            left: 0;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            transform: translateY(-50%);
+            position: absolute; top: 50%; left: 0; width: 100%;
+            display: flex; justify-content: space-between; transform: translateY(-50%);
             padding: 0 10px;
         }
-
         .slider-nav button {
-            background: rgba(0, 0, 0, 0.4);
-            border: none;
-            color: white;
-            font-size: 1.6rem;
-            cursor: pointer;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.3s;
+            background: rgba(0,0,0,0.4); border: none; color: white; font-size: 1.6rem;
+            cursor: pointer; border-radius: 50%; width: 40px; height: 40px;
+            display: flex; align-items: center; justify-content: center; transition: background 0.3s;
         }
+        .slider-nav button:hover { background: rgba(0,0,0,0.75); }
 
-        .slider-nav button:hover {
-            background: rgba(0, 0, 0, 0.75);
-        }
-
-        /* Quotes Section */
+        /* Quotes Section - Cool Animations */
         .quotes-container {
-            width: 80%;
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 40px 20px;
-            border-radius: 15px;
-            background: rgba(0, 0, 0, 0.35);
-            backdrop-filter: blur(8px);
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            min-height: 200px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 80%; max-width: 900px; margin: 40px auto; padding: 40px 20px;
+            border-radius: 15px; background: rgba(0,0,0,0.35); backdrop-filter: blur(8px);
+            text-align: center; position: relative; overflow: hidden; min-height: 160px;
         }
-
-        .quote-wrapper {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-        }
-
         .quote {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 90%;
-            font-size: clamp(1.5rem, 4vw, 2.5rem);
-            font-weight: bold;
-            line-height: 1.5;
-            background: linear-gradient(90deg, #ff4b2b, #ff416c, #ff9933, #00c9ff, #92fe9d);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 2rem; font-weight: bold; line-height: 1.5;
+            background: linear-gradient(90deg,#ff4b2b,#ff416c,#ff9933,#00c9ff,#92fe9d);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             opacity: 0;
-            transition: all 0.8s ease-in-out;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-            text-wrap: balance;
+            transform: translateY(60px) scale(0.9) rotateX(60deg) skewX(-10deg);
+            filter: blur(8px) brightness(1.2);
+            transition:
+                opacity 0.5s cubic-bezier(.4,0,.2,1),
+                transform 0.6s cubic-bezier(.4,0,.2,1),
+                filter 0.6s cubic-bezier(.4,0,.2,1);
+            position: absolute; top: 50%; left: 50%;
+            width: 90%; pointer-events: none;
         }
-
         .quote.active {
             opacity: 1;
+            transform: translate(-50%, -50%) scale(1.07) rotateX(0deg) skewX(0deg);
+            filter: blur(0px) brightness(1.05) drop-shadow(0 0 8px #ff4b2b);
+            z-index: 2;
+            pointer-events: auto;
+        }
+        .quote.exit {
+            opacity: 0;
+            transform: translate(-50%, 60%) scale(0.7) rotateX(-60deg) skewX(10deg);
+            filter: blur(12px) brightness(0.8);
+            z-index: 1;
         }
 
-        .quote-enter {
-            animation: slide-in-top 0.8s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
-        }
-
-        .quote-exit {
-            animation: slide-out-bottom 0.8s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
-        }
-
-        @keyframes slide-in-top {
-            from {
-                transform: translate(-50%, -100%);
-                opacity: 0;
-            }
-            to {
-                transform: translate(-50%, -50%);
-                opacity: 1;
-            }
-        }
-
-        @keyframes slide-out-bottom {
-            from {
-                transform: translate(-50%, -50%);
-                opacity: 1;
-            }
-            to {
-                transform: translate(-50%, 0);
-                opacity: 0;
-            }
+        /* Responsive Quotes & Boxes */
+        @media (max-width: 768px) {
+            .quotes-container { padding: 20px; min-height: 120px; }
+            .quote { font-size: clamp(1rem,2.5vw+1rem,1.8rem); width: 95%; }
+            .content-section { padding: 10px; gap: 20px; }
         }
 
         /* Content Boxes Section */
         .content-section {
-            width: 90%;
-            max-width: 1200px;
-            margin: 40px auto 100px auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-            padding: 20px;
+            width: 90%; max-width: 1200px; margin: 40px auto 100px auto;
+            display: grid; grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+            gap: 30px; padding: 20px;
         }
-
         .content-box {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 30px;
-            text-align: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 15px;
+            padding: 30px; text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 4px 6px rgba(0,0,0,0.2);
         }
-
         .content-box:hover {
-            transform: translateY(-10px);
-            background: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+            transform: translateY(-10px) scale(1.03) rotateZ(-2deg);
+            background: rgba(255,255,255,0.2);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
         }
-
         .content-box h2 {
-            font-size: 1.8rem;
-            margin-bottom: 15px;
-            color: #fff;
-            background: linear-gradient(45deg, #f3ec78, #af4261);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 700;
+            font-size: 1.8rem; margin-bottom: 15px; color: #fff;
+            background: linear-gradient(45deg,#f3ec78,#af4261);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 700;
         }
-
-        .content-box p {
-            font-size: 1rem;
-            color: rgba(255, 255, 255, 0.8);
-            line-height: 1.6;
-        }
+        .content-box p { font-size: 1rem; color: rgba(255,255,255,0.8); line-height: 1.6; }
 
         /* Footer Styles */
         .site-footer {
-            position: relative;
-            width: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(10px);
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 60px 20px 20px;
-            color: #fff;
-            font-size: 1rem;
-            line-height: 1.6;
+            position: relative; width: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255,255,255,0.2); padding: 60px 20px 20px;
+            color: #fff; font-size: 1rem; line-height: 1.6;
         }
-
         .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            gap: 40px;
-            padding-bottom: 30px;
+            max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap;
+            justify-content: space-between; gap: 40px; padding-bottom: 30px;
         }
-
-        .footer-about,
-        .footer-links,
-        .footer-contact {
-            flex: 1 1 250px;
-        }
-
+        .footer-about, .footer-links, .footer-contact { flex: 1 1 250px; }
         .footer-about h3 {
-            font-size: 2rem;
-            font-weight: bold;
-            background: linear-gradient(45deg, #ff6a00, #ee0979);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 2rem; font-weight: bold;
+            background: linear-gradient(45deg,#ff6a00,#ee0979);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             margin-bottom: 15px;
         }
-
-        .footer-about p {
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        .social-links {
-            margin-top: 20px;
-        }
-
+        .footer-about p { color: rgba(255,255,255,0.8); }
+        .social-links { margin-top: 20px; }
         .social-links a {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            margin-right: 10px;
-            color: #fff;
-            text-align: center;
-            line-height: 40px;
+            display: inline-block; width: 40px; height: 40px; background: rgba(255,255,255,0.1);
+            border-radius: 50%; margin-right: 10px; color: #fff; text-align: center; line-height: 40px;
             transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease;
         }
-
         .social-links a:hover {
-            background: linear-gradient(45deg, #ff6a00, #ee0979);
-            transform: translateY(-5px) scale(1.1);
-            color: #fff;
+            background: linear-gradient(45deg,#ff6a00,#ee0979); transform: translateY(-5px) scale(1.1); color: #fff;
         }
-
-        .footer-links h4,
-        .footer-contact h4 {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #fff;
-            margin-bottom: 20px;
-            position: relative;
-            display: inline-block;
+        .footer-links h4, .footer-contact h4 {
+            font-size: 1.2rem; font-weight: 600; color: #fff; margin-bottom: 20px;
+            position: relative; display: inline-block;
         }
-
-        .footer-links h4::after,
-        .footer-contact h4::after {
-            content: '';
-            display: block;
-            width: 50px;
-            height: 3px;
-            background: linear-gradient(90deg, #06beb6, #48c6ef);
-            margin-top: 5px;
+        .footer-links h4::after, .footer-contact h4::after {
+            content: ''; display: block; width: 50px; height: 3px;
+            background: linear-gradient(90deg,#06beb6,#48c6ef); margin-top: 5px;
         }
-
-        .footer-links ul {
-            list-style: none;
-        }
-
-        .footer-links ul li {
-            margin-bottom: 10px;
-        }
-
-        .footer-links ul li a {
-            text-decoration: none;
-            color: rgba(255, 255, 255, 0.8);
-            transition: color 0.3s ease;
-        }
-
-        .footer-links ul li a:hover {
-            color: #48c6ef;
-        }
-
-        .footer-contact p {
-            color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 10px;
-        }
-
-        .footer-contact p i {
-            margin-right: 10px;
-            color: #06beb6;
-        }
-
+        .footer-links ul { list-style: none; }
+        .footer-links ul li { margin-bottom: 10px; }
+        .footer-links ul li a { text-decoration: none; color: rgba(255,255,255,0.8); transition: color 0.3s ease; }
+        .footer-links ul li a:hover { color: #48c6ef; }
+        .footer-contact p { color: rgba(255,255,255,0.8); margin-bottom: 10px; }
+        .footer-contact p i { margin-right: 10px; color: #06beb6; }
         .footer-bottom {
-            text-align: center;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            margin-top: 20px;
+            text-align: center; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 20px;
         }
-
-        .footer-bottom p {
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        /* --- New Responsive CSS for Quotes and Boxes --- */
-        @media (max-width: 768px) {
-            .quotes-container {
-                padding: 20px;
-                min-height: 150px;
-            }
-            .quote {
-                font-size: clamp(1.2rem, 3.5vw, 2rem);
-                width: 95%;
-            }
-            .content-section {
-                padding: 10px;
-                gap: 20px;
-            }
-        }
+        .footer-bottom p { font-size: 0.9rem; color: rgba(255,255,255,0.6); }
     </style>
 </head>
 <body>
@@ -580,26 +227,33 @@
 
     <div class="slider-container">
         <div class="slides" id="slides">
-        </div>
+            </div>
         <div class="slider-nav">
             <button id="prev">&#10094;</button>
             <button id="next">&#10095;</button>
         </div>
     </div>
     <div class="quotes-container">
-        <div class="quote-wrapper">
-            <div class="quote active quote-enter">
-                "Welcome to the ultimate resource hub for B.E. OU first-year students"
-            </div>
-            <div class="quote">
-                "This website is your one-stop solution for academic success."
-            </div>
-            <div class="quote">
-                "Here, you'll find everything you need: Notes, PYQs, and Video Lectures."
-            </div>
-            <div class="quote">
-                "Empowering your learning journey with quality, accessible content."
-            </div>
+        <div class="quote active">
+            “WELCOME”
+        </div>
+        <div class="quote">
+            “B.E (OU) FIRST YEAR STUDENTS”
+        </div>
+        <div class="quote">
+            “THIS IS A DEDICATED WEBSITE”
+        </div>
+        <div class="quote">
+            “FOR”
+        </div>
+         <div class="quote">
+            “YOUR NOTES, PYQ'S, VIDEO LECTURES”
+        </div>
+        <div class="quote">
+            “LET'S ROCK YOUR EXAMS!”
+        </div>
+        <div class="quote">
+            “SUCCESS STARTS WITH GOOD RESOURCES!”
         </div>
     </div>
 
@@ -666,7 +320,7 @@
             const closeBtn = document.getElementById('close-btn');
             const bgVideo = document.getElementById('bg-video');
 
-            // 🖼️ The image URLs are now in a single array!
+            // Image URLs for slider
             const imageUrls = [
                 'Gemini_Generated_Image_biohcabiohcabioh (1).png',
                 'Gemini_Generated_Image_d7ugy1d7ugy1d7ug (1).png',
@@ -681,7 +335,7 @@
 
             // Dynamically create slide elements from the imageUrls array
             function createSlides() {
-                slidesContainer.innerHTML = ''; // Clear existing slides
+                slidesContainer.innerHTML = '';
                 imageUrls.forEach(url => {
                     const slide = document.createElement('div');
                     slide.classList.add('slide');
@@ -689,45 +343,30 @@
                     slidesContainer.appendChild(slide);
                 });
             }
-
             function updateSlider() {
                 slidesContainer.style.transform = `translateX(${-currentSlide * 100}%)`;
             }
-
             function nextSlide() {
                 currentSlide = (currentSlide < imageUrls.length - 1) ? currentSlide + 1 : 0;
                 updateSlider();
             }
-
             function prevSlide() {
                 currentSlide = (currentSlide > 0) ? currentSlide - 1 : imageUrls.length - 1;
                 updateSlider();
             }
-
             function autoSlide() {
                 clearTimeout(autoSlideTimer);
                 autoSlideTimer = setTimeout(() => {
                     nextSlide();
-                    autoSlide(); // Call itself to loop
+                    autoSlide();
                 }, 5000);
             }
+            prevButton.addEventListener('click', () => { prevSlide(); autoSlide(); });
+            nextButton.addEventListener('click', () => { nextSlide(); autoSlide(); });
 
-            prevButton.addEventListener('click', () => {
-                prevSlide();
-                autoSlide(); // Reset timer on manual navigation
-            });
-
-            nextButton.addEventListener('click', () => {
-                nextSlide();
-                autoSlide(); // Reset timer on manual navigation
-            });
-
-            // Sticky Navbar
             window.addEventListener('scroll', () => {
                 navbar.classList.toggle('sticky', window.scrollY > 50);
             });
-
-            // Mobile Menu
             hamburger.addEventListener('click', () => {
                 mobileMenu.classList.toggle('show');
                 hamburger.classList.toggle('active');
@@ -736,48 +375,58 @@
                 mobileMenu.classList.remove('show');
                 hamburger.classList.remove('active');
             });
-
-            // Fix Mobile Video Speed
             function playVideoNormal() {
-                if (bgVideo) {
-                    bgVideo.playbackRate = 1.0;
-                    bgVideo.play().catch(() => {});
-                }
+                if (bgVideo) { bgVideo.playbackRate = 1.0; bgVideo.play().catch(() => {}); }
             }
             document.addEventListener("DOMContentLoaded", playVideoNormal);
             document.addEventListener("touchstart", playVideoNormal);
 
-            // Quotes Animation
+            // --- Quotes Animation with Cool Transitions & Faster Speed ---
             const quotes = document.querySelectorAll('.quote');
             let quoteIndex = 0;
-            function showNextQuote() {
-                quotes.forEach(quote => {
-                    quote.classList.remove('active', 'quote-enter');
-                });
-                
-                // Add exit animation to the current quote
-                const currentQuote = quotes[quoteIndex];
-                currentQuote.classList.add('quote-exit');
+            let quoteTimer;
 
-                // Update the index for the next quote
-                quoteIndex = (quoteIndex + 1) % quotes.length;
-                
-                // Add active and enter animation to the next quote
-                const nextQuote = quotes[quoteIndex];
-                nextQuote.classList.add('active', 'quote-enter');
+            function showQuote(nextIndex) {
+                // Animate exit for current quote
+                quotes[quoteIndex].classList.remove('active');
+                quotes[quoteIndex].classList.add('exit');
+                setTimeout(() => {
+                    quotes[quoteIndex].classList.remove('exit');
+                }, 400);  // exit animation duration
+
+                // Animate enter for next quote
+                quoteIndex = nextIndex;
+                quotes[quoteIndex].classList.add('active');
             }
-            
+
+            function nextQuote() {
+                let nextIdx = (quoteIndex + 1) % quotes.length;
+                showQuote(nextIdx);
+            }
+            function autoQuote() {
+                clearTimeout(quoteTimer);
+                quoteTimer = setTimeout(() => {
+                    nextQuote();
+                    autoQuote();
+                }, 2200); // FASTER speed (2.2 seconds)
+            }
+
+            // Allow manual skip with click
+            document.querySelector('.quotes-container').addEventListener('click', () => {
+                nextQuote();
+                autoQuote();
+            });
+
+            // Initial quote
             if (quotes.length > 0) {
-                // Initialize the first quote with the active and enter classes
-                quotes[0].classList.add("active", "quote-enter");
-                // Set the interval for the animation
-                setInterval(showNextQuote, 6000);
+                quotes[0].classList.add("active");
+                autoQuote();
             }
-            
+
             // Initialize slider
             createSlides();
             autoSlide();
         });
     </script>
-    </body>
+</body>
 </html>
