@@ -297,29 +297,69 @@
             text-align: center;
             position: relative;
             overflow: hidden;
-            min-height: 160px;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quote-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
         }
 
         .quote {
-            font-size: 2rem;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
             font-weight: bold;
             line-height: 1.5;
             background: linear-gradient(90deg, #ff4b2b, #ff416c, #ff9933, #00c9ff, #92fe9d);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.8s ease;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) translateY(20px);
-            width: 90%;
+            transition: all 0.8s ease-in-out;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            text-wrap: balance;
         }
 
         .quote.active {
             opacity: 1;
-            transform: translate(-50%, -50%) translateY(0);
+        }
+
+        .quote-enter {
+            animation: slide-in-top 0.8s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+        }
+
+        .quote-exit {
+            animation: slide-out-bottom 0.8s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+        }
+
+        @keyframes slide-in-top {
+            from {
+                transform: translate(-50%, -100%);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, -50%);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slide-out-bottom {
+            from {
+                transform: translate(-50%, -50%);
+                opacity: 1;
+            }
+            to {
+                transform: translate(-50%, 0);
+                opacity: 0;
+            }
         }
 
         /* Content Boxes Section */
@@ -495,10 +535,10 @@
         @media (max-width: 768px) {
             .quotes-container {
                 padding: 20px;
-                min-height: 120px;
+                min-height: 150px;
             }
             .quote {
-                font-size: clamp(1rem, 2.5vw + 1rem, 1.8rem);
+                font-size: clamp(1.2rem, 3.5vw, 2rem);
                 width: 95%;
             }
             .content-section {
@@ -540,24 +580,26 @@
 
     <div class="slider-container">
         <div class="slides" id="slides">
-            </div>
+        </div>
         <div class="slider-nav">
             <button id="prev">&#10094;</button>
             <button id="next">&#10095;</button>
         </div>
     </div>
     <div class="quotes-container">
-        <div class="quote active">
-            “Education is the most powerful weapon ”
-        </div>
-        <div class="quote">
-            “An investment is knowledge”
-        </div>
-        <div class="quote">
-            “The future belongs to inovators”
-        </div>
-        <div class="quote">
-            “Learning never exhausts the mind.”
+        <div class="quote-wrapper">
+            <div class="quote active quote-enter">
+                "Welcome to the ultimate resource hub for B.E. OU first-year students"
+            </div>
+            <div class="quote">
+                "This website is your one-stop solution for academic success."
+            </div>
+            <div class="quote">
+                "Here, you'll find everything you need: Notes, PYQs, and Video Lectures."
+            </div>
+            <div class="quote">
+                "Empowering your learning journey with quality, accessible content."
+            </div>
         </div>
     </div>
 
@@ -709,12 +751,26 @@
             const quotes = document.querySelectorAll('.quote');
             let quoteIndex = 0;
             function showNextQuote() {
-                quotes[quoteIndex].classList.remove('active');
+                quotes.forEach(quote => {
+                    quote.classList.remove('active', 'quote-enter');
+                });
+                
+                // Add exit animation to the current quote
+                const currentQuote = quotes[quoteIndex];
+                currentQuote.classList.add('quote-exit');
+
+                // Update the index for the next quote
                 quoteIndex = (quoteIndex + 1) % quotes.length;
-                quotes[quoteIndex].classList.add('active');
+                
+                // Add active and enter animation to the next quote
+                const nextQuote = quotes[quoteIndex];
+                nextQuote.classList.add('active', 'quote-enter');
             }
+            
             if (quotes.length > 0) {
-                quotes[0].classList.add("active");
+                // Initialize the first quote with the active and enter classes
+                quotes[0].classList.add("active", "quote-enter");
+                // Set the interval for the animation
                 setInterval(showNextQuote, 6000);
             }
             
