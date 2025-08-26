@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -9,25 +9,24 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { color: white; background: #000; min-height: auto; }
         #bg-video { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -1; }
+
         nav {
             position: fixed;
-            top: 32px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 96%;
-            max-width: 1200px;
-            padding: 16px 32px;
+            top: 0; left: 0;
+            width: 100vw;
+            padding: 0 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-radius: 18px;
+            border-radius: 0;
             background: rgba(10,10,20,0.32);
             box-shadow: 0 4px 24px rgba(30,30,40,0.12), 0 1.5px 8px rgba(0,0,0,0.10);
             color: #fff;
             z-index: 1000;
-            border: 1.5px solid rgba(255,255,255,0.10);
+            border-bottom: 1.5px solid rgba(255,255,255,0.10);
             backdrop-filter: blur(12px);
             transition: background 0.3s, box-shadow 0.3s, color 0.3s;
+            min-height: 62px;
         }
         nav.sticky {
             background: linear-gradient(90deg, #1CB5E0 0%, #000851 100%);
@@ -37,11 +36,12 @@
         .logo {
             display: flex;
             align-items: center;
+            padding-left: 12px;
+            height: 62px;
         }
         .logo-img {
-            height: 110px;
+            height: 55px;
             width: auto;
-            max-width: 420px;
             object-fit: contain;
             display: block;
             filter: drop-shadow(0 2px 12px rgba(20,20,40,0.18));
@@ -57,9 +57,10 @@
         }
         .nav-links {
             display: flex;
-            gap: 28px;
+            gap: 20px;
             list-style: none;
             align-items: center;
+            padding-right: 12px;
         }
         .nav-links li {
             position: relative;
@@ -69,13 +70,13 @@
         .nav-links li a {
             text-decoration: none;
             color: #fff;
-            font-size: 1.18rem;
+            font-size: 1.12rem;
             font-weight: 500;
             letter-spacing: 0.03em;
-            padding: 10px 22px;
+            padding: 8px 16px;
             border-radius: 10px;
             background: linear-gradient(90deg, #1CB5E0 0%, #000851 100%);
-            box-shadow: 0 2px 14px rgba(28,181,224,0.13);
+            box-shadow: 0 2px 14px rgba(28,181,224,0.07);
             border: none;
             outline: none;
             transition: color 0.27s, background 0.27s, box-shadow 0.27s, transform 0.20s;
@@ -84,8 +85,8 @@
         .nav-links li a.active {
             background: linear-gradient(90deg,#ff9933 0%,#ff416c 100%);
             color: #fff;
-            box-shadow: 0 6px 20px rgba(255,73,108,0.17);
-            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(255,73,108,0.13);
+            transform: translateY(-2px) scale(1.04);
         }
         .nav-links li a::after {
             content: "";
@@ -109,6 +110,7 @@
             gap: 6px;
             cursor: pointer;
             z-index: 1100;
+            margin-right: 10px;
         }
         .hamburger div {
             width: 32px;
@@ -127,8 +129,8 @@
             background: #fff;
         }
         .mobile-menu {
-            display: none; position: fixed; top: 0; right: -100%; width: 80%; max-width: 340px; height: 100vh;
-            padding: 64px 32px;
+            display: none; position: fixed; top: 0; right: -100%; width: 78vw; max-width: 340px; height: 100vh;
+            padding: 64px 32px 20px 32px;
             flex-direction: column; gap: 32px; transition: right 0.34s cubic-bezier(.7,.2,.2,1);
             z-index: 1050;
             background: linear-gradient(180deg,#232526 0%,#414345 100%);
@@ -147,7 +149,7 @@
         .mobile-menu .close-btn:hover { color: #1CB5E0; }
         .mobile-menu a {
             text-decoration: none;
-            font-size: 1.32rem;
+            font-size: 1.22rem;
             font-weight: 600;
             color: #fff;
             padding: 10px 0;
@@ -165,47 +167,50 @@
             display: flex;
         }
         @media (max-width: 900px) {
-            nav { width: 98%; padding: 10px 10px; top: 18px; }
-            .logo-img { height: 78px; }
-            .nav-links { gap: 16px; }
+            .logo-img { height: 45px; }
+            nav { min-height: 54px; }
+            .nav-links { gap: 12px; }
         }
         @media (max-width: 768px) {
-            nav { width: 98%; padding: 8px 8px; top: 8px; }
+            nav { min-height: 54px; }
             .nav-links { display: none; }
             .hamburger { display: flex; }
-            .logo-img { height: 55px; }
+            .logo-img { height: 40px; }
         }
         @media (max-width: 500px) {
-            .logo-img { height: 36px; }
+            .logo-img { height: 32px; }
         }
+
         .slider-container {
             position: relative;
-            width: 100%;
+            width: 100vw;
             max-width: 900px;
-            height: 250px;
-            margin: 220px auto 40px auto;
+            height: 260px;
+            margin: 80px auto 40px auto;
             overflow: hidden;
             border-radius: 15px;
             background: rgba(255,255,255,0.15);
             backdrop-filter: blur(4px);
             z-index: 500;
             box-sizing: border-box;
+            display: flex;
+            align-items: center;
         }
         @media (max-width: 900px) {
-            .slider-container { margin-top: 120px; height: 200px; }
+            .slider-container { margin-top: 70px; height: 200px; }
         }
         @media (max-width: 600px) {
             .slider-container {
                 height: 170px;
-                margin-top: 90px;
-                width: 98%;
+                margin-top: 55px;
+                width: 98vw;
             }
         }
         @media (max-width: 450px) {
             .slider-container {
                 height: 120px;
-                margin-top: 65px;
-                width: 100%;
+                margin-top: 48px;
+                width: 100vw;
             }
         }
         .slides {
@@ -215,7 +220,7 @@
             transition: transform 0.5s ease-in-out;
         }
         .slide {
-            min-width: 100%;
+            min-width: 100vw;
             height: 100%;
             display: flex;
             align-items: center;
@@ -224,11 +229,14 @@
             overflow: hidden;
         }
         .slide img {
-            width: 100%;
+            width: 100vw;
+            max-width: 900px;
             height: 100%;
+            max-height: 260px;
             object-fit: contain;
             border-radius: 10px;
             display: block;
+            margin: 0 auto;
             box-shadow: 0 2px 14px rgba(28,181,224,0.13);
             background: #fff;
         }
@@ -236,15 +244,17 @@
             position: absolute; top: 50%; left: 0; width: 100%;
             display: flex; justify-content: space-between; transform: translateY(-50%);
             padding: 0 10px;
+            pointer-events: none;
         }
         .slider-nav button {
             background: rgba(0,0,0,0.4); border: none; color: white; font-size: 1.6rem;
             cursor: pointer; border-radius: 50%; width: 40px; height: 40px;
             display: flex; align-items: center; justify-content: center; transition: background 0.3s;
+            pointer-events: auto;
         }
         .slider-nav button:hover { background: rgba(0,0,0,0.75); }
         .quotes-container {
-            width: 95%;
+            width: 95vw;
             max-width: 900px;
             margin: 40px auto;
             padding: 40px 10px;
@@ -316,7 +326,7 @@
             }
         }
         .content-section {
-            width: 90%; max-width: 1200px; margin: 40px auto 100px auto;
+            width: 98vw; max-width: 1200px; margin: 40px auto 100px auto;
             display: grid; grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
             gap: 30px; padding: 20px;
         }
@@ -331,13 +341,13 @@
             box-shadow: 0 10px 20px rgba(0,0,0,0.4);
         }
         .content-box h2 {
-            font-size: 1.8rem; margin-bottom: 15px; color: #fff;
+            font-size: 1.6rem; margin-bottom: 15px;
             background: linear-gradient(45deg,#f3ec78,#af4261);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 700;
         }
         .content-box p { font-size: 1rem; color: rgba(255,255,255,0.8); line-height: 1.6; }
         .site-footer {
-            position: relative; width: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(10px);
+            position: relative; width: 100vw; background: rgba(0,0,0,0.4); backdrop-filter: blur(10px);
             border-top: 1px solid rgba(255,255,255,0.2); padding: 60px 20px 20px;
             color: #fff; font-size: 1rem; line-height: 1.6;
         }
@@ -380,6 +390,13 @@
             text-align: center; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 20px;
         }
         .footer-bottom p { font-size: 0.9rem; color: rgba(255,255,255,0.6); }
+        @media (max-width:900px) {
+            .footer-container { flex-direction: column; gap: 10px; }
+            .site-footer { padding: 30px 10px 10px; }
+        }
+        @media (max-width:500px) {
+            .footer-about .logo-img { height: 40px; }
+        }
     </style>
 </head>
 <body>
@@ -536,7 +553,7 @@
                 });
             }
             function updateSlider() {
-                slidesContainer.style.transform = `translateX(${-currentSlide * 100}%)`;
+                slidesContainer.style.transform = `translateX(${-currentSlide * window.innerWidth}px)`;
             }
             function nextSlide() {
                 currentSlide = (currentSlide < imageUrls.length - 1) ? currentSlide + 1 : 0;
@@ -556,6 +573,8 @@
             prevButton.addEventListener('click', () => { prevSlide(); autoSlide(); });
             nextButton.addEventListener('click', () => { nextSlide(); autoSlide(); });
 
+            window.addEventListener('resize', updateSlider);
+
             window.addEventListener('scroll', () => {
                 navbar.classList.toggle('sticky', window.scrollY > 50);
             });
@@ -571,51 +590,4 @@
             function playVideoNormal() {
                 if (bgVideo) { bgVideo.playbackRate = 1.0; bgVideo.play().catch(() => {}); }
             }
-            document.addEventListener("DOMContentLoaded", playVideoNormal);
-            document.addEventListener("touchstart", playVideoNormal);
-
-            // --- Quotes Animation ---
-            const quotes = document.querySelectorAll('.quote');
-            let quoteIndex = 0;
-            let quoteTimer;
-
-            function showQuote(nextIndex) {
-                quotes[quoteIndex].classList.remove('active');
-                quotes[quoteIndex].classList.add('exit');
-                setTimeout(() => {
-                    quotes[quoteIndex].classList.remove('exit');
-                }, 400);
-                quoteIndex = nextIndex;
-                quotes[quoteIndex].classList.add('active');
-            }
-
-            function nextQuote() {
-                let nextIdx = (quoteIndex + 1) % quotes.length;
-                showQuote(nextIdx);
-            }
-            function autoQuote() {
-                clearTimeout(quoteTimer);
-                quoteTimer = setTimeout(() => {
-                    nextQuote();
-                    autoQuote();
-                }, 2200);
-            }
-
-            document.querySelector('.quotes-container').addEventListener('click', () => {
-                nextQuote();
-                autoQuote();
-            });
-
-            if (quotes.length > 0) {
-                quotes[0].classList.add("active");
-                autoQuote();
-            }
-
-            // Initialize slider
-            createSlides();
-            updateSlider();
-            autoSlide();
-        });
-    </script>
-</body>
-</html>       
+            document.addEvent
