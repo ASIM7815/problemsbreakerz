@@ -540,6 +540,11 @@
             let currentSlide = 0;
             let autoSlideTimer;
 
+            // Responsive slider: calculate slide width on resize
+            function getSlideWidth() {
+                // For mobile, use window.innerWidth; for desktop, clamp to max 900px
+                return Math.min(window.innerWidth, 900);
+            }
             function createSlides() {
                 slidesContainer.innerHTML = '';
                 imageUrls.forEach(url => {
@@ -553,7 +558,7 @@
                 });
             }
             function updateSlider() {
-                slidesContainer.style.transform = `translateX(${-currentSlide * window.innerWidth}px)`;
+                slidesContainer.style.transform = `translateX(${-currentSlide * getSlideWidth()}px)`;
             }
             function nextSlide() {
                 currentSlide = (currentSlide < imageUrls.length - 1) ? currentSlide + 1 : 0;
@@ -590,4 +595,52 @@
             function playVideoNormal() {
                 if (bgVideo) { bgVideo.playbackRate = 1.0; bgVideo.play().catch(() => {}); }
             }
-            document.addEvent
+            playVideoNormal();
+
+            // Quotes animation for mobile/desktop
+            const quotes = document.querySelectorAll('.quote');
+            let quoteIndex = 0;
+            function showQuote(idx) {
+                quotes.forEach((q, i) => {
+                    q.classList.remove('active', 'exit');
+                    if (i === idx) q.classList.add('active');
+                    else if (i === ((idx-1+quotes.length)%quotes.length)) q.classList.add('exit');
+                });
+            }
+            function autoQuote() {
+                setTimeout(() => {
+                    quoteIndex = (quoteIndex+1)%quotes.length;
+                    showQuote(quoteIndex);
+                    autoQuote();
+                }, window.innerWidth < 500 ? 2000 : 3500); // Faster on mobile
+            }
+            showQuote(quoteIndex);
+            autoQuote();
+
+            createSlides();
+            updateSlider();
+            autoSlide();
+
+            // Touch swipe for mobile slider
+            let touchStartX = 0;
+            let touchEndX = 0;
+            slidesContainer.addEventListener('touchstart', function(e) {
+                if (e.touches.length === 1) touchStartX = e.touches[0].clientX;
+            });
+            slidesContainer.addEventListener('touchend', function(e) {
+                touchEndX = e.changedTouches[0].clientX;
+                if (touchEndX - touchStartX > 50) { prevSlide(); autoSlide(); }
+                if (touchEndX - touchStartX < -50) { nextSlide(); autoSlide(); }
+            });
+
+            // Close mobile menu on link click
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.remove('show');
+                    hamburger.classList.remove('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
