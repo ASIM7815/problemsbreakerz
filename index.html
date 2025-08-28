@@ -5,9 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dynamic Website</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Add Google Fonts for Poppins and Roboto -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { color: white; background: #000; min-height: auto; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', 'Roboto', sans-serif; }
+        body { color: white; background: #000; min-height: 100vh; }
         #bg-video { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -1; }
 
         nav {
@@ -166,51 +170,43 @@
             right: 0;
             display: flex;
         }
-        @media (max-width: 900px) {
-            .logo-img { height: 45px; }
-            nav { min-height: 54px; }
-            .nav-links { gap: 12px; }
-        }
-        @media (max-width: 768px) {
-            nav { min-height: 54px; }
-            .nav-links { display: none; }
-            .hamburger { display: flex; }
-            .logo-img { height: 40px; }
-        }
-        @media (max-width: 500px) {
-            .logo-img { height: 32px; }
-        }
 
+        /* SQUARE SLIDER */
         .slider-container {
             position: relative;
-            width: 100vw;
-            max-width: 900px;
-            height: 260px;
-            margin: 80px auto 40px auto;
+            width: 90vw;
+            max-width: 600px;
+            height: 90vw;
+            max-height: 600px;
+            aspect-ratio: 1/1;
+            margin: 90px auto 40px auto;
             overflow: hidden;
-            border-radius: 15px;
+            border-radius: 20px;
             background: rgba(255,255,255,0.15);
             backdrop-filter: blur(4px);
             z-index: 500;
             box-sizing: border-box;
             display: flex;
             align-items: center;
+            justify-content: center;
         }
         @media (max-width: 900px) {
-            .slider-container { margin-top: 70px; height: 200px; }
+            .slider-container { margin-top: 70px; height: 70vw; max-height: 400px; }
         }
         @media (max-width: 600px) {
             .slider-container {
-                height: 170px;
-                margin-top: 55px;
-                width: 98vw;
+                height: 70vw;
+                max-height: 320px;
+                width: 96vw;
+                max-width: 320px;
             }
         }
         @media (max-width: 450px) {
             .slider-container {
-                height: 120px;
-                margin-top: 48px;
+                height: 70vw;
+                max-height: 220px;
                 width: 100vw;
+                max-width: 220px;
             }
         }
         .slides {
@@ -220,7 +216,7 @@
             transition: transform 0.5s ease-in-out;
         }
         .slide {
-            min-width: 100vw;
+            min-width: 100%;
             height: 100%;
             display: flex;
             align-items: center;
@@ -229,16 +225,19 @@
             overflow: hidden;
         }
         .slide img {
-            width: 100vw;
-            max-width: 900px;
+            width: 100%;
             height: 100%;
-            max-height: 260px;
-            object-fit: contain;
-            border-radius: 10px;
+            object-fit: cover;
+            border-radius: 14px;
             display: block;
             margin: 0 auto;
             box-shadow: 0 2px 14px rgba(28,181,224,0.13);
             background: #fff;
+            transition: transform 0.4s cubic-bezier(.4,0,.2,1), box-shadow 0.4s;
+        }
+        .slide img:hover {
+            transform: scale(1.04) rotateZ(-2deg);
+            box-shadow: 0 10px 24px rgba(28,181,224,0.18);
         }
         .slider-nav {
             position: absolute; top: 50%; left: 0; width: 100%;
@@ -252,7 +251,11 @@
             display: flex; align-items: center; justify-content: center; transition: background 0.3s;
             pointer-events: auto;
         }
+        .slider-nav button:focus {
+            outline: 2px solid #1CB5E0;
+        }
         .slider-nav button:hover { background: rgba(0,0,0,0.75); }
+        /* ... rest of your CSS unchanged ... */
         .quotes-container {
             width: 95vw;
             max-width: 900px;
@@ -335,7 +338,7 @@
             padding: 30px; text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
             border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 4px 6px rgba(0,0,0,0.2);
         }
-        .content-box:hover {
+        .content-box:hover, .content-box:focus-within {
             transform: translateY(-10px) scale(1.03) rotateZ(-2deg);
             background: rgba(255,255,255,0.2);
             box-shadow: 0 10px 20px rgba(0,0,0,0.4);
@@ -345,7 +348,7 @@
             background: linear-gradient(45deg,#f3ec78,#af4261);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 700;
         }
-        .content-box p { font-size: 1rem; color: rgba(255,255,255,0.8); line-height: 1.6; }
+        .content-box p { font-size: 1rem; color: rgba(255,255,255,0.85); line-height: 1.65; }
         .site-footer {
             position: relative; width: 100vw; background: rgba(0,0,0,0.4); backdrop-filter: blur(10px);
             border-top: 1px solid rgba(255,255,255,0.2); padding: 60px 20px 20px;
@@ -397,85 +400,75 @@
         @media (max-width:500px) {
             .footer-about .logo-img { height: 40px; }
         }
+        /* Accessibility: focus style for all links and buttons */
+        a:focus, button:focus {
+            outline: 2px solid #ff416c;
+            outline-offset: 2px;
+        }
     </style>
 </head>
 <body>
-
     <video autoplay muted loop playsinline preload="auto" id="bg-video">
         <source src="realistic earth zoom highlight country india 4k stock footage.mp4" type="video/mp4">
     </video>
 
     <nav id="navbar">
         <div class="logo">
-            <a href="#">
+            <a href="#" aria-label="Home">
                 <img src="00c22b83efd527a497544ab5c5cd8ca3.png" alt="ASIMSAADZ Logo" class="logo-img" />
             </a>
         </div>
         <ul class="nav-links">
-            <li><a href="#" class="active">Home</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Portfolio</a></li>
-            <li><a href="#">Contact</a></li>
+            <li><a href="#" class="active" tabindex="0">Home</a></li>
+            <li><a href="#" tabindex="0">About</a></li>
+            <li><a href="#" tabindex="0">Portfolio</a></li>
+            <li><a href="#" tabindex="0">Contact</a></li>
         </ul>
-        <div class="hamburger" id="hamburger">
+        <div class="hamburger" id="hamburger" aria-label="Open menu" tabindex="0">
             <div></div>
             <div></div>
             <div></div>
         </div>
     </nav>
-    <div class="mobile-menu" id="mobile-menu">
-        <div class="close-btn" id="close-btn">&times;</div>
-        <a href="#">Home</a>
-        <a href="#">About</a>
-        <a href="#">Portfolio</a>
-        <a href="#">Contact</a>
+    <div class="mobile-menu" id="mobile-menu" aria-modal="true" role="dialog">
+        <div class="close-btn" id="close-btn" aria-label="Close menu" tabindex="0">&times;</div>
+        <a href="#" tabindex="0">Home</a>
+        <a href="#" tabindex="0">About</a>
+        <a href="#" tabindex="0">Portfolio</a>
+        <a href="#" tabindex="0">Contact</a>
     </div>
 
-    <div class="slider-container">
+    <div class="slider-container" aria-label="Image Slider">
         <div class="slides" id="slides"></div>
         <div class="slider-nav">
-            <button id="prev">&#10094;</button>
-            <button id="next">&#10095;</button>
+            <button id="prev" aria-label="Previous Slide" tabindex="0">&#10094;</button>
+            <button id="next" aria-label="Next Slide" tabindex="0">&#10095;</button>
         </div>
     </div>
-    <div class="quotes-container">
-        <div class="quote active">
-            “WELCOME”
-        </div>
-        <div class="quote">
-            “B.E (OU) FIRST YEAR STUDENTS”
-        </div>
-        <div class="quote">
-            “THIS IS A DEDICATED WEBSITE”
-        </div>
-        <div class="quote">
-            “FOR”
-        </div>
-         <div class="quote">
-            “YOUR NOTES, PYQ'S, VIDEO LECTURES”
-        </div>
-        <div class="quote">
-            “LET'S ROCK YOUR EXAMS!”
-        </div>
-        <div class="quote">
-            “SUCCESS STARTS WITH GOOD RESOURCES!”
-        </div>
+    <div class="quotes-container" aria-label="Motivational Quotes">
+        <div class="quote active">“WELCOME”</div>
+        <div class="quote">“B.E (OU) FIRST YEAR STUDENTS”</div>
+        <div class="quote">“THIS IS A DEDICATED WEBSITE”</div>
+        <div class="quote">“FOR”</div>
+        <div class="quote">“YOUR NOTES, PYQ'S, VIDEO LECTURES”</div>
+        <div class="quote">“LET'S ROCK YOUR EXAMS!”</div>
+        <div class="quote">“SUCCESS STARTS WITH GOOD RESOURCES!”</div>
     </div>
 
-    <section class="content-section">
-        <div class="content-box">
+    <section class="content-section" aria-label="Main Resources">
+        <div class="content-box" tabindex="0">
             <h2>PYQs</h2>
             <p>Access a collection of previous year's questions to practice and prepare for your exams.</p>
         </div>
-        <div class="content-box">
+        <div class="content-box" tabindex="0">
             <h2>Notes</h2>
             <p>Download comprehensive notes on various topics to aid your studies and revisions.</p>
         </div>
-        <div class="content-box">
+        <div class="content-box" tabindex="0">
             <h2>Blogs</h2>
             <p>Read insightful blogs and articles written by experts to deepen your understanding.</p>
         </div>
-        <div class="content-box">
+        <div class="content-box" tabindex="0">
             <h2>Video Lectures</h2>
             <p>Watch video lectures and tutorials to learn at your own pace with engaging visuals.</p>
         </div>
@@ -484,29 +477,27 @@
     <footer class="site-footer">
         <div class="footer-container">
             <div class="footer-about">
-                <a href="#">
+                <a href="#" aria-label="Home">
                     <img src="00c22b83efd527a497544ab5c5cd8ca3.png" alt="ASIMSAADZ Logo" class="logo-img" />
                 </a>
                 <p>Providing the best resources for students to excel in their studies. Your success is our mission!</p>
                 <div class="social-links">
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
                 </div>
             </div>
-
             <div class="footer-links">
                 <h4>Quick Links</h4>
                 <ul>
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#">About Us</a></li>
-                    <li><a href="#">Services</a></li>
-                    <li><a href="#">Blog</a></li>
-                    <li><a href="#">Contact</a></li>
+                    <li><a href="#" tabindex="0">Home</a></li>
+                    <li><a href="#" tabindex="0">About Us</a></li>
+                    <li><a href="#" tabindex="0">Services</a></li>
+                    <li><a href="#" tabindex="0">Blog</a></li>
+                    <li><a href="#" tabindex="0">Contact</a></li>
                 </ul>
             </div>
-
             <div class="footer-contact">
                 <h4>Contact Info</h4>
                 <p><i class="fas fa-map-marker-alt"></i> Hyderabad</p>
@@ -540,6 +531,11 @@
             let currentSlide = 0;
             let autoSlideTimer;
 
+            // Responsive slider: calculate slide width on resize
+            function getSlideWidth() {
+                // Use the slider-container itself for width, always square
+                return slidesContainer.parentElement.offsetWidth;
+            }
             function createSlides() {
                 slidesContainer.innerHTML = '';
                 imageUrls.forEach(url => {
@@ -548,12 +544,13 @@
                     const img = document.createElement('img');
                     img.src = url;
                     img.alt = "Slider image";
+                    img.loading = "lazy"; // Enhance performance
                     slide.appendChild(img);
                     slidesContainer.appendChild(slide);
                 });
             }
             function updateSlider() {
-                slidesContainer.style.transform = `translateX(${-currentSlide * window.innerWidth}px)`;
+                slidesContainer.style.transform = `translateX(${-currentSlide * getSlideWidth()}px)`;
             }
             function nextSlide() {
                 currentSlide = (currentSlide < imageUrls.length - 1) ? currentSlide + 1 : 0;
@@ -573,6 +570,14 @@
             prevButton.addEventListener('click', () => { prevSlide(); autoSlide(); });
             nextButton.addEventListener('click', () => { nextSlide(); autoSlide(); });
 
+            // Keyboard accessibility for slider buttons
+            prevButton.addEventListener('keyup', (e) => {
+                if (e.key === "Enter" || e.key === " ") { prevSlide(); autoSlide(); }
+            });
+            nextButton.addEventListener('keyup', (e) => {
+                if (e.key === "Enter" || e.key === " ") { nextSlide(); autoSlide(); }
+            });
+
             window.addEventListener('resize', updateSlider);
 
             window.addEventListener('scroll', () => {
@@ -581,13 +586,110 @@
             hamburger.addEventListener('click', () => {
                 mobileMenu.classList.toggle('show');
                 hamburger.classList.toggle('active');
+                if (mobileMenu.classList.contains('show')) {
+                    mobileMenu.querySelector('a').focus();
+                }
+            });
+            hamburger.addEventListener('keyup', (e) => {
+                if ((e.key === "Enter" || e.key === " ") && !mobileMenu.classList.contains('show')) {
+                    mobileMenu.classList.add('show');
+                    hamburger.classList.add('active');
+                    mobileMenu.querySelector('a').focus();
+                }
             });
             closeBtn.addEventListener('click', () => {
                 mobileMenu.classList.remove('show');
                 hamburger.classList.remove('active');
+                hamburger.focus();
+            });
+            closeBtn.addEventListener('keyup', (e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                    mobileMenu.classList.remove('show');
+                    hamburger.classList.remove('active');
+                    hamburger.focus();
+                }
             });
 
             function playVideoNormal() {
                 if (bgVideo) { bgVideo.playbackRate = 1.0; bgVideo.play().catch(() => {}); }
             }
-            document.addEvent
+            playVideoNormal();
+
+            // Quotes animation for mobile/desktop
+            const quotes = document.querySelectorAll('.quote');
+            let quoteIndex = 0;
+            function showQuote(idx) {
+                quotes.forEach((q, i) => {
+                    q.classList.remove('active', 'exit');
+                    if (i === idx) q.classList.add('active');
+                    else if (i === ((idx-1+quotes.length)%quotes.length)) q.classList.add('exit');
+                });
+            }
+            function autoQuote() {
+                setTimeout(() => {
+                    quoteIndex = (quoteIndex+1)%quotes.length;
+                    showQuote(quoteIndex);
+                    autoQuote();
+                }, window.innerWidth < 500 ? 2000 : 3500); // Faster on mobile
+            }
+            showQuote(quoteIndex);
+            autoQuote();
+
+            createSlides();
+            updateSlider();
+            autoSlide();
+
+            // Touch swipe for mobile slider
+            let touchStartX = 0;
+            let touchEndX = 0;
+            slidesContainer.addEventListener('touchstart', function(e) {
+                if (e.touches.length === 1) touchStartX = e.touches[0].clientX;
+            });
+            slidesContainer.addEventListener('touchend', function(e) {
+                touchEndX = e.changedTouches[0].clientX;
+                if (touchEndX - touchStartX > 50) { prevSlide(); autoSlide(); }
+                if (touchEndX - touchStartX < -50) { nextSlide(); autoSlide(); }
+            });
+
+            // Close mobile menu on link click
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.remove('show');
+                    hamburger.classList.remove('active');
+                });
+                link.addEventListener('keyup', (e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                        mobileMenu.classList.remove('show');
+                        hamburger.classList.remove('active');
+                    }
+                });
+            });
+
+            // Accessibility: trap focus inside mobile menu when open
+            mobileMenu.addEventListener('keydown', (e) => {
+                if (!mobileMenu.classList.contains('show')) return;
+                const focusable = mobileMenu.querySelectorAll('a, .close-btn');
+                const first = focusable[0], last = focusable[focusable.length-1];
+                if (e.key === "Tab") {
+                    if (e.shiftKey) {
+                        if (document.activeElement === first) {
+                            e.preventDefault();
+                            last.focus();
+                        }
+                    } else {
+                        if (document.activeElement === last) {
+                            e.preventDefault();
+                            first.focus();
+                        }
+                    }
+                }
+                if (e.key === "Escape") {
+                    mobileMenu.classList.remove('show');
+                    hamburger.classList.remove('active');
+                    hamburger.focus();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
