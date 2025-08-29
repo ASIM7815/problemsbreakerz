@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Dynamic Website</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -10,7 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
 <style>
 * {margin:0;padding:0;box-sizing:border-box;font-family:'Poppins','Roboto',sans-serif;}
-body {color:white;background:#000;min-height:100vh;}
+body {color:white;background:#000;min-height:100vh; touch-action: manipulation; user-select:none;}
 #bg-video {position:fixed;top:0;left:0;width:100vw;height:100vh;object-fit:cover;z-index:-1;}
 
 nav {
@@ -32,7 +32,7 @@ nav.sticky {background: linear-gradient(90deg, #1CB5E0 0%, #000851 100%); box-sh
 .hamburger.active div:nth-child(2){opacity:0;}
 .hamburger.active div:nth-child(3){transform:rotate(-45deg) translate(8px,-8px);background:#fff;}
 
-.mobile-menu {display:none;position:fixed;top:0;right:-100%;width:78vw;max-width:340px;height:100vh;padding:64px 32px 20px;flex-direction:column;gap:32px;background:linear-gradient(180deg,#232526 0%,#414345 100%);backdrop-filter:blur(10px);transition:right 0.34s;z-index:1050;}
+.mobile-menu {display:none;position:fixed;top:0;right:-100%;width:78vw;max-width:340px;height:100vh;padding:64px 32px 20px;flex-direction:column;gap:32px;background:linear-gradient(180deg,#232526 0%,#414345 100%);backdrop-filter:blur(10px);transition:right 0.34s;z-index:1050; touch-action:none;}
 .mobile-menu.show{right:0;display:flex;}
 .mobile-menu .close-btn {font-size:2.3rem;font-weight:bold;color:#fff;align-self:flex-end;cursor:pointer;margin-bottom:20px;}
 .mobile-menu a {text-decoration:none;font-size:1.22rem;font-weight:600;color:#fff;padding:10px 0;border-radius:8px;background:linear-gradient(90deg,#1CB5E0 0%,#000851 100%);}
@@ -142,8 +142,7 @@ document.addEventListener('DOMContentLoaded', function(){
     const hamburger=document.getElementById('hamburger');
     const mobileMenu=document.getElementById('mobile-menu');
     const closeBtn=document.getElementById('close-btn');
-    const bgVideo=document.getElementById('bg-video');
-    
+
     // Slider images
     const imageUrls=['1.png','2.png','3.png'];
     const slidesContainer=document.getElementById('slides');
@@ -155,14 +154,14 @@ document.addEventListener('DOMContentLoaded', function(){
     function nextSlide(){currentSlide=(currentSlide<imageUrls.length-1)?currentSlide+1:0;updateSlider();}
     function prevSlide(){currentSlide=(currentSlide>0)?currentSlide-1:imageUrls.length-1;updateSlider();}
     function autoSlide(){clearTimeout(autoSlideTimer);autoSlideTimer=setTimeout(()=>{nextSlide();autoSlide();},5000);}
-    
+
     document.getElementById('prev').addEventListener('click',()=>{prevSlide();autoSlide();});
     document.getElementById('next').addEventListener('click',()=>{nextSlide();autoSlide();});
     window.addEventListener('resize',updateSlider);
     window.addEventListener('scroll',()=>{navbar.classList.toggle('sticky',window.scrollY>50);});
 
-    hamburger.addEventListener('click',()=>{mobileMenu.classList.toggle('show');hamburger.classList.toggle('active');if(mobileMenu.classList.contains('show')) mobileMenu.querySelector('a').focus();});
-    closeBtn.addEventListener('click',()=>{mobileMenu.classList.remove('show');hamburger.classList.remove('active');hamburger.focus();});
+    hamburger.addEventListener('click',()=>{mobileMenu.classList.toggle('show');hamburger.classList.toggle('active');});
+    closeBtn.addEventListener('click',()=>{mobileMenu.classList.remove('show');hamburger.classList.remove('active');});
 
     createSlides();updateSlider();autoSlide();
 
