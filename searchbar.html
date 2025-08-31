@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Colorful YouTube-style Search Bar</title>
+  <style>
+    :root{
+      --panel:rgba(255,255,255,0.1);
+      --muted:rgba(255,255,255,0.2);
+      --border:rgba(255,255,255,0.3);
+      --text:#ffffff;
+      --text-dim:#eeeeee;
+      --accent:#ffcc00;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Ubuntu,Arial,sans-serif;
+      color:var(--text);
+      min-height:100vh;
+      display:flex;
+      background-color: #111; /* Fallback background */
+    }
+
+    #background-video {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        min-width: 100%;
+        min-height: 100%;
+        width: auto;
+        height: auto;
+        z-index: -1;
+        transform: translateX(-50%) translateY(-50%);
+        background-size: cover;
+        opacity: 0.7;
+    }
+
+    /* Sidebar / Mobile Navbar */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 220px;
+      height: 100vh;
+      background: rgba(20, 20, 30, 0.6);
+      backdrop-filter: blur(10px);
+      padding-top: 80px;
+      border-right: 1px solid var(--border);
+      box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+      transition: all 0.3s ease;
+      z-index: 50;
+    }
+    .navbar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .navbar li {
+      margin: 20px 0;
+    }
+    .navbar a {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 12px 20px;
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      border-radius: 12px;
+      transition: all 0.3s;
+    }
+    .navbar a:hover {
+      background: rgba(255,255,255,0.1);
+    }
+    .navbar a.active {
+        background: var(--accent);
+        color: #111;
+    }
+    .navbar svg {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    /* Content wrapper */
+    .content {
+      flex: 1;
+      margin-left: 220px;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header{position:sticky;top:0;z-index:40;background:var(--panel);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+    .header-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr minmax(300px,700px) 1fr;gap:12px;align-items:center;padding:12px 16px}
+
+    /* Search cluster */
+    .search-wrap{display:flex;align-items:center;gap:12px;justify-self:center;width:100%}
+    .search-form{display:flex;align-items:stretch;width:100%}
+
+    .search-field{flex:1;display:flex;align-items:center;gap:8px;background:var(--muted);border:1px solid var(--border);border-right:none;border-radius:24px 0 0 24px;padding:0 12px 0 14px;position:relative;transition:all 0.3s ease}
+    .search-field:focus-within{outline:2px solid var(--accent);outline-offset:2px;background:rgba(255,255,255,0.4)}
+
+    .search-input{flex:1;background:transparent;border:none;color:var(--text);font-size:16px;line-height:40px;height:40px}
+    .search-input:focus{outline:none}
+
+    .icon{display:inline-flex;width:20px;height:20px;align-items:center;justify-content:center;opacity:.9}
+    .divider{width:1px;background:var(--border);height:24px;margin:0 4px}
+
+    .clear-btn,.voice-btn,.search-btn{display:inline-flex;align-items:center;justify-content:center;border:none;cursor:pointer;transition:all 0.2s ease}
+    .clear-btn{width:32px;height:40px;color:var(--text);opacity:.75;background:transparent}
+    .clear-btn:hover{opacity:1;transform:scale(1.1)}
+
+    .voice-btn{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg, #ff512f, #dd2476);color:white;border:none;box-shadow:0 4px 12px rgba(0,0,0,0.25)}
+    .voice-btn:hover{transform:scale(1.1)}
+
+    .search-btn{min-width:64px;height:40px;border-radius:0 24px 24px 0;background:linear-gradient(135deg, #36d1dc, #5b86e5);color:white;font-weight:bold;border:none;box-shadow:0 4px 12px rgba(0,0,0,0.25)}
+    .search-btn:hover{transform:scale(1.05)}
+    
+    /* Suggestions dropdown */
+    .suggest{position:absolute;top:44px;left:0;right:0;background:rgba(30,30,40,0.85);backdrop-filter: blur(5px);border:1px solid var(--border);border-radius:12px;padding:6px 0;box-shadow:0 8px 24px rgba(0,0,0,.35);display:none;max-height:60vh;overflow:auto; z-index: 10;}
+    .suggest.open{display:block}
+    .s-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;transition:background 0.2s}
+    .s-item:hover,.s-item.active{background:rgba(255,255,255,0.1)}
+    .s-text{color:#fff}
+    .s-text strong { font-weight: 600; color: var(--accent); }
+
+
+    /* Misc */
+    .logo{font-weight:700;letter-spacing:.4px;font-size:20px;color:#fff; cursor: pointer;}
+    .logo span{color:var(--accent)}
+    .right{justify-self:end;display:flex;gap:10px}
+    .kbd{font:12px/1.6 ui-monospace,SFMono-Regular,Consolas,Menlo,monospace;border:1px solid var(--border);border-bottom-width:3px;border-radius:6px;background:rgba(255,255,255,0.15);padding:.2rem .35rem;color:var(--text)}
+
+    /* Voice Search Modal */
+    .voice-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+    .voice-modal-overlay.visible {
+        opacity: 1;
+        pointer-events: auto;
+    }
+    .voice-modal-content {
+      text-align: center;
+      color: white;
+    }
+    .mic-icon-pulsing {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ff512f, #dd2476);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(255, 81, 47, 0.7); }
+      70% { box-shadow: 0 0 0 20px rgba(255, 81, 47, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(255, 81, 47, 0); }
+    }
+    #voiceStatus {
+      font-size: 24px;
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+    .voice-transcript {
+        font-size: 18px;
+        color: var(--text-dim);
+        min-height: 27px;
+    }
+
+    /* Custom Alert */
+    .custom-alert-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(5px);
+        display: none; /* Hidden by default */
+        align-items: center;
+        justify-content: center;
+        z-index: 101;
+    }
+    .custom-alert-box {
+        background: linear-gradient(135deg, #414345, #232526);
+        padding: 24px;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        text-align: center;
+        max-width: 90%;
+        width: 320px;
+        border: 1px solid var(--border);
+    }
+    .custom-alert-box p {
+        margin: 0 0 20px;
+        font-size: 16px;
+        color: var(--text);
+    }
+    .custom-alert-box button {
+        background: linear-gradient(135deg, #36d1dc, #5b86e5);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: transform 0.2s;
+    }
+    .custom-alert-box button:hover {
+        transform: scale(1.05);
+    }
+
+    /* Video Grid */
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      padding: 24px 0;
+    }
+    .video-card {
+      background: var(--panel);
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      border: 1px solid var(--border);
+    }
+    .video-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+    .thumbnail-container {
+      position: relative;
+    }
+    .thumbnail {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      display: block;
+      background: #333;
+    }
+    .video-info {
+      padding: 12px;
+    }
+    .video-title {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text);
+      margin: 0 0 8px;
+      line-height: 1.3;
+      height: 42px; /* for 2 lines */
+      overflow: hidden;
+    }
+    .video-meta {
+      font-size: 14px;
+      color: var(--text-dim);
+      margin: 4px 0 0;
+    }
+
+    /* Video Player Modal */
+    .video-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      display: none; /* Hidden by default */
+      align-items: center;
+      justify-content: center;
+      z-index: 102; /* Above alert */
+    }
+    .video-modal-content {
+      position: relative;
+      width: 90%;
+      max-width: 960px;
+      background: #181818;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    }
+    .video-modal-content .close-btn {
+      position: absolute;
+      top: -15px;
+      right: -15px;
+      width: 36px;
+      height: 36px;
+      background: white;
+      color: black;
+      border: none;
+      border-radius: 50%;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      z-index: 1;
+    }
+    #videoPlayer {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 8px;
+      background: #000;
+    }
+    #videoTitle {
+      color: white;
+      margin: 15px 0 5px;
+      font-size: 20px;
+    }
+    #videoChannel {
+      color: var(--text-dim);
+      margin: 0;
+      font-size: 16px;
+    }
+
+
+    /* Mobile view */
+    @media (max-width:760px){
+      .navbar {
+        top: auto;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 60px;
+        padding-top: 0;
+        background: rgba(20, 20, 30, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+        border-right: none;
+        border-top: 1px solid var(--border);
+      }
+      .navbar ul {
+        display: flex;
+        width: 100%;
+        justify-content: space-around;
+      }
+      .navbar li {
+        margin: 0;
+      }
+      .navbar a {
+        flex-direction: column;
+        font-size: 12px;
+        padding: 5px;
+        gap: 5px;
+      }
+      .content {margin-left: 0; margin-bottom: 80px;}
+      .header-inner{grid-template-columns:1fr; max-width: 100%;}
+      .logo {display:none;} /* Hide logo on mobile to make space for search */
+      .right{display:none}
+      .video-grid { grid-template-columns: 1fr; } /* Single column on mobile */
+      .video-modal-content { width: 95%; padding: 10px; }
+      #videoTitle { font-size: 16px; }
+      #videoChannel { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <video autoplay loop muted playsinline id="background-video">
+    <source src="Ocean Sea Waves _ Drone Aerial View _ Free stock footage _ Free HD Videos - no copyright.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <!-- Sidebar / Bottom Navbar -->
+  <nav class="navbar">
+    <ul>
+      <li><a href="#" id="homeLink" class="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Home</a></li>
+      <li><a href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
+        History</a></li>
+      <li><a href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        Trending</a></li>
+      <li><a href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2V4"/><path d="M16 2v20"/><path d="M8 7h4"/><path d="M8 12h4"/><path d="M8 17h4"/></svg>
+        News</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main content -->
+  <div class="content">
+    <header class="header">
+      <div class="header-inner">
+        <div class="logo" id="logo">
+            <img src="asimsaad.png" alt="EduTube Logo" style="height:40px; vertical-align:middle; border-radius: 8px;">
+        </div>
+
+        <div class="search-wrap">
+          <form id="searchForm" class="search-form" autocomplete="off">
+            <div class="search-field">
+              <span class="icon">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zM10 15a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/></svg>
+              </span>
+              <input id="searchInput" class="search-input" type="text" placeholder="Search..." />
+              <button type="button" id="clearBtn" class="clear-btn" hidden>
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M18.3 5.71 12 12l6.3 6.29-1.41 1.42L10.59 13.4 4.29 19.7 2.88 18.29 9.17 12 2.88 5.71 4.29 4.29 10.59 10.6l6.3-6.31z"/></svg>
+              </button>
+              <span class="divider"></span>
+              <button type="button" id="voiceBtn" class="voice-btn">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 14a3 3 0 0 0 3-3V7a3 3 0 1 0-6 0v4a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 14 0h-2zM11 19.93V22h2v-2.07A8.001 8.001 0 0 0 20 12h-2a6 6 0 1 1-12 0H4a8.001 8.001 0 0 0 7 7.93z"/></svg>
+              </button>
+              <div id="suggest" class="suggest"></div>
+            </div>
+            <button id="searchBtn" class="search-btn" type="submit">Search</button>
+          </form>
+        </div>
+
+        <div class="right">
+          <!-- Right side content can go here -->
+        </div>
+      </div>
+    </header>
+
+    <main style="max-width:1200px;margin:24px auto;padding:0 16px;color:var(--text-dim); width: 100%;">
+      <h2 id="main-title">Recommended Videos</h2>
+      <div id="videoGrid" class="video-grid">
+        <!-- Videos will be dynamically inserted here -->
+      </div>
+    </main>
+  </div>
+
+  <!-- Voice Search Modal -->
+  <div id="voiceModal" class="voice-modal-overlay">
+    <div class="voice-modal-content">
+      <div id="micIcon" class="mic-icon-pulsing">
+        <svg viewBox="0 0 24 24" width="48" height="48" fill="currentColor"><path d="M12 14a3 3 0 0 0 3-3V7a3 3 0 1 0-6 0v4a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 14 0h-2zM11 19.93V22h2v-2.07A8.001 8.001 0 0 0 20 12h-2a6 6 0 1 1-12 0H4a8.001 8.001 0 0 0 7 7.93z"/></svg>
+      </div>
+      <p id="voiceStatus">Listening...</p>
+      <p id="voiceTranscript" class="voice-transcript"></p>
+    </div>
+  </div>
+
+  <!-- Custom Alert Modal -->
+  <div id="customAlert" class="custom-alert-overlay">
+      <div class="custom-alert-box">
+          <p id="customAlertMessage"></p>
+          <button id="customAlertClose">OK</button>
+      </div>
+  </div>
+
+  <!-- Video Player Modal -->
+  <div id="videoPlayerModal" class="video-modal-overlay">
+    <div class="video-modal-content">
+      <button id="closeVideoModal" class="close-btn">&times;</button>
+      <video id="videoPlayer" controls autoplay muted playsinline></video>
+      <h3 id="videoTitle"></h3>
+      <p id="videoChannel"></p>
+    </div>
+  </div>
+
+  <script>
+    const input = document.getElementById('searchInput');
+    const clearBtn = document.getElementById('clearBtn');
+    const suggest = document.getElementById('suggest');
+    
+    // Custom Alert Elements and Logic
+    const customAlert = document.getElementById('customAlert');
+    const customAlertMessage = document.getElementById('customAlertMessage');
+    const customAlertClose = document.getElementById('customAlertClose');
+
+    function showCustomAlert(message) {
+        customAlertMessage.textContent = message;
+        customAlert.style.display = 'flex';
+    }
+    customAlertClose.addEventListener('click', () => {
+        customAlert.style.display = 'none';
+    });
+    
+    document.getElementById('searchForm').addEventListener('submit',e=>{
+        e.preventDefault();
+        if(input.value) search(input.value);
+        suggest.classList.remove('open');
+    });
+
+    // --- Voice Recognition (Web Speech API) ---
+    const voiceBtn = document.getElementById("voiceBtn");
+    const voiceModal = document.getElementById('voiceModal');
+    const voiceStatus = document.getElementById('voiceStatus');
+    const voiceTranscript = document.getElementById('voiceTranscript');
+    
+    let recognition;
+    if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SpeechRecognition();
+      recognition.lang = "en-IN";
+      recognition.continuous = false; 
+      recognition.interimResults = true;
+      recognition.maxAlternatives = 1;
+
+      recognition.onstart = () => {
+        voiceStatus.textContent = "Listening...";
+        voiceTranscript.textContent = "Speak now...";
+        voiceModal.style.display = 'flex';
+        setTimeout(() => voiceModal.classList.add('visible'), 10);
+      };
+
+      recognition.onend = () => {
+        voiceModal.classList.remove('visible');
+        setTimeout(() => { if(voiceModal.style.display === 'flex') voiceModal.style.display = 'none'; }, 300);
+      };
+      
+      recognition.onerror = (event) => {
+        let errorMessage = "An error occurred during recognition.";
+        if (event.error === 'no-speech') {
+          errorMessage = "No speech was detected. Please try again.";
+        } else if (event.error === 'audio-capture') {
+          errorMessage = "Microphone not found. Ensure it's connected and enabled.";
+        } else if (event.error === 'not-allowed') {
+          errorMessage = "Permission to use microphone was denied. Please allow access in browser settings.";
+        }
+        voiceStatus.textContent = "Error";
+        voiceTranscript.textContent = errorMessage;
+      };
+
+      recognition.onresult = (event) => {
+        let interim_transcript = "";
+        let final_transcript = "";
+
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          if (event.results[i].isFinal) {
+            final_transcript += event.results[i][0].transcript;
+          } else {
+            interim_transcript += event.results[i][0].transcript;
+          }
+        }
+        
+        voiceTranscript.textContent = interim_transcript || "Processing...";
+
+        if (final_transcript) {
+          input.value = final_transcript;
+          clearBtn.hidden = false;
+          if(recognition) recognition.stop();
+          search(final_transcript);
+        }
+      };
+
+      voiceBtn.addEventListener("click", () => {
+        try {
+          recognition.start();
+        } catch(e) {
+          if (e.name !== 'InvalidStateError') {
+            console.error("Could not start recognition: ", e);
+            showCustomAlert("Could not start voice recognition.");
+          }
+        }
+      });
+
+    } else {
+      voiceBtn.addEventListener("click", () => {
+        showCustomAlert("Sorry, your browser does not support speech recognition.");
+      });
+    }
+
+    // --- Video Data & Player Logic ---
+    const videoData = [
+      { id: 1, title: 'Introduction to Python for Beginners', channel: 'CodeMasters', views: '1.2M', uploaded: '6 months ago', thumbnailUrl: 'https://placehold.co/600x400/764ba2/ffffff?text=Python', videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4', tags: ['python', 'programming', 'tutorial', 'beginners', 'coding', 'development'] },
+      { id: 2, title: 'Data Structures and Algorithms in C++', channel: 'AlgoWhiz', views: '890K', uploaded: '1 year ago', thumbnailUrl: 'https://placehold.co/600x400/667eea/ffffff?text=C%2B%2B', videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4', tags: ['c++', 'data structures', 'algorithms', 'dsa', 'competitive programming', 'c plus plus'] },
+      { id: 3, title: 'Full Course on Database Management Systems', channel: 'DataDrivn', views: '2.5M', uploaded: '11 months ago', thumbnailUrl: 'https://placehold.co/600x400/ff512f/ffffff?text=DBMS', videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4', tags: ['dbms', 'database', 'sql', 'mysql', 'data management', 'mongodb'] },
+      { id: 4, title: 'Engineering Mathematics: Linear Algebra', channel: 'MathGurus', views: '500K', uploaded: '2 years ago', thumbnailUrl: 'https://placehold.co/600x400/dd2476/ffffff?text=Maths', videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4', tags: ['mathematics', 'engineering', 'linear algebra', 'matrices', 'vectors', 'm1', 'm2'] },
+      { id: 5, title: 'The Beauty of Calculus', channel: 'Professor Dave', views: '3.1M', uploaded: '3 years ago', thumbnailUrl: 'https://placehold.co/600x400/36d1dc/ffffff?text=Calculus', videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4', tags: ['calculus', 'maths', 'derivatives', 'integration', 'limits'] },
+      { id: 6, title: 'Quantum Physics Explained Simply', channel: 'ScienceVerse', views: '4.2M', uploaded: '8 months ago', thumbnailUrl: 'https://placehold.co/600x400/5b86e5/ffffff?text=Physics', videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4', tags: ['physics', 'quantum mechanics', 'science', 'einstein', 'schrodinger'] },
+      { id: 7, title: 'How Do Neural Networks Work?', channel: 'AI Explained', views: '1.8M', uploaded: '5 months ago', thumbnailUrl: 'https://placehold.co/600x400/00c6ff/ffffff?text=AI', videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4', tags: ['ai', 'artificial intelligence', 'machine learning', 'ml', 'neural networks', 'deep learning'] },
+      { id: 8, title: 'Web Development Full Course 2024', channel: 'DevPro', views: '6.3M', uploaded: '4 months ago', thumbnailUrl: 'https://placehold.co/600x400/f09819/ffffff?text=WebDev', videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4', tags: ['web development', 'html', 'css', 'javascript', 'react', 'frontend', 'backend'] },
+      { id: 9, title: 'Organic Chemistry Made Easy', channel: 'Chem Simplified', views: '980K', uploaded: '1.5 years ago', thumbnailUrl: 'https://placehold.co/600x400/ff5f6d/ffffff?text=Chemistry', videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4', tags: ['chemistry', 'organic', 'reactions', 'iupac', 'science'] },
+      { id: 10, title: 'History of Ancient Civilizations', channel: 'History Buff', views: '2.1M', uploaded: '10 months ago', thumbnailUrl: 'https://placehold.co/600x400/ffc371/ffffff?text=History', videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4', tags: ['history', 'ancient', 'civilization', 'rome', 'greece', 'egypt'] }
+    ];
+
+    const videoPlayerModal = document.getElementById('videoPlayerModal');
+    const closeVideoModalBtn = document.getElementById('closeVideoModal');
+    const videoPlayer = document.getElementById('videoPlayer');
+    const videoTitle = document.getElementById('videoTitle');
+    const videoChannel = document.getElementById('videoChannel');
+    const videoGrid = document.getElementById('videoGrid');
+    const mainTitle = document.getElementById('main-title');
+
+    function shuffleArray(array) {
+      let currentIndex = array.length, randomIndex;
+      while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+        [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+      }
+      return array;
+    }
+    
+    function createVideoCard(video) {
+        const videoCard = document.createElement('div');
+        videoCard.className = 'video-card';
+        videoCard.dataset.videoId = video.id;
+        videoCard.innerHTML = `
+            <div class="thumbnail-container">
+                <img src="${video.thumbnailUrl}" alt="${video.title}" class="thumbnail" onerror="this.onerror=null;this.src='https://placehold.co/600x400/333/fff?text=Error';">
+            </div>
+            <div class="video-info">
+                <h3 class="video-title">${video.title}</h3>
+                <p class="video-meta">${video.channel}</p>
+                <p class="video-meta">${video.views} views • ${video.uploaded}</p>
+            </div>
+        `;
+        return videoCard;
+    }
+    
+    function renderVideos() {
+        mainTitle.textContent = 'Recommended Videos';
+        videoGrid.innerHTML = '';
+        const shuffledVideos = shuffleArray([...videoData]);
+        shuffledVideos.forEach(video => {
+            videoGrid.appendChild(createVideoCard(video));
+        });
+    }
+
+    function openVideoPlayer(videoId) {
+        const video = videoData.find(v => v.id == videoId);
+        if (video) {
+            videoPlayer.src = video.videoUrl;
+            videoTitle.textContent = video.title;
+            videoChannel.textContent = video.channel;
+            videoPlayerModal.style.display = 'flex';
+        }
+    }
+
+    function closeVideoPlayer() {
+        videoPlayer.pause();
+        videoPlayer.src = '';
+        videoPlayerModal.style.display = 'none';
+    }
+
+    videoGrid.addEventListener('click', (e) => {
+        const card = e.target.closest('.video-card');
+        if (card) {
+            openVideoPlayer(card.dataset.videoId);
+        }
+    });
+
+    closeVideoModalBtn.addEventListener('click', closeVideoPlayer);
+    videoPlayerModal.addEventListener('click', (e) => {
+        if (e.target === videoPlayerModal) closeVideoPlayer();
+    });
+    
+    document.getElementById('logo').addEventListener('click', renderVideos);
+    document.getElementById('homeLink').addEventListener('click', (e) => {
+      e.preventDefault();
+      renderVideos();
+    });
+    
+    document.addEventListener('DOMContentLoaded', renderVideos);
+
+    // --- Smart Search & Suggestions Implementation ---
+    
+    const suggestionKeywords = [...new Set(videoData.flatMap(v => [...v.tags, ...v.title.toLowerCase().split(/\s+/)]))].filter(k => k.length > 2);
+
+    function renderSuggestions(list){
+      suggest.innerHTML = '';
+      if(!list.length){
+        suggest.classList.remove('open');
+        return;
+      }
+
+      list.slice(0, 10).forEach(text=>{
+        const row = document.createElement('div');
+        row.className = 's-item';
+        const query = input.value.toLowerCase();
+        const highlightedText = text.replace(new RegExp(query, 'gi'), match => `<strong>${match}</strong>`);
+        
+        row.innerHTML = `<span class="icon" style="opacity: 0.6;"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zM10 15a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/></svg></span><span class="s-text">${highlightedText}</span>`;
+        row.addEventListener('mousedown',()=>{
+            input.value = text;
+            search(text);
+            suggest.classList.remove('open');
+        });
+        suggest.appendChild(row);
+      });
+      suggest.classList.add('open');
+    }
+
+    input.addEventListener('input', () => {
+      clearBtn.hidden = input.value.length === 0;
+      const q = input.value.toLowerCase();
+      if (q.length > 0) {
+        const filteredSuggestions = suggestionKeywords.filter(k => k.toLowerCase().includes(q));
+        renderSuggestions(filteredSuggestions);
+      } else {
+        renderSuggestions([]); // Clears suggestions when input is empty
+      }
+    });
+
+    clearBtn.addEventListener('click',()=>{
+        input.value='';
+        clearBtn.hidden=true;
+        suggest.classList.remove('open');
+        input.focus();
+        renderVideos();
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.search-field')) {
+            suggest.classList.remove('open');
+        }
+    });
+
+
+    function levenshteinDistance(a, b) {
+      if (a.length === 0) return b.length;
+      if (b.length === 0) return a.length;
+      const matrix = Array(b.length + 1).fill(null).map(() => Array(a.length + 1).fill(null));
+      for (let i = 0; i <= a.length; i += 1) matrix[0][i] = i;
+      for (let j = 0; j <= b.length; j += 1) matrix[j][0] = j;
+      for (let j = 1; j <= b.length; j += 1) {
+        for (let i = 1; i <= a.length; i += 1) {
+          const indicator = a[i - 1] === b[j - 1] ? 0 : 1;
+          matrix[j][i] = Math.min(
+            matrix[j][i - 1] + 1,        // deletion
+            matrix[j - 1][i] + 1,        // insertion
+            matrix[j - 1][i - 1] + indicator, // substitution
+          );
+        }
+      }
+      return matrix[b.length][a.length];
+    }
+
+    function search(query) {
+      const normalizedQuery = query.toLowerCase().trim();
+      if (!normalizedQuery) {
+        renderVideos();
+        return;
+      }
+
+      const results = videoData.map(video => {
+        let score = 0;
+        const title = video.title.toLowerCase();
+        const tagsString = video.tags.join(' ').toLowerCase();
+
+        // High score for exact match in title or tags
+        if (title.includes(normalizedQuery) || tagsString.includes(normalizedQuery)) {
+          score += 50;
+        }
+
+        // Fuzzy search on title
+        const titleDistance = levenshteinDistance(normalizedQuery, title);
+        const titleSimilarity = 1 - (titleDistance / Math.max(normalizedQuery.length, title.length));
+        if (titleSimilarity > 0.6) {
+          score += titleSimilarity * 40;
+        }
+
+        // Fuzzy search on individual tags for higher relevance
+        video.tags.forEach(tag => {
+          const tagDistance = levenshteinDistance(normalizedQuery, tag.toLowerCase());
+          const tagSimilarity = 1 - (tagDistance / Math.max(normalizedQuery.length, tag.length));
+          if (tagSimilarity > 0.7) {
+            score += tagSimilarity * 20; // Give points for strong tag matches
+          }
+        });
+
+        return { ...video, score };
+      })
+      .filter(video => video.score > 20) // Set a relevance threshold
+      .sort((a, b) => b.score - a.score);
+
+      renderSearchResults(results, query);
+    }
+
+    function renderSearchResults(videos, query) {
+      mainTitle.textContent = `Results for "${query}"`;
+      videoGrid.innerHTML = '';
+      if (videos.length === 0) {
+        videoGrid.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; font-size: 18px;">No results found for "${query}". Try searching for something else.</p>`;
+      } else {
+        videos.forEach(video => {
+          videoGrid.appendChild(createVideoCard(video));
+        });
+      }
+    }
+
+    // --- Nav Link Active State ---
+    const navLinks = document.querySelectorAll('.navbar a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            navLinks.forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+  </script>
+</body>
+</html>
+
