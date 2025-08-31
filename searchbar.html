@@ -323,6 +323,7 @@
       aspect-ratio: 16 / 9;
       border-radius: 8px;
       background: #000;
+      border: none;
     }
     #videoTitle {
       color: white;
@@ -383,7 +384,6 @@
     <source src="Ocean Sea Waves _ Drone Aerial View _ Free stock footage _ Free HD Videos - no copyright.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
-  <!-- Sidebar / Bottom Navbar -->
   <nav class="navbar">
     <ul>
       <li><a href="#" id="homeLink" class="active">
@@ -401,7 +401,6 @@
     </ul>
   </nav>
 
-  <!-- Main content -->
   <div class="content">
     <header class="header">
       <div class="header-inner">
@@ -430,20 +429,17 @@
         </div>
 
         <div class="right">
-          <!-- Right side content can go here -->
-        </div>
+          </div>
       </div>
     </header>
 
     <main style="max-width:1200px;margin:24px auto;padding:0 16px;color:var(--text-dim); width: 100%;">
       <h2 id="main-title">Recommended Videos</h2>
       <div id="videoGrid" class="video-grid">
-        <!-- Videos will be dynamically inserted here -->
-      </div>
+        </div>
     </main>
   </div>
 
-  <!-- Voice Search Modal -->
   <div id="voiceModal" class="voice-modal-overlay">
     <div class="voice-modal-content">
       <div id="micIcon" class="mic-icon-pulsing">
@@ -454,7 +450,6 @@
     </div>
   </div>
 
-  <!-- Custom Alert Modal -->
   <div id="customAlert" class="custom-alert-overlay">
       <div class="custom-alert-box">
           <p id="customAlertMessage"></p>
@@ -462,26 +457,43 @@
       </div>
   </div>
 
-  <!-- Video Player Modal -->
   <div id="videoPlayerModal" class="video-modal-overlay">
     <div class="video-modal-content">
-      <button id="closeVideoModal" class="close-btn">&times;</button>
-      <video id="videoPlayer" controls autoplay muted playsinline></video>
+      <button id="closeVideoModal" class="close-btn">×</button>
+      <iframe id="videoPlayer" 
+        frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen>
+      </iframe>
       <h3 id="videoTitle"></h3>
       <p id="videoChannel"></p>
     </div>
   </div>
 
   <script>
+    // --- YOUTUBE API SETUP ---
+    // API Key has been updated as requested.
+    const YOUTUBE_API_KEY = 'AIzaSyDyM0p-uxqJAknBT1UAtvPXTOeWjLceaQQ';
+    const API_BASE_URL = 'https://www.googleapis.com/youtube/v3/search';
+
+    // Keywords to fetch random educational videos on page load
+    const educationalQueries = [
+        'computer science fundamentals', 'history documentary', 'physics explained', 'learn python', 'calculus basics', 'web development tutorial', 'machine learning concepts', 'introduction to chemistry', 'biology lessons', 'financial literacy'
+    ];
+    let suggestionKeywords = []; // Will be populated from fetched video titles
+
+    // --- DOM Elements ---
     const input = document.getElementById('searchInput');
     const clearBtn = document.getElementById('clearBtn');
     const suggest = document.getElementById('suggest');
-    
-    // Custom Alert Elements and Logic
     const customAlert = document.getElementById('customAlert');
     const customAlertMessage = document.getElementById('customAlertMessage');
     const customAlertClose = document.getElementById('customAlertClose');
-
+    const searchForm = document.getElementById('searchForm');
+    const videoGrid = document.getElementById('videoGrid');
+    const mainTitle = document.getElementById('main-title');
+    
+    // --- Custom Alert Logic ---
     function showCustomAlert(message) {
         customAlertMessage.textContent = message;
         customAlert.style.display = 'flex';
@@ -490,9 +502,13 @@
         customAlert.style.display = 'none';
     });
     
-    document.getElementById('searchForm').addEventListener('submit',e=>{
+    // --- Main Search Logic ---
+    searchForm.addEventListener('submit', e => {
         e.preventDefault();
-        if(input.value) search(input.value);
+        const query = input.value.trim();
+        if (query) {
+            searchYouTube(query);
+        }
         suggest.classList.remove('open');
     });
 
@@ -554,7 +570,7 @@
           input.value = final_transcript;
           clearBtn.hidden = false;
           if(recognition) recognition.stop();
-          search(final_transcript);
+          searchYouTube(final_transcript);
         }
       };
 
@@ -575,28 +591,36 @@
       });
     }
 
-    // --- Video Data & Player Logic ---
-    const videoData = [
-      { id: 1, title: 'Introduction to Python for Beginners', channel: 'CodeMasters', views: '1.2M', uploaded: '6 months ago', thumbnailUrl: 'https://placehold.co/600x400/764ba2/ffffff?text=Python', videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4', tags: ['python', 'programming', 'tutorial', 'beginners', 'coding', 'development'] },
-      { id: 2, title: 'Data Structures and Algorithms in C++', channel: 'AlgoWhiz', views: '890K', uploaded: '1 year ago', thumbnailUrl: 'https://placehold.co/600x400/667eea/ffffff?text=C%2B%2B', videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4', tags: ['c++', 'data structures', 'algorithms', 'dsa', 'competitive programming', 'c plus plus'] },
-      { id: 3, title: 'Full Course on Database Management Systems', channel: 'DataDrivn', views: '2.5M', uploaded: '11 months ago', thumbnailUrl: 'https://placehold.co/600x400/ff512f/ffffff?text=DBMS', videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4', tags: ['dbms', 'database', 'sql', 'mysql', 'data management', 'mongodb'] },
-      { id: 4, title: 'Engineering Mathematics: Linear Algebra', channel: 'MathGurus', views: '500K', uploaded: '2 years ago', thumbnailUrl: 'https://placehold.co/600x400/dd2476/ffffff?text=Maths', videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4', tags: ['mathematics', 'engineering', 'linear algebra', 'matrices', 'vectors', 'm1', 'm2'] },
-      { id: 5, title: 'The Beauty of Calculus', channel: 'Professor Dave', views: '3.1M', uploaded: '3 years ago', thumbnailUrl: 'https://placehold.co/600x400/36d1dc/ffffff?text=Calculus', videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4', tags: ['calculus', 'maths', 'derivatives', 'integration', 'limits'] },
-      { id: 6, title: 'Quantum Physics Explained Simply', channel: 'ScienceVerse', views: '4.2M', uploaded: '8 months ago', thumbnailUrl: 'https://placehold.co/600x400/5b86e5/ffffff?text=Physics', videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4', tags: ['physics', 'quantum mechanics', 'science', 'einstein', 'schrodinger'] },
-      { id: 7, title: 'How Do Neural Networks Work?', channel: 'AI Explained', views: '1.8M', uploaded: '5 months ago', thumbnailUrl: 'https://placehold.co/600x400/00c6ff/ffffff?text=AI', videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4', tags: ['ai', 'artificial intelligence', 'machine learning', 'ml', 'neural networks', 'deep learning'] },
-      { id: 8, title: 'Web Development Full Course 2024', channel: 'DevPro', views: '6.3M', uploaded: '4 months ago', thumbnailUrl: 'https://placehold.co/600x400/f09819/ffffff?text=WebDev', videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4', tags: ['web development', 'html', 'css', 'javascript', 'react', 'frontend', 'backend'] },
-      { id: 9, title: 'Organic Chemistry Made Easy', channel: 'Chem Simplified', views: '980K', uploaded: '1.5 years ago', thumbnailUrl: 'https://placehold.co/600x400/ff5f6d/ffffff?text=Chemistry', videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4', tags: ['chemistry', 'organic', 'reactions', 'iupac', 'science'] },
-      { id: 10, title: 'History of Ancient Civilizations', channel: 'History Buff', views: '2.1M', uploaded: '10 months ago', thumbnailUrl: 'https://placehold.co/600x400/ffc371/ffffff?text=History', videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4', tags: ['history', 'ancient', 'civilization', 'rome', 'greece', 'egypt'] }
-    ];
-
+    // --- Video Player Logic ---
     const videoPlayerModal = document.getElementById('videoPlayerModal');
     const closeVideoModalBtn = document.getElementById('closeVideoModal');
     const videoPlayer = document.getElementById('videoPlayer');
     const videoTitle = document.getElementById('videoTitle');
     const videoChannel = document.getElementById('videoChannel');
-    const videoGrid = document.getElementById('videoGrid');
-    const mainTitle = document.getElementById('main-title');
 
+    function openVideoPlayer(video) {
+        if (video) {
+            videoPlayer.src = `https://www.youtube.com/embed/${video.id}?autoplay=1`;
+            videoTitle.textContent = video.title;
+            videoChannel.textContent = video.channel;
+            videoPlayerModal.style.display = 'flex';
+        }
+    }
+
+    function closeVideoPlayer() {
+        videoPlayer.src = ''; // This stops the video in an iframe
+        videoPlayerModal.style.display = 'none';
+    }
+
+    // Event listeners for video player modal
+    closeVideoModalBtn.addEventListener('click', closeVideoPlayer);
+    videoPlayerModal.addEventListener('click', (e) => {
+        if (e.target === videoPlayerModal) closeVideoPlayer();
+    });
+
+    // --- YouTube API and Video Rendering ---
+    
+    // Utility to shuffle an array
     function shuffleArray(array) {
       let currentIndex = array.length, randomIndex;
       while (currentIndex !== 0) {
@@ -606,73 +630,118 @@
       }
       return array;
     }
-    
+
+    // Creates an HTML element for a single video card
     function createVideoCard(video) {
         const videoCard = document.createElement('div');
         videoCard.className = 'video-card';
-        videoCard.dataset.videoId = video.id;
+        // Store the whole video object for the player
+        videoCard.onclick = () => openVideoPlayer(video);
+
         videoCard.innerHTML = `
             <div class="thumbnail-container">
-                <img src="${video.thumbnailUrl}" alt="${video.title}" class="thumbnail" onerror="this.onerror=null;this.src='https://placehold.co/600x400/333/fff?text=Error';">
+                <img src="${video.thumbnailUrl}" alt="${video.title}" class="thumbnail" onerror="this.onerror=null;this.src='https://placehold.co/600x400/333/fff?text=Video';">
             </div>
             <div class="video-info">
                 <h3 class="video-title">${video.title}</h3>
                 <p class="video-meta">${video.channel}</p>
-                <p class="video-meta">${video.views} views • ${video.uploaded}</p>
+                <p class="video-meta">${video.uploaded}</p>
             </div>
         `;
         return videoCard;
     }
     
-    function renderVideos() {
-        mainTitle.textContent = 'Recommended Videos';
+    // Renders a grid of video cards
+    function renderVideoGrid(videos, title) {
+        mainTitle.textContent = title;
         videoGrid.innerHTML = '';
-        const shuffledVideos = shuffleArray([...videoData]);
-        shuffledVideos.forEach(video => {
-            videoGrid.appendChild(createVideoCard(video));
-        });
+        if (videos.length === 0) {
+            videoGrid.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; font-size: 18px;">No videos found. Please try another search.</p>`;
+        } else {
+            videos.forEach(video => {
+                videoGrid.appendChild(createVideoCard(video));
+            });
+        }
     }
+    
+    // Main function to fetch recommended videos on page load
+    async function fetchAndRenderRecommendedVideos() {
+        if (YOUTUBE_API_KEY === 'YOUR_API_KEY_HERE') {
+            showCustomAlert('Please add your YouTube API Key to the script file.');
+            videoGrid.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; font-size: 18px;">YouTube API Key is missing.</p>`;
+            return;
+        }
 
-    function openVideoPlayer(videoId) {
-        const video = videoData.find(v => v.id == videoId);
-        if (video) {
-            videoPlayer.src = video.videoUrl;
-            videoTitle.textContent = video.title;
-            videoChannel.textContent = video.channel;
-            videoPlayerModal.style.display = 'flex';
+        const randomQuery = educationalQueries[Math.floor(Math.random() * educationalQueries.length)];
+        const url = `${API_BASE_URL}?part=snippet&maxResults=50&q=${encodeURIComponent(randomQuery)}&type=video&videoCategoryId=27&key=${YOUTUBE_API_KEY}`;
+        
+        mainTitle.textContent = 'Loading Recommended Videos...';
+        videoGrid.innerHTML = '';
+
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error.message || `HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+
+            const allVideos = data.items.map(item => ({
+                id: item.id.videoId,
+                title: item.snippet.title,
+                channel: item.snippet.channelTitle,
+                thumbnailUrl: item.snippet.thumbnails.high.url,
+                uploaded: `Published on ${new Date(item.snippet.publishedAt).toLocaleDateString()}`
+            }));
+            
+            // Populate suggestions for the search bar
+            suggestionKeywords = [...new Set(allVideos.flatMap(v => v.title.split(/\s+/)))].filter(k => k.length > 3);
+            
+            const videosToDisplay = shuffleArray(allVideos).slice(0, 10);
+            renderVideoGrid(videosToDisplay, 'Recommended Videos');
+
+        } catch (error) {
+            console.error("Error fetching YouTube videos:", error);
+            showCustomAlert(`Error fetching videos: ${error.message}`);
+            renderVideoGrid([], 'Could not load videos');
         }
     }
 
-    function closeVideoPlayer() {
-        videoPlayer.pause();
-        videoPlayer.src = '';
-        videoPlayerModal.style.display = 'none';
+    // Function to search YouTube based on user input
+    async function searchYouTube(query) {
+       if (YOUTUBE_API_KEY === 'YOUR_API_KEY_HERE') {
+            showCustomAlert('Please add your YouTube API Key to the script file to enable search.');
+            return;
+        }
+        
+        const url = `${API_BASE_URL}?part=snippet&maxResults=20&q=${encodeURIComponent(query)}&type=video&key=${YOUTUBE_API_KEY}`;
+        mainTitle.textContent = `Searching for "${query}"...`;
+        videoGrid.innerHTML = '';
+
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            const data = await response.json();
+            
+            const results = data.items.map(item => ({
+                id: item.id.videoId,
+                title: item.snippet.title,
+                channel: item.snippet.channelTitle,
+                thumbnailUrl: item.snippet.thumbnails.high.url,
+                uploaded: `Published on ${new Date(item.snippet.publishedAt).toLocaleDateString()}`
+            }));
+            
+            renderVideoGrid(results, `Results for "${query}"`);
+
+        } catch (error) {
+            console.error("Error searching YouTube:", error);
+            showCustomAlert("An error occurred during the search.");
+            renderVideoGrid([], `No results for "${query}"`);
+        }
     }
 
-    videoGrid.addEventListener('click', (e) => {
-        const card = e.target.closest('.video-card');
-        if (card) {
-            openVideoPlayer(card.dataset.videoId);
-        }
-    });
 
-    closeVideoModalBtn.addEventListener('click', closeVideoPlayer);
-    videoPlayerModal.addEventListener('click', (e) => {
-        if (e.target === videoPlayerModal) closeVideoPlayer();
-    });
-    
-    document.getElementById('logo').addEventListener('click', renderVideos);
-    document.getElementById('homeLink').addEventListener('click', (e) => {
-      e.preventDefault();
-      renderVideos();
-    });
-    
-    document.addEventListener('DOMContentLoaded', renderVideos);
-
-    // --- Smart Search & Suggestions Implementation ---
-    
-    const suggestionKeywords = [...new Set(videoData.flatMap(v => [...v.tags, ...v.title.toLowerCase().split(/\s+/)]))].filter(k => k.length > 2);
-
+    // --- Suggestions Logic ---
     function renderSuggestions(list){
       suggest.innerHTML = '';
       if(!list.length){
@@ -689,7 +758,7 @@
         row.innerHTML = `<span class="icon" style="opacity: 0.6;"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zM10 15a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/></svg></span><span class="s-text">${highlightedText}</span>`;
         row.addEventListener('mousedown',()=>{
             input.value = text;
-            search(text);
+            searchYouTube(text);
             suggest.classList.remove('open');
         });
         suggest.appendChild(row);
@@ -700,20 +769,20 @@
     input.addEventListener('input', () => {
       clearBtn.hidden = input.value.length === 0;
       const q = input.value.toLowerCase();
-      if (q.length > 0) {
+      if (q.length > 1) { // Only show suggestions after 1 character
         const filteredSuggestions = suggestionKeywords.filter(k => k.toLowerCase().includes(q));
         renderSuggestions(filteredSuggestions);
       } else {
-        renderSuggestions([]); // Clears suggestions when input is empty
+        renderSuggestions([]);
       }
     });
-
+    
     clearBtn.addEventListener('click',()=>{
         input.value='';
         clearBtn.hidden=true;
         suggest.classList.remove('open');
         input.focus();
-        renderVideos();
+        fetchAndRenderRecommendedVideos(); // Go back to recommended videos
     });
 
     document.addEventListener('click', (e) => {
@@ -722,80 +791,15 @@
         }
     });
 
+    // --- Page Initialization & Nav ---
+    document.getElementById('logo').addEventListener('click', fetchAndRenderRecommendedVideos);
+    document.getElementById('homeLink').addEventListener('click', (e) => {
+      e.preventDefault();
+      fetchAndRenderRecommendedVideos();
+    });
+    
+    document.addEventListener('DOMContentLoaded', fetchAndRenderRecommendedVideos);
 
-    function levenshteinDistance(a, b) {
-      if (a.length === 0) return b.length;
-      if (b.length === 0) return a.length;
-      const matrix = Array(b.length + 1).fill(null).map(() => Array(a.length + 1).fill(null));
-      for (let i = 0; i <= a.length; i += 1) matrix[0][i] = i;
-      for (let j = 0; j <= b.length; j += 1) matrix[j][0] = j;
-      for (let j = 1; j <= b.length; j += 1) {
-        for (let i = 1; i <= a.length; i += 1) {
-          const indicator = a[i - 1] === b[j - 1] ? 0 : 1;
-          matrix[j][i] = Math.min(
-            matrix[j][i - 1] + 1,        // deletion
-            matrix[j - 1][i] + 1,        // insertion
-            matrix[j - 1][i - 1] + indicator, // substitution
-          );
-        }
-      }
-      return matrix[b.length][a.length];
-    }
-
-    function search(query) {
-      const normalizedQuery = query.toLowerCase().trim();
-      if (!normalizedQuery) {
-        renderVideos();
-        return;
-      }
-
-      const results = videoData.map(video => {
-        let score = 0;
-        const title = video.title.toLowerCase();
-        const tagsString = video.tags.join(' ').toLowerCase();
-
-        // High score for exact match in title or tags
-        if (title.includes(normalizedQuery) || tagsString.includes(normalizedQuery)) {
-          score += 50;
-        }
-
-        // Fuzzy search on title
-        const titleDistance = levenshteinDistance(normalizedQuery, title);
-        const titleSimilarity = 1 - (titleDistance / Math.max(normalizedQuery.length, title.length));
-        if (titleSimilarity > 0.6) {
-          score += titleSimilarity * 40;
-        }
-
-        // Fuzzy search on individual tags for higher relevance
-        video.tags.forEach(tag => {
-          const tagDistance = levenshteinDistance(normalizedQuery, tag.toLowerCase());
-          const tagSimilarity = 1 - (tagDistance / Math.max(normalizedQuery.length, tag.length));
-          if (tagSimilarity > 0.7) {
-            score += tagSimilarity * 20; // Give points for strong tag matches
-          }
-        });
-
-        return { ...video, score };
-      })
-      .filter(video => video.score > 20) // Set a relevance threshold
-      .sort((a, b) => b.score - a.score);
-
-      renderSearchResults(results, query);
-    }
-
-    function renderSearchResults(videos, query) {
-      mainTitle.textContent = `Results for "${query}"`;
-      videoGrid.innerHTML = '';
-      if (videos.length === 0) {
-        videoGrid.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; font-size: 18px;">No results found for "${query}". Try searching for something else.</p>`;
-      } else {
-        videos.forEach(video => {
-          videoGrid.appendChild(createVideoCard(video));
-        });
-      }
-    }
-
-    // --- Nav Link Active State ---
     const navLinks = document.querySelectorAll('.navbar a');
     navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
@@ -806,4 +810,3 @@
   </script>
 </body>
 </html>
-
