@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Colorful YouTube-style Search Bar</title>
+  <title>EduTube - Curated Learning</title>
   <style>
     :root{
       --panel:rgba(255,255,255,0.1);
@@ -230,7 +230,19 @@
         transform: scale(1.05);
     }
 
-    /* Video Grid */
+    /* Video Grid & Sections */
+    .section-title {
+        font-size: 22px;
+        margin-bottom: 16px;
+        margin-top: 40px;
+        color: var(--text);
+        border-bottom: 2px solid var(--accent);
+        padding-bottom: 8px;
+        display: inline-block;
+    }
+    .section-title:first-of-type {
+        margin-top: 0;
+    }
     .video-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -429,13 +441,25 @@
         </div>
 
         <div class="right">
-          </div>
+        </div>
       </div>
     </header>
 
     <main style="max-width:1200px;margin:24px auto;padding:0 16px;color:var(--text-dim); width: 100%;">
-      <h2 id="main-title">Recommended Videos</h2>
-      <div id="videoGrid" class="video-grid">
+        <div id="homePageContent">
+            <h2 class="section-title">YOUR What is...</h2>
+            <div id="whatIsGrid" class="video-grid"></div>
+
+            <h2 class="section-title">YOUR How to...</h2>
+            <div id="howToGrid" class="video-grid"></div>
+
+            <h2 class="section-title"> YOUR Free Courses</h2>
+            <div id="coursesGrid" class="video-grid"></div>
+        </div>
+        
+        <div id="searchResultsContent" style="display: none;">
+            <h2 id="main-title">Search Results</h2>
+            <div id="videoGrid" class="video-grid"></div>
         </div>
     </main>
   </div>
@@ -472,14 +496,20 @@
 
   <script>
     // --- YOUTUBE API SETUP ---
-    // API Key has been updated as requested.
-    const YOUTUBE_API_KEY = 'AIzaSyDyM0p-uxqJAknBT1UAtvPXTOeWjLceaQQ';
+    const YOUTUBE_API_KEY = 'AIzaSyBbw5caGi3rhBibfd6sSAV8BnjUDqtQAHw';
     const API_BASE_URL = 'https://www.googleapis.com/youtube/v3/search';
 
-    // Keywords to fetch random educational videos on page load
-    const educationalQueries = [
-        'computer science fundamentals', 'history documentary', 'physics explained', 'learn python', 'calculus basics', 'web development tutorial', 'machine learning concepts', 'introduction to chemistry', 'biology lessons', 'financial literacy'
+    // --- Keywords for Home Page Sections ---
+    const whatIsQueries = [
+        'what is computer science engineering', 'what is artificial intelligence explained', 'what is programming for beginners', 'what is coding', 'what are data structures', 'what are algorithms', 'what is machine learning', 'what is cloud computing'
     ];
+    const howToQueries = [
+        'how to get good career opportunities in IT', 'how to score 9+ CGPA in engineering', 'how to use AI for studies', 'how to prepare for technical interviews', 'how to build a strong resume for tech jobs', 'study tips for engineering students', 'how to learn coding fast', 'how to manage time in college'
+    ];
+    const freeCoursesQueries = [
+        'free html full course', 'free css full course', 'free c programming full course', 'free python full course for beginners', 'free javascript full course', 'free data structures and algorithms course', 'free machine learning course', 'free java full course'
+    ];
+    
     let suggestionKeywords = []; // Will be populated from fetched video titles
 
     // --- DOM Elements ---
@@ -490,8 +520,17 @@
     const customAlertMessage = document.getElementById('customAlertMessage');
     const customAlertClose = document.getElementById('customAlertClose');
     const searchForm = document.getElementById('searchForm');
-    const videoGrid = document.getElementById('videoGrid');
-    const mainTitle = document.getElementById('main-title');
+    
+    // Page content containers
+    const homePageContent = document.getElementById('homePageContent');
+    const searchResultsContent = document.getElementById('searchResultsContent');
+    
+    // Video grids
+    const whatIsGrid = document.getElementById('whatIsGrid');
+    const howToGrid = document.getElementById('howToGrid');
+    const coursesGrid = document.getElementById('coursesGrid');
+    const videoGrid = document.getElementById('videoGrid'); // For search results
+    const mainTitle = document.getElementById('main-title'); // For search results title
     
     // --- Custom Alert Logic ---
     function showCustomAlert(message) {
@@ -598,11 +637,17 @@
     const videoTitle = document.getElementById('videoTitle');
     const videoChannel = document.getElementById('videoChannel');
 
-    function openVideoPlayer(video) {
-        if (video) {
-            videoPlayer.src = `https://www.youtube.com/embed/${video.id}?autoplay=1`;
-            videoTitle.textContent = video.title;
-            videoChannel.textContent = video.channel;
+    function openVideoPlayer(item) {
+        if (item) {
+            let embedUrl = '';
+            if (item.type === 'video') {
+                embedUrl = `https://www.youtube.com/embed/${item.id}?autoplay=1`;
+            } else { // playlist
+                embedUrl = `https://www.youtube.com/embed/videoseries?list=${item.id}&autoplay=1`;
+            }
+            videoPlayer.src = embedUrl;
+            videoTitle.textContent = item.title;
+            videoChannel.textContent = item.channel;
             videoPlayerModal.style.display = 'flex';
         }
     }
@@ -612,7 +657,6 @@
         videoPlayerModal.style.display = 'none';
     }
 
-    // Event listeners for video player modal
     closeVideoModalBtn.addEventListener('click', closeVideoPlayer);
     videoPlayerModal.addEventListener('click', (e) => {
         if (e.target === videoPlayerModal) closeVideoPlayer();
@@ -620,7 +664,6 @@
 
     // --- YouTube API and Video Rendering ---
     
-    // Utility to shuffle an array
     function shuffleArray(array) {
       let currentIndex = array.length, randomIndex;
       while (currentIndex !== 0) {
@@ -631,52 +674,45 @@
       return array;
     }
 
-    // Creates an HTML element for a single video card
-    function createVideoCard(video) {
+    function createVideoCard(item) {
         const videoCard = document.createElement('div');
         videoCard.className = 'video-card';
-        // Store the whole video object for the player
-        videoCard.onclick = () => openVideoPlayer(video);
+        videoCard.onclick = () => openVideoPlayer(item);
 
+        const itemType = item.type === 'playlist' ? 'Playlist' : 'Video';
         videoCard.innerHTML = `
             <div class="thumbnail-container">
-                <img src="${video.thumbnailUrl}" alt="${video.title}" class="thumbnail" onerror="this.onerror=null;this.src='https://placehold.co/600x400/333/fff?text=Video';">
+                <img src="${item.thumbnailUrl}" alt="${item.title}" class="thumbnail" onerror="this.onerror=null;this.src='https://placehold.co/600x400/333/fff?text=${itemType}';">
             </div>
             <div class="video-info">
-                <h3 class="video-title">${video.title}</h3>
-                <p class="video-meta">${video.channel}</p>
-                <p class="video-meta">${video.uploaded}</p>
+                <h3 class="video-title">${item.title}</h3>
+                <p class="video-meta">${item.channel}</p>
+                <p class="video-meta">${item.uploaded}</p>
             </div>
         `;
         return videoCard;
     }
     
-    // Renders a grid of video cards
-    function renderVideoGrid(videos, title) {
-        mainTitle.textContent = title;
-        videoGrid.innerHTML = '';
+    function renderVideoGrid(videos, gridElement, title) {
+        if (title) mainTitle.textContent = title;
+        gridElement.innerHTML = '';
         if (videos.length === 0) {
-            videoGrid.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; font-size: 18px;">No videos found. Please try another search.</p>`;
+            gridElement.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; font-size: 18px;">No videos found. Please try another search.</p>`;
         } else {
             videos.forEach(video => {
-                videoGrid.appendChild(createVideoCard(video));
+                gridElement.appendChild(createVideoCard(video));
             });
         }
     }
-    
-    // Main function to fetch recommended videos on page load
-    async function fetchAndRenderRecommendedVideos() {
-        if (YOUTUBE_API_KEY === 'YOUR_API_KEY_HERE') {
-            showCustomAlert('Please add your YouTube API Key to the script file.');
-            videoGrid.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; font-size: 18px;">YouTube API Key is missing.</p>`;
-            return;
-        }
 
-        const randomQuery = educationalQueries[Math.floor(Math.random() * educationalQueries.length)];
-        const url = `${API_BASE_URL}?part=snippet&maxResults=50&q=${encodeURIComponent(randomQuery)}&type=video&videoCategoryId=27&key=${YOUTUBE_API_KEY}`;
+    // Fetches and renders a section on the home page
+    async function fetchAndRenderSection(queries, gridElement, type = 'video') {
+        const shuffledQueries = shuffleArray([...queries]);
+        const selectedQueries = shuffledQueries.slice(0, 6);
+        const combinedQuery = selectedQueries.join(' | ');
+        const url = `${API_BASE_URL}?part=snippet&maxResults=30&q=${encodeURIComponent(combinedQuery)}&type=${type}&key=${YOUTUBE_API_KEY}`;
         
-        mainTitle.textContent = 'Loading Recommended Videos...';
-        videoGrid.innerHTML = '';
+        gridElement.innerHTML = `<p style="grid-column: 1 / -1; text-align: center;">Loading...</p>`;
 
         try {
             const response = await fetch(url);
@@ -686,25 +722,46 @@
             }
             const data = await response.json();
 
-            const allVideos = data.items.map(item => ({
-                id: item.id.videoId,
+            const allItems = data.items.map(item => ({
+                type: item.id.kind === 'youtube#video' ? 'video' : 'playlist',
+                id: item.id.videoId || item.id.playlistId,
                 title: item.snippet.title,
                 channel: item.snippet.channelTitle,
                 thumbnailUrl: item.snippet.thumbnails.high.url,
                 uploaded: `Published on ${new Date(item.snippet.publishedAt).toLocaleDateString()}`
             }));
             
-            // Populate suggestions for the search bar
-            suggestionKeywords = [...new Set(allVideos.flatMap(v => v.title.split(/\s+/)))].filter(k => k.length > 3);
+            // Populate suggestions for the search bar from all fetched titles
+            const titles = allItems.map(v => v.title);
+            suggestionKeywords.push(...titles.flatMap(t => t.split(/\s+/)).filter(k => k.length > 3));
+            suggestionKeywords = [...new Set(suggestionKeywords)]; // Remove duplicates
             
-            const videosToDisplay = shuffleArray(allVideos).slice(0, 10);
-            renderVideoGrid(videosToDisplay, 'Recommended Videos');
+            const itemsToDisplay = shuffleArray(allItems).slice(0, 6);
+            renderVideoGrid(itemsToDisplay, gridElement);
 
         } catch (error) {
-            console.error("Error fetching YouTube videos:", error);
+            console.error(`Error fetching section (${type}):`, error);
             showCustomAlert(`Error fetching videos: ${error.message}`);
-            renderVideoGrid([], 'Could not load videos');
+            gridElement.innerHTML = `<p style="grid-column: 1 / -1; text-align: center;">Could not load videos for this section.</p>`;
         }
+    }
+    
+    // Main function to render the three home page sections
+    function renderHomePage() {
+        if (YOUTUBE_API_KEY === 'YOUR_API_KEY_HERE') {
+            showCustomAlert('Please add your YouTube API Key to the script file.');
+            return;
+        }
+        
+        homePageContent.style.display = 'block';
+        searchResultsContent.style.display = 'none';
+        
+        // Clear previous suggestions and start fresh
+        suggestionKeywords = [];
+        
+        fetchAndRenderSection(whatIsQueries, whatIsGrid, 'video');
+        fetchAndRenderSection(howToQueries, howToGrid, 'video');
+        fetchAndRenderSection(freeCoursesQueries, coursesGrid, 'playlist');
     }
 
     // Function to search YouTube based on user input
@@ -714,6 +771,9 @@
             return;
         }
         
+        homePageContent.style.display = 'none';
+        searchResultsContent.style.display = 'block';
+
         const url = `${API_BASE_URL}?part=snippet&maxResults=20&q=${encodeURIComponent(query)}&type=video&key=${YOUTUBE_API_KEY}`;
         mainTitle.textContent = `Searching for "${query}"...`;
         videoGrid.innerHTML = '';
@@ -724,6 +784,7 @@
             const data = await response.json();
             
             const results = data.items.map(item => ({
+                type: 'video',
                 id: item.id.videoId,
                 title: item.snippet.title,
                 channel: item.snippet.channelTitle,
@@ -731,12 +792,12 @@
                 uploaded: `Published on ${new Date(item.snippet.publishedAt).toLocaleDateString()}`
             }));
             
-            renderVideoGrid(results, `Results for "${query}"`);
+            renderVideoGrid(results, videoGrid, `Results for "${query}"`);
 
         } catch (error) {
             console.error("Error searching YouTube:", error);
             showCustomAlert("An error occurred during the search.");
-            renderVideoGrid([], `No results for "${query}"`);
+            renderVideoGrid([], videoGrid, `No results for "${query}"`);
         }
     }
 
@@ -782,7 +843,7 @@
         clearBtn.hidden=true;
         suggest.classList.remove('open');
         input.focus();
-        fetchAndRenderRecommendedVideos(); // Go back to recommended videos
+        renderHomePage(); // Go back to home page view
     });
 
     document.addEventListener('click', (e) => {
@@ -792,17 +853,23 @@
     });
 
     // --- Page Initialization & Nav ---
-    document.getElementById('logo').addEventListener('click', fetchAndRenderRecommendedVideos);
-    document.getElementById('homeLink').addEventListener('click', (e) => {
-      e.preventDefault();
-      fetchAndRenderRecommendedVideos();
-    });
+    function handleHomeNavigation(e) {
+        if (e) e.preventDefault();
+        renderHomePage();
+        // Set 'Home' as active link
+        navLinks.forEach(l => l.classList.remove('active'));
+        document.getElementById('homeLink').classList.add('active');
+    }
+
+    document.getElementById('logo').addEventListener('click', handleHomeNavigation);
+    document.getElementById('homeLink').addEventListener('click', handleHomeNavigation);
     
-    document.addEventListener('DOMContentLoaded', fetchAndRenderRecommendedVideos);
+    document.addEventListener('DOMContentLoaded', renderHomePage);
 
     const navLinks = document.querySelectorAll('.navbar a');
     navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
+            // Don't prevent default for non-home links yet, but handle active state
             navLinks.forEach(l => l.classList.remove('active'));
             this.classList.add('active');
         });
