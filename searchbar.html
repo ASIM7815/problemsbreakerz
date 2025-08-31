@@ -94,7 +94,7 @@
     }
 
     /* Header */
-    .header{position:sticky;top:0;z-index:40;background:var(--panel);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+    .header{position:sticky;top:0;z-index:40;background:rgba(20,20,30,0.6);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
     .header-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr minmax(300px,700px) 1fr;gap:12px;align-items:center;padding:12px 16px}
 
     /* Search cluster */
@@ -329,6 +329,10 @@
       justify-content: center;
       line-height: 1;
       z-index: 1;
+      transition: transform 0.2s;
+    }
+    .video-modal-content .close-btn:hover {
+        transform: scale(1.1);
     }
     #videoPlayer {
       width: 100%;
@@ -377,17 +381,40 @@
       .navbar a {
         flex-direction: column;
         font-size: 12px;
-        padding: 5px;
+        padding: 8px 5px;
         gap: 5px;
+        border-radius: 8px;
       }
-      .content {margin-left: 0; margin-bottom: 80px;}
-      .header-inner{grid-template-columns:1fr; max-width: 100%;}
+      .content {margin-left: 0; margin-bottom: 70px;}
+      .header-inner{
+        grid-template-columns:1fr;
+        max-width: 100%;
+        padding: 8px 12px;
+      }
       .logo {display:none;} /* Hide logo on mobile to make space for search */
       .right{display:none}
-      .video-grid { grid-template-columns: 1fr; } /* Single column on mobile */
-      .video-modal-content { width: 95%; padding: 10px; }
+
+      /* Single column video grid on mobile */
+      .video-grid { grid-template-columns: 1fr; }
+      
+      .video-modal-content { 
+        width: 95%;
+        padding: 10px;
+      }
+      /* Position close button inside the modal on mobile for easier access */
+      .video-modal-content .close-btn {
+        top: 5px;
+        right: 5px;
+        width: 32px;
+        height: 32px;
+        font-size: 20px;
+        background: rgba(0,0,0,0.5);
+        color: white;
+        border: 1px solid rgba(255,255,255,0.3);
+      }
       #videoTitle { font-size: 16px; }
       #videoChannel { font-size: 14px; }
+      .section-title { font-size: 20px; }
     }
   </style>
 </head>
@@ -447,18 +474,18 @@
 
     <main style="max-width:1200px;margin:24px auto;padding:0 16px;color:var(--text-dim); width: 100%;">
         <div id="homePageContent">
-            <h2 class="section-title">YOUR What is...</h2>
+            <h2 class="section-title">What is...</h2>
             <div id="whatIsGrid" class="video-grid"></div>
 
-            <h2 class="section-title">YOUR How to...</h2>
+            <h2 class="section-title">How to...</h2>
             <div id="howToGrid" class="video-grid"></div>
 
-            <h2 class="section-title"> YOUR Free Courses</h2>
+            <h2 class="section-title">Free Courses</h2>
             <div id="coursesGrid" class="video-grid"></div>
         </div>
         
         <div id="searchResultsContent" style="display: none;">
-            <h2 id="main-title">Search Results</h2>
+            <h2 id="main-title" class="section-title">Search Results</h2>
             <div id="videoGrid" class="video-grid"></div>
         </div>
     </main>
@@ -496,6 +523,7 @@
 
   <script>
     // --- YOUTUBE API SETUP ---
+    // IMPORTANT: Replace 'YOUR_API_KEY_HERE' with your actual YouTube Data API v3 key.
     const YOUTUBE_API_KEY = 'AIzaSyBbw5caGi3rhBibfd6sSAV8BnjUDqtQAHw';
     const API_BASE_URL = 'https://www.googleapis.com/youtube/v3/search';
 
@@ -640,10 +668,11 @@
     function openVideoPlayer(item) {
         if (item) {
             let embedUrl = '';
+            // CORRECTED: Use standard YouTube embed URLs
             if (item.type === 'video') {
-                embedUrl = `https://www.youtube.com/embed/${item.id}?autoplay=1`;
+                embedUrl = `https://www.youtube.com/embed/${item.id}?autoplay=1&rel=0`;
             } else { // playlist
-                embedUrl = `https://www.youtube.com/embed/videoseries?list=${item.id}&autoplay=1`;
+                embedUrl = `https://www.youtube.com/embed/videoseries?list=${item.id}&autoplay=1&rel=0`;
             }
             videoPlayer.src = embedUrl;
             videoTitle.textContent = item.title;
@@ -682,7 +711,7 @@
         const itemType = item.type === 'playlist' ? 'Playlist' : 'Video';
         videoCard.innerHTML = `
             <div class="thumbnail-container">
-                <img src="${item.thumbnailUrl}" alt="${item.title}" class="thumbnail" onerror="this.onerror=null;this.src='https://placehold.co/600x400/333/fff?text=${itemType}';">
+                <img src="${item.thumbnailUrl}" alt="${item.title}" class="thumbnail" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/600x400/333/fff?text=${itemType}';">
             </div>
             <div class="video-info">
                 <h3 class="video-title">${item.title}</h3>
@@ -749,7 +778,7 @@
     // Main function to render the three home page sections
     function renderHomePage() {
         if (YOUTUBE_API_KEY === 'YOUR_API_KEY_HERE') {
-            showCustomAlert('Please add your YouTube API Key to the script file.');
+            showCustomAlert('Please add your YouTube API Key to the script file to load videos.');
             return;
         }
         
@@ -843,7 +872,7 @@
         clearBtn.hidden=true;
         suggest.classList.remove('open');
         input.focus();
-        renderHomePage(); // Go back to home page view
+        handleHomeNavigation(); // Go back to home page view
     });
 
     document.addEventListener('click', (e) => {
@@ -859,6 +888,9 @@
         // Set 'Home' as active link
         navLinks.forEach(l => l.classList.remove('active'));
         document.getElementById('homeLink').classList.add('active');
+        // Clear search input when navigating home
+        input.value = '';
+        clearBtn.hidden = true;
     }
 
     document.getElementById('logo').addEventListener('click', handleHomeNavigation);
