@@ -530,391 +530,205 @@
     </div>
   </div>
 
-  <script>
-    // --- YOUTUBE API SETUP ---
-    // IMPORTANT: Replace 'YOUR_API_KEY_HERE' with your actual YouTube Data API v3 key.
-    const YOUTUBE_API_KEY = 'AIzaSyDwBmmXr36LlWL08ksAt0Zix5crZsmYYo0';
-    const API_BASE_URL = 'https://www.googleapis.com/youtube/v3/search';
+<script>
+  // --- PEERTUBE API SETUP ---
+  const PEERTUBE_INSTANCE = "https://framatube.org"; 
+  const API_BASE_URL = `${PEERTUBE_INSTANCE}/api/v1`;
 
-    // --- Keywords for Home Page Sections ---
-    const whatIsQueries = [
-        'what is computer science engineering', 'what is artificial intelligence explained', 'what is programming for beginners', 'what is coding', 'what are data structures', 'what are algorithms', 'what is machine learning', 'what is cloud computing'
-    ];
-    const howToQueries = [
-        'how to get good career opportunities in IT', 'how to score 9+ CGPA in engineering', 'how to use AI for studies', 'how to prepare for technical interviews', 'how to build a strong resume for tech jobs', 'study tips for engineering students', 'how to learn coding fast', 'how to manage time in college'
-    ];
-    const freeCoursesQueries = [
-        'free html full course', 'free css full course', 'free c programming full course', 'free python full course for beginners', 'free javascript full course', 'free data structures and algorithms course', 'free machine learning course', 'free java full course'
-    ];
-    
-    let suggestionKeywords = []; // Will be populated from fetched video titles
+  // --- Keywords for Home Page Sections ---
+  const whatIsQueries = [
+      "computer science", "artificial intelligence", "programming", "coding", "data structures", "algorithms", "machine learning", "cloud computing"
+  ];
+  const howToQueries = [
+      "career opportunities IT", "score CGPA engineering", "AI for studies", "technical interviews", "resume tech jobs", "study tips", "learn coding fast", "time management college"
+  ];
+  const freeCoursesQueries = [
+      "html course", "css course", "c programming", "python beginners", "javascript course", "data structures algorithms", "machine learning", "java course"
+  ];
 
-    // --- DOM Elements ---
-    const input = document.getElementById('searchInput');
-    const clearBtn = document.getElementById('clearBtn');
-    const suggest = document.getElementById('suggest');
-    const customAlert = document.getElementById('customAlert');
-    const customAlertMessage = document.getElementById('customAlertMessage');
-    const customAlertClose = document.getElementById('customAlertClose');
-    const searchForm = document.getElementById('searchForm');
-    
-    // Page content containers
-    const homePageContent = document.getElementById('homePageContent');
-    const searchResultsContent = document.getElementById('searchResultsContent');
-    
-    // Video grids
-    const whatIsGrid = document.getElementById('whatIsGrid');
-    const howToGrid = document.getElementById('howToGrid');
-    const coursesGrid = document.getElementById('coursesGrid');
-    const videoGrid = document.getElementById('videoGrid'); // For search results
-    const mainTitle = document.getElementById('main-title'); // For search results title
-    
-    // --- Custom Alert Logic ---
-    function showCustomAlert(message) {
-        customAlertMessage.textContent = message;
-        customAlert.style.display = 'flex';
+  let suggestionKeywords = [];
+
+  // --- DOM Elements ---
+  const input = document.getElementById('searchInput');
+  const clearBtn = document.getElementById('clearBtn');
+  const suggest = document.getElementById('suggest');
+  const customAlert = document.getElementById('customAlert');
+  const customAlertMessage = document.getElementById('customAlertMessage');
+  const customAlertClose = document.getElementById('customAlertClose');
+  const searchForm = document.getElementById('searchForm');
+  
+  const homePageContent = document.getElementById('homePageContent');
+  const searchResultsContent = document.getElementById('searchResultsContent');
+  const whatIsGrid = document.getElementById('whatIsGrid');
+  const howToGrid = document.getElementById('howToGrid');
+  const coursesGrid = document.getElementById('coursesGrid');
+  const videoGrid = document.getElementById('videoGrid');
+  const mainTitle = document.getElementById('main-title');
+
+  // --- Custom Alert ---
+  function showCustomAlert(message) {
+    customAlertMessage.textContent = message;
+    customAlert.style.display = 'flex';
+  }
+  customAlertClose.addEventListener('click', () => customAlert.style.display = 'none');
+
+  // --- Search Form ---
+  searchForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const query = input.value.trim();
+    if (query) {
+      searchPeerTube(query);
     }
-    customAlertClose.addEventListener('click', () => {
-        customAlert.style.display = 'none';
-    });
-    
-    // --- Main Search Logic ---
-    searchForm.addEventListener('submit', e => {
-        e.preventDefault();
-        const query = input.value.trim();
-        if (query) {
-            searchYouTube(query);
-        }
-        suggest.classList.remove('open');
-    });
+    suggest.classList.remove('open');
+  });
 
-    // --- Voice Recognition (Web Speech API) ---
-    const voiceBtn = document.getElementById("voiceBtn");
-    const voiceModal = document.getElementById('voiceModal');
-    const voiceStatus = document.getElementById('voiceStatus');
-    const voiceTranscript = document.getElementById('voiceTranscript');
-    
-    let recognition;
-    if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      recognition = new SpeechRecognition();
-      recognition.lang = "en-IN";
-      recognition.continuous = false; 
-      recognition.interimResults = true;
-      recognition.maxAlternatives = 1;
+  // --- Video Player ---
+  const videoPlayerModal = document.getElementById('videoPlayerModal');
+  const closeVideoModalBtn = document.getElementById('closeVideoModal');
+  const videoPlayer = document.getElementById('videoPlayer');
+  const videoTitle = document.getElementById('videoTitle');
+  const videoChannel = document.getElementById('videoChannel');
 
-      recognition.onstart = () => {
-        voiceStatus.textContent = "Listening...";
-        voiceTranscript.textContent = "Speak now...";
-        voiceModal.style.display = 'flex';
-        setTimeout(() => voiceModal.classList.add('visible'), 10);
-      };
+  function openVideoPlayer(item) {
+    if (item) {
+      const embedUrl = `${PEERTUBE_INSTANCE}/videos/embed/${item.uuid}?autoplay=1`;
+      videoPlayer.src = embedUrl;
+      videoTitle.textContent = item.title;
+      videoChannel.textContent = item.channel;
+      videoPlayerModal.style.display = 'flex';
+    }
+  }
+  function closeVideoPlayer() {
+    videoPlayer.src = '';
+    videoPlayerModal.style.display = 'none';
+  }
+  closeVideoModalBtn.addEventListener('click', closeVideoPlayer);
+  videoPlayerModal.addEventListener('click', e => { if (e.target === videoPlayerModal) closeVideoPlayer(); });
 
-      recognition.onend = () => {
-        voiceModal.classList.remove('visible');
-        setTimeout(() => { if(voiceModal.style.display === 'flex') voiceModal.style.display = 'none'; }, 300);
-      };
-      
-      recognition.onerror = (event) => {
-        let errorMessage = "An error occurred during recognition.";
-        if (event.error === 'no-speech') {
-          errorMessage = "No speech was detected. Please try again.";
-        } else if (event.error === 'audio-capture') {
-          errorMessage = "Microphone not found. Ensure it's connected and enabled.";
-        } else if (event.error === 'not-allowed') {
-          errorMessage = "Permission to use microphone was denied. Please allow access in browser settings.";
-        }
-        voiceStatus.textContent = "Error";
-        voiceTranscript.textContent = errorMessage;
-      };
+  // --- Helpers ---
+  function createVideoCard(item) {
+    const videoCard = document.createElement('div');
+    videoCard.className = 'video-card';
+    videoCard.onclick = () => openVideoPlayer(item);
 
-      recognition.onresult = (event) => {
-        let interim_transcript = "";
-        let final_transcript = "";
+    videoCard.innerHTML = `
+      <div class="thumbnail-container">
+        <img src="${item.thumbnailUrl}" alt="${item.title}" class="thumbnail" loading="lazy"
+          onerror="this.onerror=null;this.src='https://placehold.co/600x400/333/fff?text=Video';">
+      </div>
+      <div class="video-info">
+        <h3 class="video-title">${item.title}</h3>
+        <p class="video-meta">${item.channel}</p>
+        <p class="video-meta">${item.uploaded}</p>
+      </div>`;
+    return videoCard;
+  }
 
-        for (let i = event.resultIndex; i < event.results.length; ++i) {
-          if (event.results[i].isFinal) {
-            final_transcript += event.results[i][0].transcript;
-          } else {
-            interim_transcript += event.results[i][0].transcript;
-          }
-        }
-        
-        voiceTranscript.textContent = interim_transcript || "Processing...";
-
-        if (final_transcript) {
-          input.value = final_transcript;
-          clearBtn.hidden = false;
-          if(recognition) recognition.stop();
-          searchYouTube(final_transcript);
-        }
-      };
-
-      voiceBtn.addEventListener("click", () => {
-        try {
-          recognition.start();
-        } catch(e) {
-          if (e.name !== 'InvalidStateError') {
-            console.error("Could not start recognition: ", e);
-            showCustomAlert("Could not start voice recognition.");
-          }
-        }
-      });
-
+  function renderVideoGrid(videos, gridElement, title) {
+    if (title) mainTitle.textContent = title;
+    gridElement.innerHTML = '';
+    if (videos.length === 0) {
+      gridElement.innerHTML = `<p style="grid-column:1/-1;text-align:center;font-size:18px;">No videos found.</p>`;
     } else {
-      voiceBtn.addEventListener("click", () => {
-        showCustomAlert("Sorry, your browser does not support speech recognition.");
-      });
+      videos.forEach(video => gridElement.appendChild(createVideoCard(video)));
     }
+  }
 
-    // --- Video Player Logic ---
-    const videoPlayerModal = document.getElementById('videoPlayerModal');
-    const closeVideoModalBtn = document.getElementById('closeVideoModal');
-    const videoPlayer = document.getElementById('videoPlayer');
-    const videoTitle = document.getElementById('videoTitle');
-    const videoChannel = document.getElementById('videoChannel');
-
-    function openVideoPlayer(item) {
-        if (item) {
-            let embedUrl = '';
-            // CORRECTED: Use standard YouTube embed URLs
-            if (item.type === 'video') {
-                embedUrl = `https://www.youtube.com/embed/${item.id}?autoplay=1&rel=0`;
-            } else { // playlist
-                embedUrl = `https://www.youtube.com/embed/videoseries?list=${item.id}&autoplay=1&rel=0`;
-            }
-            videoPlayer.src = embedUrl;
-            videoTitle.textContent = item.title;
-            videoChannel.textContent = item.channel;
-            videoPlayerModal.style.display = 'flex';
-        }
+  // --- Fetch from PeerTube ---
+  async function fetchPeerTubeVideos(query, count = 12) {
+    const url = `${API_BASE_URL}/search/videos?search=${encodeURIComponent(query)}&count=${count}`;
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      return data.data.map(v => ({
+        id: v.id,
+        uuid: v.uuid,
+        title: v.name,
+        channel: v.channel.displayName,
+        thumbnailUrl: v.thumbnailPath ? `${PEERTUBE_INSTANCE}${v.thumbnailPath}` : "",
+        uploaded: `Published on ${new Date(v.publishedAt).toLocaleDateString()}`
+      }));
+    } catch (err) {
+      console.error("PeerTube fetch error:", err);
+      return [];
     }
+  }
 
-    function closeVideoPlayer() {
-        videoPlayer.src = ''; // This stops the video in an iframe
-        videoPlayerModal.style.display = 'none';
-    }
+  async function fetchAndRenderSection(queries, gridElement) {
+    gridElement.innerHTML = `<p style="grid-column:1/-1;text-align:center;">Loading...</p>`;
+    const query = queries[Math.floor(Math.random() * queries.length)];
+    const videos = await fetchPeerTubeVideos(query);
+    suggestionKeywords.push(...videos.map(v => v.title.split(/\s+/)).flat());
+    renderVideoGrid(videos, gridElement);
+  }
 
-    closeVideoModalBtn.addEventListener('click', closeVideoPlayer);
-    videoPlayerModal.addEventListener('click', (e) => {
-        if (e.target === videoPlayerModal) closeVideoPlayer();
-    });
+  // --- Render Home Page ---
+  function renderHomePage() {
+    homePageContent.style.display = 'block';
+    searchResultsContent.style.display = 'none';
+    suggestionKeywords = [];
+    fetchAndRenderSection(whatIsQueries, whatIsGrid);
+    fetchAndRenderSection(howToQueries, howToGrid);
+    fetchAndRenderSection(freeCoursesQueries, coursesGrid);
+  }
 
-    // --- YouTube API and Video Rendering ---
-    
-    function shuffleArray(array) {
-      let currentIndex = array.length, randomIndex;
-      while (currentIndex !== 0) {
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex--;
-        [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
-      }
-      return array;
-    }
+  // --- Search ---
+  async function searchPeerTube(query) {
+    homePageContent.style.display = 'none';
+    searchResultsContent.style.display = 'block';
+    mainTitle.textContent = `Searching for "${query}"...`;
+    videoGrid.innerHTML = '';
+    const results = await fetchPeerTubeVideos(query, 20);
+    renderVideoGrid(results, videoGrid, `Results for "${query}"`);
+  }
 
-    function createVideoCard(item) {
-        const videoCard = document.createElement('div');
-        videoCard.className = 'video-card';
-        videoCard.onclick = () => openVideoPlayer(item);
-
-        const itemType = item.type === 'playlist' ? 'Playlist' : 'Video';
-        videoCard.innerHTML = `
-            <div class="thumbnail-container">
-                <img src="${item.thumbnailUrl}" alt="${item.title}" class="thumbnail" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/600x400/333/fff?text=${itemType}';">
-            </div>
-            <div class="video-info">
-                <h3 class="video-title">${item.title}</h3>
-                <p class="video-meta">${item.channel}</p>
-                <p class="video-meta">${item.uploaded}</p>
-            </div>
-        `;
-        return videoCard;
-    }
-    
-    function renderVideoGrid(videos, gridElement, title) {
-        if (title) mainTitle.textContent = title;
-        gridElement.innerHTML = '';
-        if (videos.length === 0) {
-            gridElement.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; font-size: 18px;">No videos found. Please try another search.</p>`;
-        } else {
-            videos.forEach(video => {
-                gridElement.appendChild(createVideoCard(video));
-            });
-        }
-    }
-
-    // Fetches and renders a section on the home page
-    async function fetchAndRenderSection(queries, gridElement, type = 'video') {
-        const shuffledQueries = shuffleArray([...queries]);
-        const selectedQueries = shuffledQueries.slice(0, 6);
-        const combinedQuery = selectedQueries.join(' | ');
-        const url = `${API_BASE_URL}?part=snippet&maxResults=30&q=${encodeURIComponent(combinedQuery)}&type=${type}&key=${YOUTUBE_API_KEY}`;
-        
-        gridElement.innerHTML = `<p style="grid-column: 1 / -1; text-align: center;">Loading...</p>`;
-
-        try {
-            const response = await fetch(url);
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error.message || `HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
-
-            const allItems = data.items.map(item => ({
-                type: item.id.kind === 'youtube#video' ? 'video' : 'playlist',
-                id: item.id.videoId || item.id.playlistId,
-                title: item.snippet.title,
-                channel: item.snippet.channelTitle,
-                thumbnailUrl: item.snippet.thumbnails.high.url,
-                uploaded: `Published on ${new Date(item.snippet.publishedAt).toLocaleDateString()}`
-            }));
-            
-            // Populate suggestions for the search bar from all fetched titles
-            const titles = allItems.map(v => v.title);
-            suggestionKeywords.push(...titles.flatMap(t => t.split(/\s+/)).filter(k => k.length > 3));
-            suggestionKeywords = [...new Set(suggestionKeywords)]; // Remove duplicates
-            
-            const itemsToDisplay = shuffleArray(allItems).slice(0, 6);
-            renderVideoGrid(itemsToDisplay, gridElement);
-
-        } catch (error) {
-            console.error(`Error fetching section (${type}):`, error);
-            showCustomAlert(`Error fetching videos: ${error.message}`);
-            gridElement.innerHTML = `<p style="grid-column: 1 / -1; text-align: center;">Could not load videos for this section.</p>`;
-        }
-    }
-    
-    // Main function to render the three home page sections
-    function renderHomePage() {
-        if (YOUTUBE_API_KEY === 'YOUR_API_KEY_HERE') {
-            showCustomAlert('Please add your YouTube API Key to the script file to load videos.');
-            return;
-        }
-        
-        homePageContent.style.display = 'block';
-        searchResultsContent.style.display = 'none';
-        
-        // Clear previous suggestions and start fresh
-        suggestionKeywords = [];
-        
-        fetchAndRenderSection(whatIsQueries, whatIsGrid, 'video');
-        fetchAndRenderSection(howToQueries, howToGrid, 'video');
-        fetchAndRenderSection(freeCoursesQueries, coursesGrid, 'playlist');
-    }
-
-    // Function to search YouTube based on user input
-    async function searchYouTube(query) {
-       if (YOUTUBE_API_KEY === 'YOUR_API_KEY_HERE') {
-            showCustomAlert('Please add your YouTube API Key to the script file to enable search.');
-            return;
-        }
-        
-        homePageContent.style.display = 'none';
-        searchResultsContent.style.display = 'block';
-
-        const url = `${API_BASE_URL}?part=snippet&maxResults=20&q=${encodeURIComponent(query)}&type=video&key=${YOUTUBE_API_KEY}`;
-        mainTitle.textContent = `Searching for "${query}"...`;
-        videoGrid.innerHTML = '';
-
-        try {
-            const response = await fetch(url);
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            const data = await response.json();
-            
-            const results = data.items.map(item => ({
-                type: 'video',
-                id: item.id.videoId,
-                title: item.snippet.title,
-                channel: item.snippet.channelTitle,
-                thumbnailUrl: item.snippet.thumbnails.high.url,
-                uploaded: `Published on ${new Date(item.snippet.publishedAt).toLocaleDateString()}`
-            }));
-            
-            renderVideoGrid(results, videoGrid, `Results for "${query}"`);
-
-        } catch (error) {
-            console.error("Error searching YouTube:", error);
-            showCustomAlert("An error occurred during the search.");
-            renderVideoGrid([], videoGrid, `No results for "${query}"`);
-        }
-    }
-
-
-    // --- Suggestions Logic ---
-    function renderSuggestions(list){
-      suggest.innerHTML = '';
-      if(!list.length){
+  // --- Suggestions ---
+  function renderSuggestions(list) {
+    suggest.innerHTML = '';
+    if (!list.length) { suggest.classList.remove('open'); return; }
+    list.slice(0, 10).forEach(text => {
+      const row = document.createElement('div');
+      row.className = 's-item';
+      row.innerHTML = `<span class="s-text">${text}</span>`;
+      row.addEventListener('mousedown', () => {
+        input.value = text;
+        searchPeerTube(text);
         suggest.classList.remove('open');
-        return;
-      }
-
-      list.slice(0, 10).forEach(text=>{
-        const row = document.createElement('div');
-        row.className = 's-item';
-        const query = input.value.toLowerCase();
-        const highlightedText = text.replace(new RegExp(query, 'gi'), match => `<strong>${match}</strong>`);
-        
-        row.innerHTML = `<span class="icon" style="opacity: 0.6;"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zM10 15a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/></svg></span><span class="s-text">${highlightedText}</span>`;
-        row.addEventListener('mousedown',()=>{
-            input.value = text;
-            searchYouTube(text);
-            suggest.classList.remove('open');
-        });
-        suggest.appendChild(row);
       });
-      suggest.classList.add('open');
-    }
-
-    input.addEventListener('input', () => {
-      clearBtn.hidden = input.value.length === 0;
-      const q = input.value.toLowerCase();
-      if (q.length > 1) { // Only show suggestions after 1 character
-        const filteredSuggestions = suggestionKeywords.filter(k => k.toLowerCase().includes(q));
-        renderSuggestions(filteredSuggestions);
-      } else {
-        renderSuggestions([]);
-      }
+      suggest.appendChild(row);
     });
-    
-    clearBtn.addEventListener('click',()=>{
-        input.value='';
-        clearBtn.hidden=true;
-        suggest.classList.remove('open');
-        input.focus();
-        handleHomeNavigation(); // Go back to home page view
-    });
+    suggest.classList.add('open');
+  }
+  input.addEventListener('input', () => {
+    clearBtn.hidden = input.value.length === 0;
+    const q = input.value.toLowerCase();
+    if (q.length > 1) {
+      const filtered = suggestionKeywords.filter(k => k.toLowerCase().includes(q));
+      renderSuggestions(filtered);
+    } else { renderSuggestions([]); }
+  });
+  clearBtn.addEventListener('click', () => {
+    input.value = ''; clearBtn.hidden = true;
+    suggest.classList.remove('open'); input.focus(); handleHomeNavigation();
+  });
 
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.search-field')) {
-            suggest.classList.remove('open');
-        }
-    });
+  // --- Nav ---
+  function handleHomeNavigation(e) {
+    if (e) e.preventDefault();
+    renderHomePage();
+    navLinks.forEach(l => l.classList.remove('active'));
+    document.getElementById('homeLink').classList.add('active');
+    input.value = ''; clearBtn.hidden = true;
+  }
+  document.getElementById('logo').addEventListener('click', handleHomeNavigation);
+  document.getElementById('homeLink').addEventListener('click', handleHomeNavigation);
+  document.addEventListener('DOMContentLoaded', renderHomePage);
+  const navLinks = document.querySelectorAll('.navbar a');
+  navLinks.forEach(link => link.addEventListener('click', function(e) {
+    navLinks.forEach(l => l.classList.remove('active'));
+    this.classList.add('active');
+  }));
+</script>
 
-    // --- Page Initialization & Nav ---
-    function handleHomeNavigation(e) {
-        if (e) e.preventDefault();
-        renderHomePage();
-        // Set 'Home' as active link
-        navLinks.forEach(l => l.classList.remove('active'));
-        document.getElementById('homeLink').classList.add('active');
-        // Clear search input when navigating home
-        input.value = '';
-        clearBtn.hidden = true;
-    }
-
-    document.getElementById('logo').addEventListener('click', handleHomeNavigation);
-    document.getElementById('homeLink').addEventListener('click', handleHomeNavigation);
-    
-    document.addEventListener('DOMContentLoaded', renderHomePage);
-
-    const navLinks = document.querySelectorAll('.navbar a');
-    navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            // Don't prevent default for non-home links yet, but handle active state
-            navLinks.forEach(l => l.classList.remove('active'));
-            this.classList.add('active');
-        });
-    });
-  </script>
 </body>
 </html>
