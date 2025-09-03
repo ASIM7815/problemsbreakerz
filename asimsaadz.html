@@ -452,34 +452,28 @@ document.addEventListener('DOMContentLoaded', function(){
         observer.observe(box);
     });
 });
-</script>
-    <!-- Add this to asimsaadz.html to protect it -->
-<script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
 
-
 const firebaseConfig = {
-apiKey: "AIzaSyD2nIB45KU_b4d7ggIP-ZKDIk82UY1ElJ8",
-authDomain: "asimsaadz-db8a5.firebaseapp.com",
-projectId: "asimsaadz-db8a5",
-storageBucket: "asimsaadz-db8a5.appspot.com",
-messagingSenderId: "201921568991",
-appId: "1:201921568991:web:46e4a57cd2bee11f3bc96a",
-measurementId: "G-P9NDKNYZFL"
+  apiKey: "AIzaSyD2nIB45KU_b4d7ggIP-ZKDIk82UY1ElJ8",
+  authDomain: "asimsaadz-db8a5.firebaseapp.com",
+  projectId: "asimsaadz-db8a5",
+  storageBucket: "asimsaadz-db8a5.appspot.com",
+  messagingSenderId: "201921568991",
+  appId: "1:201921568991:web:46e4a57cd2bee11f3bc96a",
+  measurementId: "G-P9NDKNYZFL"
 };
-
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-
 onAuthStateChanged(auth, (user) => {
-if (!user) {
-window.location.href = 'index.html'; // redirect back to sign-in page if not logged in
-}
+  if (!user) {
+    window.location.href = 'index.html'; // redirect to login page if not signed in
+  }
 });
-</script>
+
 </body>
 </html>
 
