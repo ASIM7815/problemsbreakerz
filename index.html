@@ -18,10 +18,10 @@
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.18);
         }
-        .google-button, .signout-button {
+        .google-button {
             transition: all 0.3s ease;
         }
-        .google-button:hover, .signout-button:hover {
+        .google-button:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.3);
         }
@@ -35,7 +35,7 @@
             <div id="signin-card" class="bg-white/20 card-container rounded-2xl shadow-2xl p-8 md:p-10">
                 <div class="mb-8">
                     <h1 class="text-3xl font-bold text-white">Welcome</h1>
-                    <p class="text-indigo-100 mt-2">Sign in with one click.</p>
+                    <p class="text-indigo-100 mt-2">Sign in to continue.</p>
                 </div>
 
                 <!-- Google Sign-In Button -->
@@ -57,34 +57,20 @@
                     <p><a href="#" class="font-medium hover:underline">Terms of Service</a> & <a href="#" class="font-medium hover:underline">Privacy Policy</a>.</p>
                 </div>
             </div>
-
-            <!-- User Dashboard (hidden by default) -->
-            <div id="dashboard" class="hidden bg-white/20 card-container rounded-2xl shadow-2xl p-8 md:p-10">
-                 <div class="mb-8">
-                    <h1 class="text-3xl font-bold text-white">Welcome!</h1>
-                    <p id="user-greeting" class="text-indigo-100 mt-2 text-lg"></p>
-                </div>
-                <button id="signout-btn" class="signout-button w-full inline-flex items-center justify-center bg-red-500 hover:bg-red-600 text-white font-medium py-3 px-4 rounded-lg shadow-lg focus:outline-none focus:ring-4 focus:ring-red-300">
-                    Sign Out
-                </button>
-            </div>
-
         </div>
     </div>
 <script type="module">
-  // Import the functions you need from the SDKs you need
+  // Import Firebase modules
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-analytics.js";
   import { 
     getAuth, 
     onAuthStateChanged,
     GoogleAuthProvider, 
-    signInWithPopup,
-    signOut
+    signInWithPopup
   } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
   
   // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
   const firebaseConfig = {
     apiKey: "AIzaSyD2nIB45KU_b4d7ggIP-ZKDIk82UY1ElJ8",
     authDomain: "asimsaadz-db8a5.firebaseapp.com",
@@ -101,59 +87,22 @@
   const auth = getAuth(app);
   const provider = new GoogleAuthProvider();
 
-  // Get DOM elements
-  const signInCard = document.getElementById('signin-card');
-  const dashboard = document.getElementById('dashboard');
   const googleSignInBtn = document.getElementById('google-signin-btn');
-  const signOutBtn = document.getElementById('signout-btn');
-  const userGreeting = document.getElementById('user-greeting');
 
-  // Handle Google Sign-In
+  // Handle Google Sign-In click
   googleSignInBtn.addEventListener('click', () => {
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential.accessToken;
-        // The signed-in user info.
-        const user = result.user;
-        console.log('User signed in:', user);
-        // The onAuthStateChanged observer will handle the UI update.
-      }).catch((error) => {
-        // Handle Errors here.
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // The email of the user's account used.
-        const email = error.customData ? error.customData.email : 'N/A';
-        // The AuthCredential type that was used.
-        const credential = GoogleAuthProvider.credentialFromError(error);
-        console.error('Sign-in error:', errorMessage);
+    signInWithPopup(auth, provider).catch((error) => {
+        console.error('Sign-in error:', error.message);
       });
   });
 
-  // Handle Sign-Out
-  signOutBtn.addEventListener('click', () => {
-    signOut(auth).then(() => {
-      console.log('User signed out.');
-      // The onAuthStateChanged observer will handle the UI update.
-    }).catch((error) => {
-      console.error('Sign-out error:', error);
-    });
-  });
-
-  // Listen for authentication state changes
+  // Listen for authentication state changes to handle redirects
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      // User is signed in.
-      signInCard.classList.add('hidden');
-      dashboard.classList.remove('hidden');
-      userGreeting.textContent = user.displayName || 'Welcome!';
-    } else {
-      // User is signed out.
-      signInCard.classList.remove('hidden');
-      dashboard.classList.add('hidden');
-      userGreeting.textContent = '';
-    }
+      // If user is signed in, redirect them to the welcome page.
+      window.location.href = 'asimsaadz.html';
+    } 
+    // If user is not signed in, they will remain on this page.
   });
 
 </script>
