@@ -1,61 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sign In with Google</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-body {
-font-family: 'Inter', sans-serif;
-}
-.background-gradient {
-background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
-}
-.card-container {
-backdrop-filter: blur(12px);
--webkit-backdrop-filter: blur(12px);
-border: 1px solid rgba(255, 255, 255, 0.18);
-}
-.google-button {
-transition: all 0.3s ease;
-}
-.google-button:hover {
-transform: translateY(-3px);
-box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.3);
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In with Google</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .background-gradient {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+        }
+        .card-container {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        .google-button {
+            transition: all 0.3s ease;
+        }
+        .google-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.3);
+        }
+    </style>
 </head>
 <body class="background-gradient">
-<div class="flex items-center justify-center min-h-screen p-4">
-<div class="w-full max-w-sm mx-auto overflow-hidden text-center">
-<!-- Sign-In Card -->
-<div id="signin-card" class="bg-white/20 card-container rounded-2xl shadow-2xl p-8 md:p-10">
-<div class="mb-8">
-<h1 class="text-3xl font-bold text-white">Welcome</h1>
-<p class="text-indigo-100 mt-2">Sign in to continue.</p>
-</div>
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="w-full max-w-sm mx-auto overflow-hidden text-center">
+            
+            <!-- Sign-In Card -->
+            <div id="signin-card" class="bg-white/20 card-container rounded-2xl shadow-2xl p-8 md:p-10">
+                <div class="mb-8">
+                    <h1 class="text-3xl font-bold text-white">Welcome</h1>
+                    <p class="text-indigo-100 mt-2">Sign in to continue.</p>
+                </div>
 
+                <!-- Google Sign-In Button -->
+                <button id="google-signin-btn" 
+                   class="google-button w-full inline-flex items-center justify-center bg-white text-gray-700 font-medium py-3 px-4 rounded-lg shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-300">
+                    <!-- Google G Logo SVG -->
+                    <svg class="w-6 h-6 mr-3" viewBox="0 0 48 48">
+                        <path fill="#4285F4" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12s5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20s20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"></path>
+                        <path fill="#34A853" d="M43.611,20.083L43.595,20L42,20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571l0.002-0.002l5.657,5.657C40.074,36.316,44,30.824,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path>
+                        <path fill="#FBBC05" d="M10.21,28.641l5.657,5.657C17.93,36.888,20.803,38,24,38c3.197,0,6.07-1.112,8.21-2.9l-5.657-5.657C25.5,29.608,24.789,30,24,30C20.44,30,17.222,28.32,15.25,25.8l-5.04,3.841C11.373,26.425,10.66,27.524,10.21,28.641z"></path>
+                        <path fill="#EA4335" d="M24,16c-1.898,0-3.64,0.73-4.95,2.05l-5.657-5.657C15.96,10.193,19.758,8,24,8c5.268,0,10.046,2.053,13.571,6.021l-5.657,5.657C30.151,17.154,27.359,16,24,16z"></path>
+                    </svg>
+                    Sign in with Google
+                </button>
 
-<!-- Google Sign-In Button -->
-<button id="google-signin-btn"
-class="google-button w-full inline-flex items-center justify-center bg-white text-gray-700 font-medium py-3 px-4 rounded-lg shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-300">
-<!-- Google G Logo SVG -->
-<svg class="w-6 h-6 mr-3" viewBox="0 0 48 48">
-<path fill="#4285F4" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12s5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20s20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"></path>
-<path fill="#34A853" d="M43.611,20.083L43.595,20L42,20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571l0.002-0.002l5.657,5.657C40.074,36.316,44,30.824,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path>
-<path fill="#FBBC05" d="M10.21,28.641l5.657,5.657C17.93,36.888,20.803,38,24,38c3.197,0,6.07-1.112,8.21-2.9l-5.657-5.657C25.5,29.608,24.789,30,24,30C20.44,30,17.222,28.32,15.25,25.8l-5.04,3.841C11.373,26.425,10.66,27.524,10.21,28.641z"></path>
-<path fill="#EA4335" d="M24,16c-1.898,0-3.64,0.73-4.95,2.05l-5.657-5.657C15.96,10.193,19.758,8,24,8c5.268,0,10.046,2.053,13.571,6.021l-5.657,5.657C30.151,17.154,27.359,16,24,16z"></path>
-</svg>
-Sign in with Google
-</button>
+                <!-- Footer Text -->
+                <div class="text-center text-xs text-indigo-200 mt-8">
+                    <p>By signing in, you agree to our</p>
+                    <p><a href="#" class="font-medium hover:underline">Terms of Service</a> & <a href="#" class="font-medium hover:underline">Privacy Policy</a>.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+<script type="module">
+  // Import Firebase modules
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-analytics.js";
+  import { 
+    getAuth, 
+    onAuthStateChanged,
+    GoogleAuthProvider, 
+    signInWithPopup
+  } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+  
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyD2nIB45KU_b4d7ggIP-ZKDIk82UY1ElJ8",
+    authDomain: "asimsaadz-db8a5.firebaseapp.com",
+    projectId: "asimsaadz-db8a5",
+    storageBucket: "asimsaadz-db8a5.appspot.com",
+    messagingSenderId: "201921568991",
+    appId: "1:201921568991:web:46e4a57cd2bee11f3bc96a",
+    measurementId: "G-P9NDKNYZFL"
+  };
 
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
 
-<!-- Footer Text -->
-<div class="text-center text-xs text-indigo-200 mt-8">
-<p>By signing in, you agree to our</p>
-<p><a href="#" class="font-medium hover:underline">Terms of Service</a> & <a href="#" class="font-medium hover:underline">Privacy Policy</a>.</p>
-</div>
-</div>
+  const googleSignInBtn = document.getElementById('google-signin-btn');
+
+  // Handle Google Sign-In click
+  googleSignInBtn.addEventListener('click', () => {
+    signInWithPopup(auth, provider).catch((error) => {
+        console.error('Sign-in error:', error.message);
+      });
+  });
+
+  // Listen for authentication state changes to handle redirects
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // If user is signed in, redirect them to the welcome page.
+      window.location.href = 'asimsaadz.html';
+    } 
+    // If user is not signed in, they will remain on this page.
+  });
+
+</script>
+</body>
 </html>
+
