@@ -2,17 +2,53 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=AW-17524250047"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'AW-17524250047');
-</script>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>EduTube - Curated Learning</title>
+
+  <script type="module">
+    // Import Firebase modules
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+    import { 
+      getAuth, 
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+    
+    // Your web app's Firebase configuration (must be the same as index.html)
+    const firebaseConfig = {
+      apiKey: "AIzaSyD2nIB45KU_b4d7ggIP-ZKDIk82UY1ElJ8",
+      authDomain: "asimsaadz-db8a5.firebaseapp.com",
+      projectId: "asimsaadz-db8a5",
+      storageBucket: "asimsaadz-db8a5.appspot.com",
+      messagingSenderId: "201921568991",
+      appId: "1:201921568991:web:46e4a57cd2bee11f3bc96a",
+      measurementId: "G-P9NDKNYZFL"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+  
+    // Listen for auth state changes
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        // If the user is NOT signed in, redirect them to the login page
+        console.log("No user signed in. Redirecting to login page.");
+        window.location.href = 'index.html';
+      } else {
+        // If the user IS signed in, do nothing and let the page load.
+        console.log("User is authenticated:", user.displayName);
+      }
+    });
+  </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17524250047"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'AW-17524250047');
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  
   <style>
     :root{
       --panel:rgba(255,255,255,0.1);
@@ -428,7 +464,7 @@
   </style>
 </head>
 <body>
-  <video autoplay loop muted playsinline id="background-video">
+    <video autoplay loop muted playsinline id="background-video">
     <source src="Ocean Sea Waves _ Drone Aerial View _ Free stock footage _ Free HD Videos - no copyright.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
@@ -477,7 +513,7 @@
         </div>
 
         <div class="right">
-        </div>
+            </div>
       </div>
     </header>
 
