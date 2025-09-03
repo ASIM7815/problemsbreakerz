@@ -308,7 +308,30 @@ nav.sticky {background: linear-gradient(90deg, #1CB5E0 0%, #000851 100%); box-sh
 <div class="footer-bottom"><p>&copy; 2025. All Rights Reserved.</p></div>
 </footer>
 
-<script>
+
+
+    <script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyD2nIB45KU_b4d7ggIP-ZKDIk82UY1ElJ8",
+    authDomain: "asimsaadz-db8a5.firebaseapp.com",
+    projectId: "asimsaadz-db8a5",
+    storageBucket: "asimsaadz-db8a5.firebasestorage.app",
+    messagingSenderId: "201921568991",
+    appId: "1:201921568991:web:46e4a57cd2bee11f3bc96a",
+    measurementId: "G-P9NDKNYZFL"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
 document.addEventListener('DOMContentLoaded', function(){
     const navbar=document.getElementById('navbar');
     const hamburger=document.getElementById('hamburger');
@@ -432,4 +455,6 @@ document.addEventListener('DOMContentLoaded', function(){
 </script>
 </body>
 </html>
+
+
 
