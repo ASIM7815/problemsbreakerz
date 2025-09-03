@@ -58,23 +58,22 @@
     </div>
 <script type="module">
   // Import Firebase modules
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
   import { 
     getAuth, 
     onAuthStateChanged,
     GoogleAuthProvider, 
     signInWithPopup
-  } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+  } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
   
-  // Your web app's Firebase configuration
+  // Your web app's Firebase configuration - KEEP THIS SECRET
   const firebaseConfig = {
-    apiKey: "AIzaSyD2nIB45KU_b4d7ggIP-ZKDIk82UY1ElJ8",
-    authDomain: "asimsaadz-db8a5.firebaseapp.com",
-    projectId: "asimsaadz-db8a5",
-    storageBucket: "asimsaadz-db8a5.appspot.com",
-    messagingSenderId: "201921568991",
-    appId: "1:201921568991:web:46e4a57cd2bee11f3bc96a",
-    measurementId: "G-P9NDKNYZFL"
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_STORAGE_BUCKET",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
   };
 
   // Initialize Firebase
@@ -94,9 +93,8 @@
   // Listen for authentication state changes to handle redirects
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      // If user is signed in, redirect them to the main search page.
-      // *** THIS IS THE ONLY CHANGE NEEDED IN THIS FILE ***
-      window.location.href = 'searchbar.html';
+      // If user is signed in, redirect them to the AsimSaadz page.
+      window.location.href = 'asimsaadz.html';
     } 
     // If user is not signed in, they will remain on this page.
   });
@@ -104,3 +102,4 @@
 </script>
 </body>
 </html>
+
