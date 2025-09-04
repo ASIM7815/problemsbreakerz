@@ -40,6 +40,29 @@
             transform: translateY(-3px);
             box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.3);
         }
+        /* Custom modal styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 100; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+            max-width: 400px;
+            text-align: center;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 <body class="bg-black">
@@ -81,6 +104,15 @@
             </div>
         </div>
     </div>
+    
+    <!-- Custom Modal for Messages -->
+    <div id="message-modal" class="modal">
+      <div class="modal-content">
+        <p id="modal-message" class="text-lg font-semibold text-gray-800"></p>
+        <button onclick="closeModal()" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none">OK</button>
+      </div>
+    </div>
+    
 <script type="module">
   // Import Firebase modules
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -88,7 +120,8 @@
     getAuth, 
     onAuthStateChanged,
     GoogleAuthProvider, 
-    signInWithPopup
+    signInWithPopup,
+    signOut
   } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
   
   // Your web app's Firebase configuration
@@ -108,23 +141,50 @@
   const provider = new GoogleAuthProvider();
 
   const googleSignInBtn = document.getElementById('google-signin-btn');
+  const modal = document.getElementById('message-modal');
+  const modalMessage = document.getElementById('modal-message');
+
+  // Define the list of allowed email addresses.
+  const allowedEmails = ['mohammadasimsaad@gmail.com']; 
+  const allowedEmails = ['mohdasimsaad@gmail.com'];
+
+  // Function to show the custom modal with a message
+  function showModal(message) {
+    modalMessage.textContent = message;
+    modal.style.display = 'block';
+  }
+
+  // Function to close the custom modal
+  window.closeModal = function() {
+    modal.style.display = 'none';
+  }
 
   // Handle Google Sign-In click
   googleSignInBtn.addEventListener('click', () => {
     signInWithPopup(auth, provider).catch((error) => {
-        console.error('Sign-in error:', error.message);
+        // Use the custom modal instead of alert for error messages
+        showModal('Sign-in error: ' + error.message);
       });
   });
 
   // Listen for authentication state changes to handle redirects
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      // If user is signed in, redirect them to the AsimSaadz page.
-      window.location.href = 'asimsaadz.html';
+      // Check if the signed-in user's email is in the allowedEmails array
+      if (allowedEmails.includes(user.email)) {
+        // If the email is allowed, redirect them to the main page.
+        window.location.href = 'asimsaadz.html';
+      } else {
+        // If the email is NOT allowed, sign them out and show a message.
+        signOut(auth).then(() => {
+          showModal('Access Denied. Your email is not authorized to view this content.');
+        }).catch((error) => {
+          console.error('Sign-out error:', error.message);
+        });
+      }
     } 
     // If user is not signed in, they will remain on this page.
   });
-
 </script>
 </body>
 </html>
