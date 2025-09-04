@@ -149,9 +149,6 @@
   }
   const deviceId = getDeviceId();
 
-  // Define the list of allowed email addresses.
-  const allowedEmails = ['mohammadasimsaad@gmail.com', 'mohdasimsaad@gmail.com']; 
-
   // Function to show a professional message on the page
   function showMessage(message) {
     messageText.textContent = message;
@@ -184,7 +181,7 @@
   // Listen for authentication state changes to handle redirects
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-      if (allowedEmails.includes(user.email)) {
+        // Email restriction removed. Now checking device limit for any signed-in user.
         const userDeviceDocRef = doc(db, "userDevices", user.email);
         try {
             const docSnap = await getDoc(userDeviceDocRef);
@@ -216,12 +213,9 @@
             await signOut(auth);
             showMessage('Could not verify your device. Please try again.');
         }
-      } else {
-        await signOut(auth);
-        showMessage('Sorry, we could not sign you in. The email you used is not authorized.');
-      }
     } 
   });
 </script>
 </body>
 </html>
+
