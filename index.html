@@ -97,31 +97,30 @@
     </div>
     
 <script type="module">
+  // Import Firebase modules
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
   import { 
     getAuth, 
     onAuthStateChanged,
     GoogleAuthProvider, 
     signInWithPopup,
-    signOut,
-    signInWithCustomToken,
+    signOut
   } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-  import { 
-    getFirestore, 
-    doc, 
-    getDoc, 
-    setDoc,
-    increment,
-  } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
   
-  // These variables are provided by the canvas environment.
-  const firebaseConfig = JSON.parse('{"apiKey":"AIzaSyD2nIB45KU_b4d7ggIP-ZKDIk82UY1ElJ8","authDomain":"asimsaadz-db8a5.firebaseapp.com","projectId":"asimsaadz-db8a5","storageBucket":"asimsaadz-db8a5.appspot.com","messagingSenderId":"201921568991","appId":"1:201921568991:web:46e4a57cd2bee11f3bc96a","measurementId":"G-P9NDKNYZFL"}');
-  const appId = 'default-app-id';
-  const initialAuthToken = '';
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyD2nIB45KU_b4d7ggIP-ZKDIk82UY1ElJ8",
+    authDomain: "asimsaadz-db8a5.firebaseapp.com",
+    projectId: "asimsaadz-db8a5",
+    storageBucket: "asimsaadz-db8a5.appspot.com",
+    messagingSenderId: "201921568991",
+    appId: "1:201921568991:web:46e4a57cd2bee11f3bc96a",
+    measurementId: "G-P9NDKNYZFL"
+  };
 
+  // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  const db = getFirestore(app);
   const provider = new GoogleAuthProvider();
 
   const googleSignInBtn = document.getElementById('google-signin-btn');
@@ -129,76 +128,51 @@
   const messageContainer = document.getElementById('message-container');
   const messageText = document.getElementById('message-text');
 
-  // Define the list of allowed email addresses. You can add or remove emails from this list.
-  const allowedEmails = ['mohammadasimsaad@gmail.com', 'mohdasimsaad@gmail.com', 'newstudent@gmail.com']; 
-  const deviceLimit = 2;
+  // Define the list of allowed email addresses.
+  const allowedEmails = ['mohammadasimsaad@gmail.com', 'mohdasimsaad@gmail.com']; 
 
-  // Handle "Try Again" button click
-  tryAgainBtn.addEventListener('click', () => {
-    resetUI();
-  });
-
+  // Function to show a professional message on the page
   function showMessage(message) {
     messageText.textContent = message;
     messageContainer.classList.remove('hidden');
     googleSignInBtn.style.display = 'none';
   }
 
+  // Function to hide the message and show the sign-in button
   function resetUI() {
     messageContainer.classList.add('hidden');
     googleSignInBtn.style.display = 'inline-flex';
   }
 
+  // Handle Google Sign-In click
   googleSignInBtn.addEventListener('click', () => {
     signInWithPopup(auth, provider).catch((error) => {
-      if (error.code === 'auth/popup-closed-by-user') {
-        showMessage('Sign-in process cancelled. Please try again.');
-      } else {
-        showMessage('Sorry, we could not sign you in. Please try again.');
-        console.error('Sign-in error:', error.message);
-      }
+        if (error.code === 'auth/popup-closed-by-user') {
+            showMessage('Sign-in process cancelled. Please try again.');
+        } else {
+            showMessage('Sorry, we could not sign you in. Please try again.');
+        }
     });
   });
 
-  onAuthStateChanged(auth, async (user) => {
+  // Handle "Try Again" button click
+  tryAgainBtn.addEventListener('click', () => {
+    resetUI();
+  });
+
+  // Listen for authentication state changes to handle redirects
+  onAuthStateChanged(auth, (user) => {
     if (user) {
-      if (!allowedEmails.includes(user.email)) {
-        await signOut(auth);
-        showMessage('Sorry, we could not sign you in. The email you used is not authorized.');
-        return;
+      if (allowedEmails.includes(user.email)) {
+        window.location.href = 'asimsaadz.html';
+      } else {
+        signOut(auth).then(() => {
+          showMessage('Sorry, we could not sign you in. The email you used is not authorized.');
+        }).catch((error) => {
+          console.error('Sign-out error:', error.message);
+        });
       }
-      
-      const userDocRef = doc(db, `artifacts/${appId}/users/${user.uid}/deviceData/devices`);
-
-      try {
-        const userDocSnap = await getDoc(userDocRef);
-        let currentDevices = 0;
-        if (userDocSnap.exists()) {
-          currentDevices = userDocSnap.data().deviceCount || 0;
-        }
-
-        if (currentDevices >= deviceLimit) {
-          await signOut(auth);
-          showMessage('Access Denied. You have reached the device limit for your account. Please sign out from another device to continue.');
-        } else {
-          await setDoc(userDocRef, { deviceCount: increment(1) }, { merge: true });
-          window.location.href = 'asimsaadz.html';
-        }
-      } catch (error) {
-        console.error('Firestore operation failed:', error);
-        await signOut(auth);
-        showMessage('An error occurred during sign-in. Please try again.');
-      }
-    } else {
-      // Sign in anonymously if no token is available, for Firestore access
-      if (initialAuthToken) {
-        try {
-          await signInWithCustomToken(auth, initialAuthToken);
-        } catch (error) {
-          console.error('Custom token sign-in failed:', error);
-        }
-      }
-    }
+    } 
   });
 </script>
 </body>
