@@ -109,7 +109,11 @@
   import { 
     getFirestore, 
     doc, 
-    setDoc
+    getDoc, 
+    setDoc,
+    updateDoc,
+    arrayUnion,
+    arrayRemove
   } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
   
   // Your web app's Firebase configuration
@@ -145,6 +149,9 @@
   }
   const deviceId = getDeviceId();
 
+  // Define the list of allowed email addresses.
+  const allowedEmails = ['mohammadasimsaad@gmail.com', 'mohdasimsaad@gmail.com']; 
+
   // Function to show a professional message on the page
   function showMessage(message) {
     messageText.textContent = message;
@@ -177,27 +184,44 @@
   // Listen for authentication state changes to handle redirects
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-        // Add a check to ensure user.email is available before proceeding.
-        if (!user.email) {
-            await signOut(auth);
-            showMessage('Could not retrieve a valid email from your account. Please try again.');
-            return;
-        }
-
+      if (allowedEmails.includes(user.email)) {
         const userDeviceDocRef = doc(db, "userDevices", user.email);
         try {
-            // Set/overwrite the document with the current device ID.
-            // This enforces a single-device policy, where the last login wins.
-            await setDoc(userDeviceDocRef, { activeDevice: deviceId });
-            window.location.href = 'asimsaadz.html';
+            const docSnap = await getDoc(userDeviceDocRef);
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                const devices = data.devices || [];
+
+                if (devices.length < 2 && !devices.includes(deviceId)) {
+                    // User has less than 2 devices, and this one isn't registered yet
+                    await updateDoc(userDeviceDocRef, {
+                        devices: arrayUnion(deviceId)
+                    });
+                    window.location.href = 'asimsaadz.html';
+                } else if (devices.includes(deviceId)) {
+                    // This device is already registered, let them in
+                    window.location.href = 'asimsaadz.html';
+                } else {
+                    // User has 2 or more devices registered
+                    await signOut(auth);
+                    showMessage('You have reached the maximum device limit (2). Please sign out from another device to continue.');
+                }
+            } else {
+                // First time sign-in for this user, create the document
+                await setDoc(userDeviceDocRef, { devices: [deviceId] });
+                window.location.href = 'asimsaadz.html';
+            }
         } catch (error) {
-            console.error("Error updating device ID:", error);
+            console.error("Error checking device limit:", error);
             await signOut(auth);
-            showMessage('Could not save your device information. Please try again.');
+            showMessage('Could not verify your device. Please try again.');
         }
+      } else {
+        await signOut(auth);
+        showMessage('Sorry, we could not sign you in. The email you used is not authorized.');
+      }
     } 
   });
 </script>
 </body>
 </html>
-
