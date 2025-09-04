@@ -181,7 +181,13 @@
   // Listen for authentication state changes to handle redirects
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-        // Email restriction removed. Now checking device limit for any signed-in user.
+        // Add a check to ensure user.email is available before proceeding.
+        if (!user.email) {
+            await signOut(auth);
+            showMessage('Could not retrieve a valid email from your account. Please try again.');
+            return;
+        }
+
         const userDeviceDocRef = doc(db, "userDevices", user.email);
         try {
             const docSnap = await getDoc(userDeviceDocRef);
