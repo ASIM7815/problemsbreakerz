@@ -106,6 +106,15 @@
     signInWithPopup,
     signOut
   } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+  import { 
+    getFirestore, 
+    doc, 
+    getDoc, 
+    setDoc,
+    updateDoc,
+    arrayUnion,
+    arrayRemove
+  } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
   
   // Your web app's Firebase configuration
   const firebaseConfig = {
@@ -121,12 +130,24 @@
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+  const db = getFirestore(app);
   const provider = new GoogleAuthProvider();
 
   const googleSignInBtn = document.getElementById('google-signin-btn');
   const tryAgainBtn = document.getElementById('try-again-btn');
   const messageContainer = document.getElementById('message-container');
   const messageText = document.getElementById('message-text');
+
+  // --- Device ID Management ---
+  function getDeviceId() {
+    let deviceId = localStorage.getItem('deviceId');
+    if (!deviceId) {
+      deviceId = crypto.randomUUID();
+      localStorage.setItem('deviceId', deviceId);
+    }
+    return deviceId;
+  }
+  const deviceId = getDeviceId();
 
   // Define the list of allowed email addresses.
   const allowedEmails = ['mohammadasimsaad@gmail.com', 'mohdasimsaad@gmail.com']; 
@@ -161,21 +182,46 @@
   });
 
   // Listen for authentication state changes to handle redirects
-  onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(auth, async (user) => {
     if (user) {
       if (allowedEmails.includes(user.email)) {
-        window.location.href = 'asimsaadz.html';
+        const userDeviceDocRef = doc(db, "userDevices", user.email);
+        try {
+            const docSnap = await getDoc(userDeviceDocRef);
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                const devices = data.devices || [];
+
+                if (devices.length < 2 && !devices.includes(deviceId)) {
+                    // User has less than 2 devices, and this one isn't registered yet
+                    await updateDoc(userDeviceDocRef, {
+                        devices: arrayUnion(deviceId)
+                    });
+                    window.location.href = 'asimsaadz.html';
+                } else if (devices.includes(deviceId)) {
+                    // This device is already registered, let them in
+                    window.location.href = 'asimsaadz.html';
+                } else {
+                    // User has 2 or more devices registered
+                    await signOut(auth);
+                    showMessage('You have reached the maximum device limit (2). Please sign out from another device to continue.');
+                }
+            } else {
+                // First time sign-in for this user, create the document
+                await setDoc(userDeviceDocRef, { devices: [deviceId] });
+                window.location.href = 'asimsaadz.html';
+            }
+        } catch (error) {
+            console.error("Error checking device limit:", error);
+            await signOut(auth);
+            showMessage('Could not verify your device. Please try again.');
+        }
       } else {
-        signOut(auth).then(() => {
-          showMessage('Sorry, we could not sign you in. The email you used is not authorized.');
-        }).catch((error) => {
-          console.error('Sign-out error:', error.message);
-        });
+        await signOut(auth);
+        showMessage('Sorry, we could not sign you in. The email you used is not authorized.');
       }
     } 
   });
 </script>
 </body>
 </html>
-
-
