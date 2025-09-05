@@ -98,29 +98,79 @@ nav {
     border-color: rgba(255, 255, 255, 0.3);
 }
 
-.slider-container {
-    position: relative;
-    width: 90vw;
-    max-width: 900px;
-    aspect-ratio: 16 / 9;
-    margin: 90px auto 40px;
-    overflow: hidden;
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(4px);
-    -webkit-mask-image: -webkit-radial-gradient(white, black);
+/* New Hero Section CSS */
+.hero-section {
+    position: relative;
+    width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0 20px;
+    background-image: url('https://wkeo8cvbv1n9mxmr.public.blob.vercel-storage.com/asim.png'); /* Use your chosen image URL here */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    /* Optional: Add an overlay for better text readability */
+    z-index: 1;
 }
 
-.slides { width: 100%; height: 100%; position: relative; }
-.slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; opacity: 0; transition: opacity 1.2s ease-in-out; visibility: hidden; }
-.slide.active { opacity: 1; visibility: visible; z-index: 1; }
-.slide img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.15); }
-@keyframes kenburns-effect { 0% { transform: scale(1.15); } 100% { transform: scale(1); } }
-.slide.active img { animation: kenburns-effect 7s linear forwards; }
-.slider-nav { position: absolute; top: 50%; left: 0; width: 100%; display: flex; justify-content: space-between; transform: translateY(-50%); padding: 0 15px; pointer-events: none; z-index: 2; }
-.slider-nav button { background: rgba(0, 0, 0, 0.4); border: none; color: white; font-size: 1.6rem; cursor: pointer; border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; pointer-events: auto; transition: background 0.3s ease; }
-.slider-nav button:hover { background: rgba(0, 0, 0, 0.75); }
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: -1;
+}
 
+.hero-content {
+    max-width: 800px;
+    padding: 30px;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    transform: translateY(0);
+    opacity: 1;
+    animation: fadeIn 1.5s ease-out;
+}
+
+.hero-title {
+    font-size: clamp(2rem, 5vw, 4.5rem);
+    font-weight: 700;
+    margin-bottom: 20px;
+    background: linear-gradient(45deg, #1CB5E0, #fff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero-subtitle {
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 40px;
+}
+
+.cta-button {
+    display: inline-block;
+    padding: 14px 28px;
+    border: 2px solid #1CB5E0;
+    border-radius: 50px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+}
+
+.cta-button:hover {
+    background: #1CB5E0;
+    box-shadow: 0 0 20px rgba(28, 181, 224, 0.6);
+    transform: translateY(-3px);
+}
 .quotes-container {width:95vw;max-width:900px;margin:40px auto;padding:40px 10px;border-radius:15px;background:rgba(0,0,0,0.35);backdrop-filter:blur(8px);text-align:center;position:relative;min-height:160px;}
 .quote {font-size:2rem;font-weight:bold;line-height:1.3;background:linear-gradient(90deg,#ff4b2b,#ff416c,#ff9933,#00c9ff,#92fe9d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;opacity:0;transform:translateY(60px) scale(0.9) rotateX(60deg) skewX(-10deg);filter:blur(8px) brightness(1.2);transition:0.6s;position:absolute;top:50%;left:50%;width:90%;padding:0 10px;word-break:break-word;}
 .quote.active {opacity:1;transform:translate(-50%,-50%) scale(1.07) rotateX(0deg) skewX(0deg);filter:blur(0px) brightness(1.05);}
@@ -207,13 +257,13 @@ nav {
 </div>
 
 
-<div class="slider-container">
-    <div class="slides" id="slides"></div>
-    <div class="slider-nav">
-        <button id="prev">&#10094;</button>
-        <button id="next">&#10095;</button>
-    </div>
-</div>
+<section class="hero-section">
+    <div class="hero-content">
+        <h1 class="hero-title">Unlock Your Potential</h1>
+        <p class="hero-subtitle">Discover a world of knowledge with our premium resources and expert guidance.</p>
+        <a href="#content-section" class="cta-button">Explore Now <i class="fas fa-arrow-right"></i></a>
+    </div>
+</section>
 
 
 
@@ -298,41 +348,7 @@ document.addEventListener('DOMContentLoaded', function(){
     const mobileMenu=document.getElementById('mobile-menu');
     const closeBtn=document.getElementById('close-btn');
 
-    // --- SLIDER LOGIC ---
-    const slidesContainer = document.getElementById('slides');
-    if (slidesContainer) {
-        const imageUrls = ['https://wkeo8cvbv1n9mxmr.public.blob.vercel-storage.com/asim.png','https://wkeo8cvbv1n9mxmr.public.blob.vercel-storage.com/AI.png', 'https://wkeo8cvbv1n9mxmr.public.blob.vercel-storage.com/Gemini_Generated_Image_2yvouf2yvouf2yvo.png',];
-        let allSlides = []; let currentSlide = 0; let autoSlideTimer; const slideDuration = 7000;
-        function createSlides() {
-            slidesContainer.innerHTML = '';
-            imageUrls.forEach((url, index) => {
-                const slide = document.createElement('div'); slide.classList.add('slide');
-                const img = document.createElement('img'); img.src = url; img.alt = "Slider image " + (index + 1);
-                slide.appendChild(img); slidesContainer.appendChild(slide);
-            });
-            allSlides = slidesContainer.querySelectorAll('.slide');
-            if (allSlides.length > 0) { allSlides[0].classList.add('active'); }
-        }
-        function showSlide(newIndex) {
-            if (allSlides.length === 0) return;
-            allSlides[currentSlide].classList.remove('active'); currentSlide = newIndex;
-            allSlides[currentSlide].classList.add('active'); autoSlide();
-        }
-        function nextSlide() { if (allSlides.length === 0) return; const newIndex = (currentSlide + 1) % allSlides.length; showSlide(newIndex); }
-        function prevSlide() { if (allSlides.length === 0) return; const newIndex = (currentSlide - 1 + allSlides.length) % allSlides.length; showSlide(newIndex); }
-        function autoSlide() { clearTimeout(autoSlideTimer); autoSlideTimer = setTimeout(nextSlide, slideDuration); }
-        document.getElementById('prev').addEventListener('click', prevSlide);
-        document.getElementById('next').addEventListener('click', nextSlide);
-        let touchStartX = 0;
-        slidesContainer.addEventListener('touchstart', e => { if (e.touches.length === 1) { touchStartX = e.touches[0].clientX; clearTimeout(autoSlideTimer); } });
-        slidesContainer.addEventListener('touchend', e => {
-            if (e.changedTouches.length === 1) {
-                const touchEndX = e.changedTouches[0].clientX;
-                if (touchEndX - touchStartX > 50) { prevSlide(); } else if (touchEndX - touchStartX < -50) { nextSlide(); } else { autoSlide(); }
-            }
-        });
-        createSlides(); autoSlide();
-    }
+
     
     // --- SIGN OUT LOGIC ---
     const signoutBtnPC = document.getElementById('signout-btn-pc');
