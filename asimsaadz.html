@@ -171,18 +171,30 @@ nav {
 
 <nav id="navbar">
     <div class="nav-content">
-        <a href="#" class="logo">Logo</a>
+        <!-- Logo Image -->
+        <a href="#" class="logo">
+            <img src="asimsaad.png" alt="Logo" style="height:40px;">
+        </a>
+
+        <!-- Navigation Links -->
         <ul class="nav-links">
             <li><a href="#" class="active">Home</a></li>
             <li><a href="#">About</a></li>
-            <li><a href="#">Gallery</a></li>
-            <li><a href="#">Services</a></li>
             <li><a href="#">Contact</a></li>
+            <!-- Added Sign Out for PC -->
+            <li><a href="#" id="signout-btn-pc">Sign Out</a></li>
         </ul>
-        <div class="hamburger" id="hamburger"><div></div><div></div><div></div></div>
+
+        <!-- Hamburger for mobile -->
+        <div class="hamburger" id="hamburger">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
     </div>
 </nav>
 
+<!-- Mobile Menu -->
 <div class="mobile-menu" id="mobile-menu">
     <div class="close-btn" id="close-btn">&times;</div>
     <a href="#">Home</a>
@@ -190,9 +202,10 @@ nav {
     <a href="#">Gallery</a>
     <a href="#">Services</a>
     <a href="#">Contact</a>
-    <!-- ADDED SIGN OUT BUTTON FOR MOBILE -->
+    <!-- Sign Out Button for Mobile -->
     <a href="#" id="signout-btn-mobile">Sign Out</a>
 </div>
+
 
 <div class="slider-container">
     <div class="slides" id="slides"></div>
