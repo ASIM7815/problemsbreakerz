@@ -63,14 +63,14 @@ nav {
     font-size: 1.15rem;
     font-weight: 500;
     padding: 8px 16px;
-    border-radius: 8px; /* Added for a subtle hover effect */
+    border-radius: 8px;
     transition: background 0.3s, box-shadow 0.3s;
 }
 .nav-links li a:hover,
 .nav-links li a.active {
     background: rgba(255, 255, 255, 0.1);
     box-shadow: 0 0 15px rgba(255, 255, 255, 0.4), inset 0 0 5px rgba(255, 255, 255, 0.2);
-    transform: translateY(0); /* Removed the transform to keep it static */
+    transform: translateY(0);
 }
 .hamburger {display:none;flex-direction:column;gap:6px;cursor:pointer;z-index:1100;}
 .hamburger div {width:32px;height:3px;border-radius:2px;background:linear-gradient(90deg,#1CB5E0,#000851);transition:0.3s;}
@@ -335,7 +335,7 @@ document.addEventListener('DOMContentLoaded', function(){
     }
     
     // --- SIGN OUT LOGIC ---
-    const signoutBtn = document.getElementById('signout-btn');
+    const signoutBtnPC = document.getElementById('signout-btn-pc');
     const signoutBtnMobile = document.getElementById('signout-btn-mobile');
 
     const handleSignOut = (e) => {
@@ -347,8 +347,8 @@ document.addEventListener('DOMContentLoaded', function(){
     };
     
     // Check if the element exists before adding the event listener
-    if (signoutBtn) {
-        signoutBtn.addEventListener('click', handleSignOut);
+    if (signoutBtnPC) {
+        signoutBtnPC.addEventListener('click', handleSignOut);
     }
     if (signoutBtnMobile) {
         signoutBtnMobile.addEventListener('click', handleSignOut);
