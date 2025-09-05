@@ -362,9 +362,7 @@ document.addEventListener('DOMContentLoaded', function(){
         signoutBtnMobile.addEventListener('click', handleSignOut);
     }
 
-    // Sticky Nav
-    window.addEventListener('scroll',()=>{navbar.classList.toggle('sticky',window.scrollY>50);});
-
+    
     // Mobile Menu
     if (hamburger && mobileMenu && closeBtn) {
         hamburger.addEventListener('click',()=>{
