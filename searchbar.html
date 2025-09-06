@@ -958,10 +958,11 @@
         uploadBtn.textContent = 'Upload';
     }
     
-    uploadForm.addEventListener('submit', (e) => {
+    uploadForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const file = videoFileInput.files[0];
         const title = document.getElementById('videoTitleInput').value;
+        const description = document.getElementById('videoDescInput').value;
 
         if (!file) {
             showCustomAlert('Please select a video file to upload.');
@@ -972,41 +973,107 @@
             return;
         }
 
-        // --- SIMULATE UPLOAD ---
-        uploadBtn.disabled = true;
-        uploadBtn.textContent = 'Uploading...';
-        progressContainer.style.display = 'block';
+        // --- IMPORTANT CONFIGURATION ---
+        // This is the API key you provided.
+        // WARNING: This key should be kept SECRET on your backend server, not here in the frontend JavaScript.
+        // Your backend will use this key to authorize requests.
+        const CLOUD_STORAGE_API_KEY = '39afdb2becddbdeb78e6c6c3f5e404f7b8b23251';
+
+        // This is the URL to YOUR backend server. You need to create this server.
+        // Example: 'https://your-app-name.herokuapp.com/api'
+        const YOUR_BACKEND_SERVER_URL = 'YOUR_BACKEND_SERVER_URL_HERE'; 
+
+        if (YOUR_BACKEND_SERVER_URL === 'YOUR_BACKEND_SERVER_URL_HERE') {
+            showCustomAlert('Please set the YOUR_BACKEND_SERVER_URL variable in the script before uploading.');
+            return;
+        }
         
-        let progress = 0;
-        const interval = setInterval(() => {
-            progress += Math.random() * 10;
-            if (progress > 100) progress = 100;
-            
-            progressBarInner.style.width = progress + '%';
-            uploadStatus.textContent = `Uploading... ${Math.round(progress)}%`;
+        uploadBtn.disabled = true;
+        uploadBtn.textContent = 'Preparing...';
+        progressContainer.style.display = 'block';
+        progressBarInner.style.width = '0%';
+        uploadStatus.textContent = 'Contacting your server...';
 
-            if (progress === 100) {
-                clearInterval(interval);
-                uploadStatus.textContent = '✅ Upload Complete!';
-                uploadBtn.textContent = 'Done!';
+        try {
+            // --- STEP 1: Get a secure "signed" URL from your backend ---
+            // This code asks your server for a safe, temporary place to upload the video.
+            const response = await fetch(`${YOUR_BACKEND_SERVER_URL}/generate-upload-url`, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    // Your backend can use this header to verify the request is from your app.
+                    'Authorization': `Bearer ${CLOUD_STORAGE_API_KEY}` 
+                },
+                body: JSON.stringify({
+                    fileName: file.name,
+                    fileType: file.type,
+                }),
+            });
 
-                // --- ACTUAL UPLOAD LOGIC GOES HERE ---
-                // 1. Get a signed URL from your backend.
-                // 2. Use fetch() to PUT the 'file' object to that URL.
-                // 3. On success, you can redirect or show a success message.
-                console.log('--- Upload Data ---');
-                console.log('File:', file);
-                console.log('Title:', title);
-                console.log('Description:', document.getElementById('videoDescInput').value);
-                console.log('TODO: Implement actual file upload to your bucket here.');
-                
-                setTimeout(() => {
-                    uploadModal.style.display = 'none';
-                    resetUploadForm();
-                }, 2000);
+            if (!response.ok) {
+                throw new Error('Could not get an upload URL from your server. Make sure the server is running and the URL is correct.');
             }
-        }, 200);
+
+            const { uploadUrl, fileKey } = await response.json();
+
+            // --- STEP 2: Upload the file directly to your bucket using the signed URL ---
+            // We use XMLHttpRequest here because it has a built-in progress event.
+            const xhr = new XMLHttpRequest();
+            xhr.open('PUT', uploadUrl, true);
+            xhr.setRequestHeader('Content-Type', file.type);
+
+            xhr.upload.onprogress = (event) => {
+                if (event.lengthComputable) {
+                    const percentComplete = (event.loaded / event.total) * 100;
+                    progressBarInner.style.width = percentComplete + '%';
+                    uploadStatus.textContent = `Uploading... ${Math.round(percentComplete)}%`;
+                }
+            };
+            
+            xhr.onload = async () => {
+                if (xhr.status === 200) {
+                    uploadStatus.textContent = '✅ Upload Complete!';
+                    uploadBtn.textContent = 'Done!';
+
+                    // --- STEP 3 (Optional): Tell your backend the upload is done ---
+                    // This is where you would save the video's title, description, and fileKey to your database.
+                    await fetch(`${YOUR_BACKEND_SERVER_URL}/upload-complete`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${CLOUD_STORAGE_API_KEY}` 
+                        },
+                        body: JSON.stringify({ fileKey, title, description })
+                    });
+
+                    console.log(`File uploaded successfully. You can access it via key: ${fileKey}`);
+
+                    setTimeout(() => {
+                        uploadModal.style.display = 'none';
+                        resetUploadForm();
+                    }, 2000);
+
+                } else {
+                     throw new Error(`Upload failed with status: ${xhr.status}`);
+                }
+            };
+            
+            xhr.onerror = () => {
+                 throw new Error('An error occurred during the file transfer.');
+            };
+
+            xhr.send(file);
+
+        } catch (error) {
+            console.error('Upload error:', error);
+            showCustomAlert(`Upload failed: ${error.message}. Please check your backend server and console for details.`);
+            uploadStatus.textContent = `Upload failed. Please try again.`;
+            uploadBtn.disabled = false;
+            uploadBtn.textContent = 'Upload';
+            progressBarInner.style.width = '0%';
+        }
     });
+
 
     // --- YouTube API and Video Rendering ---
     
@@ -1218,3 +1285,4 @@
   </script>
 </body>
 </html>
+
