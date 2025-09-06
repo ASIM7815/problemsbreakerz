@@ -263,10 +263,8 @@ nav {
 </section>
 
 
-
-
-
-<section class="content-section">
+<!-- UPDATED: Added an ID to the section -->
+<section id="protected-links" class="content-section">
     <!-- Video Lectures Box -->
     <a href="searchbar.html" class="content-box">
         <i class="fas fa-play-circle icon"></i>
@@ -309,7 +307,6 @@ nav {
   // Import Firebase modules
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-analytics.js";
-  // --- ADDED AUTH MODULES ---
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
 
   // Your web app's Firebase configuration
@@ -317,7 +314,6 @@ nav {
     apiKey: "AIzaSyD2nIB45KU_b4d7ggIP-ZKDIk82UY1ElJ8",
     authDomain: "asimsaadz-db8a5.firebaseapp.com",
     projectId: "asimsaadz-db8a5",
-    // Corrected storageBucket to be consistent with login page
     storageBucket: "asimsaadz-db8a5.appspot.com", 
     messagingSenderId: "201921568991",
     appId: "1:201921568991:web:46e4a57cd2bee11f3bc96a",
@@ -327,26 +323,29 @@ nav {
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
-  // --- INITIALIZE AUTH ---
   const auth = getAuth(app);
-
-  // --- MANDATORY LOGIN CHECK ---
-  // This checks the user's login state as soon as the page loads.
+  
+  // UPDATED: Listen for authentication state changes to manage UI (e.g., show/hide sign out button)
   onAuthStateChanged(auth, (user) => {
-    if (!user) {
-      // If the user is NOT signed in, redirect them to the login page.
-      // Make sure your login page is named 'index.html' when you deploy.
-      window.location.href = 'index.html';
+    const signoutBtnPC = document.getElementById('signout-btn-pc');
+    const signoutBtnMobile = document.getElementById('signout-btn-mobile');
+    if (user) {
+        // User is signed in
+        if(signoutBtnPC) signoutBtnPC.style.display = 'block';
+        if(signoutBtnMobile) signoutBtnMobile.style.display = 'block';
+    } else {
+        // User is signed out
+        if(signoutBtnPC) signoutBtnPC.style.display = 'none';
+        if(signoutBtnMobile) signoutBtnMobile.style.display = 'none';
     }
-    // If the user IS signed in, the code continues and the page remains visible.
   });
+
 
 document.addEventListener('DOMContentLoaded', function(){
     const navbar=document.getElementById('navbar');
     const hamburger=document.getElementById('hamburger');
     const mobileMenu=document.getElementById('mobile-menu');
     const closeBtn=document.getElementById('close-btn');
-
 
     
     // --- SIGN OUT LOGIC ---
@@ -358,17 +357,14 @@ document.addEventListener('DOMContentLoaded', function(){
         signOut(auth).catch((error) => {
             console.error('Sign out error', error);
         });
-        // The onAuthStateChanged listener above will automatically redirect the user
     };
     
-    // Check if the element exists before adding the event listener
     if (signoutBtnPC) {
         signoutBtnPC.addEventListener('click', handleSignOut);
     }
     if (signoutBtnMobile) {
         signoutBtnMobile.addEventListener('click', handleSignOut);
     }
-
     
     // Mobile Menu
     if (hamburger && mobileMenu && closeBtn) {
@@ -381,6 +377,30 @@ document.addEventListener('DOMContentLoaded', function(){
             hamburger.classList.remove('active');
         });
     }
+    
+    // --- NEW: PROTECTED LINK LOGIC ---
+    // This handles clicks on the content boxes for lectures, PYQs, and blogs.
+    const protectedLinksContainer = document.getElementById('protected-links');
+    if (protectedLinksContainer) {
+        protectedLinksContainer.addEventListener('click', function(e) {
+            const link = e.target.closest('a.content-box');
+            if (link) {
+                e.preventDefault(); // Stop the link from navigating immediately
+                const pageUrl = link.getAttribute('href');
+                const user = auth.currentUser;
+
+                if (user) {
+                    // If the user is already logged in, let them proceed.
+                    window.location.href = pageUrl;
+                } else {
+                    // If not logged in, save the target page and redirect to sign-in.
+                    sessionStorage.setItem('redirectUrl', pageUrl);
+                    window.location.href = 'sign.html';
+                }
+            }
+        });
+    }
+
 
     // Quotes
     const quotes=document.querySelectorAll('.quote'); let quoteIndex=0;
