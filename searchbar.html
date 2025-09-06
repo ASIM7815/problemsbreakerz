@@ -981,12 +981,8 @@
 
         // This is the URL to YOUR backend server. You need to create this server.
         // Example: 'https://your-app-name.herokuapp.com/api'
-        const YOUR_BACKEND_SERVER_URL = 'YOUR_BACKEND_SERVER_URL_HERE'; 
-
-        if (YOUR_BACKEND_SERVER_URL === 'YOUR_BACKEND_SERVER_URL_HERE') {
-            showCustomAlert('Please set the YOUR_BACKEND_SERVER_URL variable in the script before uploading.');
-            return;
-        }
+        // You MUST replace this with the actual URL where your server is running.
+        const YOUR_BACKEND_SERVER_URL = 'https://example.com'; 
         
         uploadBtn.disabled = true;
         uploadBtn.textContent = 'Preparing...';
@@ -1285,4 +1281,5 @@
   </script>
 </body>
 </html>
+
 
