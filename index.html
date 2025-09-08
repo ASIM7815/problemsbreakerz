@@ -46,7 +46,7 @@
             padding: 1rem;
             border-radius: 0.5rem;
             margin-bottom: 1rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
     </style>
@@ -60,7 +60,6 @@
 
     <div class="flex items-center justify-center min-h-screen p-4 relative z-10">
         <div class="w-full max-w-sm mx-auto overflow-hidden text-center">
-            
             <div id="signin-card" class="bg-white/20 card-container rounded-2xl shadow-2xl p-8 md:p-10">
                 <div class="mb-8">
                     <img src="asimsaad.png" alt="ASIMSAADZ Logo" class="mx-auto h-16 w-auto mb-4 rounded-lg">
@@ -96,82 +95,82 @@
         </div>
     </div>
     
-<script type="module">
-  // Import Firebase modules
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-  import { 
-    getAuth, 
-    onAuthStateChanged,
-    GoogleAuthProvider, 
-    signInWithPopup
-  } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-  
-  // Your web app's Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyD2nIB45KU_b4d7ggIP-ZKDIk82UY1ElJ8",
-    authDomain: "asimsaadz-db8a5.firebaseapp.com",
-    projectId: "asimsaadz-db8a5",
-    storageBucket: "asimsaadz-db8a5.appspot.com",
-    messagingSenderId: "201921568991",
-    appId: "1:201921568991:web:46e4a57cd2bee11f3bc96a",
-    measurementId: "G-P9NDKNYZFL"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const provider = new GoogleAuthProvider();
-
-  const googleSignInBtn = document.getElementById('google-signin-btn');
-  const tryAgainBtn = document.getElementById('try-again-btn');
-  const messageContainer = document.getElementById('message-container');
-  const messageText = document.getElementById('message-text');
-
-  function showMessage(message) {
-    messageText.textContent = message;
-    messageContainer.classList.remove('hidden');
-    googleSignInBtn.style.display = 'none';
-  }
-
-  function resetUI() {
-    messageContainer.classList.add('hidden');
-    googleSignInBtn.style.display = 'inline-flex';
-  }
-
-  googleSignInBtn.addEventListener('click', () => {
-    signInWithPopup(auth, provider).catch((error) => {
-        if (error.code === 'auth/popup-closed-by-user') {
-            showMessage('Sign-in process cancelled. Please try again.');
-        } else {
-            showMessage('Sorry, we could not sign you in. Please try again.');
-        }
-    });
-  });
-
-  tryAgainBtn.addEventListener('click', () => {
-    resetUI();
-  });
-
-  // Listen for authentication state changes to manage UI only
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-        // User is authenticated. Any Google user is allowed.
-        // No protection needed - all pages are accessible to all users
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { 
+            getAuth, 
+            onAuthStateChanged,
+            GoogleAuthProvider, 
+            signInWithPopup
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         
-        // Check for a redirect URL that was saved before signing in.
-        const redirectUrl = sessionStorage.getItem('redirectUrl');
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyD2nIB45KU_b4d7ggIP-ZKDIk82UY1ElJ8",
+            authDomain: "asimsaadz-db8a5.firebaseapp.com",
+            projectId: "asimsaadz-db8a5",
+            storageBucket: "asimsaadz-db8a5.appspot.com",
+            messagingSenderId: "201921568991",
+            appId: "1:201921568991:web:46e4a57cd2bee11f3bc96a",
+            measurementId: "G-P9NDKNYZFL"
+        };
 
-        if (redirectUrl) {
-          // If a URL was saved, redirect the user there.
-          sessionStorage.removeItem('redirectUrl'); // Clear the saved URL
-          window.location.href = redirectUrl;
-        } else {
-          // If no specific page was requested, go to the main page.
-          window.location.href = 'index.html'; 
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        const googleSignInBtn = document.getElementById('google-signin-btn');
+        const tryAgainBtn = document.getElementById('try-again-btn');
+        const messageContainer = document.getElementById('message-container');
+        const messageText = document.getElementById('message-text');
+
+        function showMessage(message) {
+            messageText.textContent = message;
+            messageContainer.classList.remove('hidden');
+            googleSignInBtn.style.display = 'none';
         }
-    } 
-    // No redirect needed for unauthenticated users, they will stay on the sign-in page.
-  });
-</script>
+
+        function resetUI() {
+            messageContainer.classList.add('hidden');
+            googleSignInBtn.style.display = 'inline-flex';
+        }
+
+        googleSignInBtn.addEventListener('click', () => {
+            signInWithPopup(auth, provider).catch((error) => {
+                if (error.code === 'auth/popup-closed-by-user') {
+                    showMessage('Sign-in process cancelled. Please try again.');
+                } else {
+                    showMessage('Sorry, we could not sign you in. Please try again.');
+                }
+            });
+        });
+
+        tryAgainBtn.addEventListener('click', () => {
+            resetUI();
+        });
+
+        // Listen for authentication state changes to manage UI only
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User is authenticated. Any Google user is allowed.
+                // No protection needed - all pages are accessible to all users
+                
+                // Check for a redirect URL that was saved before signing in.
+                const redirectUrl = sessionStorage.getItem('redirectUrl');
+
+                if (redirectUrl) {
+                    // If a URL was saved, redirect the user there.
+                    sessionStorage.removeItem('redirectUrl'); // Clear the saved URL
+                    window.location.href = redirectUrl;
+                } else {
+                    // If no specific page was requested, go to the main page.
+                    window.location.href = 'index.html'; 
+                }
+            } 
+            // No redirect needed for unauthenticated users, they will stay on the sign-in page.
+        });
+    </script>
 </body>
 </html>
