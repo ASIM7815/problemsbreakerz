@@ -152,10 +152,11 @@
     resetUI();
   });
 
-  // Listen for authentication state changes to handle redirects
+  // Listen for authentication state changes to manage UI only
   onAuthStateChanged(auth, (user) => {
     if (user) {
         // User is authenticated. Any Google user is allowed.
+        // No protection needed - all pages are accessible to all users
         
         // Check for a redirect URL that was saved before signing in.
         const redirectUrl = sessionStorage.getItem('redirectUrl');
@@ -169,7 +170,7 @@
           window.location.href = 'index.html'; 
         }
     } 
-    // No 'else' block needed, as unauthenticated users will just stay on the sign-in page.
+    // No redirect needed for unauthenticated users, they will stay on the sign-in page.
   });
 </script>
 </body>
