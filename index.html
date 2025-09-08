@@ -100,7 +100,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { 
             getAuth, 
-            onAuthStateChanged,
             GoogleAuthProvider, 
             signInWithPopup
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -138,7 +137,10 @@
         }
 
         googleSignInBtn.addEventListener('click', () => {
-            signInWithPopup(auth, provider).catch((error) => {
+            signInWithPopup(auth, provider).then((result) => {
+                // Redirect to the main page after successful sign-in
+                window.location.href = 'main.html';
+            }).catch((error) => {
                 if (error.code === 'auth/popup-closed-by-user') {
                     showMessage('Sign-in process cancelled. Please try again.');
                 } else {
@@ -149,27 +151,6 @@
 
         tryAgainBtn.addEventListener('click', () => {
             resetUI();
-        });
-
-        // Listen for authentication state changes to manage UI only
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                // User is authenticated. Any Google user is allowed.
-                // No protection needed - all pages are accessible to all users
-                
-                // Check for a redirect URL that was saved before signing in.
-                const redirectUrl = sessionStorage.getItem('redirectUrl');
-
-                if (redirectUrl) {
-                    // If a URL was saved, redirect the user there.
-                    sessionStorage.removeItem('redirectUrl'); // Clear the saved URL
-                    window.location.href = redirectUrl;
-                } else {
-                    // If no specific page was requested, go to the main page.
-                    window.location.href = 'index.html'; 
-                }
-            } 
-            // No redirect needed for unauthenticated users, they will stay on the sign-in page.
         });
     </script>
 </body>
