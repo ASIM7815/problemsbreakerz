@@ -1,571 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=AW-17524250047"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'AW-17524250047');
-</script>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>ASIMSAADZ</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-<style>
-* {margin:0;padding:0;box-sizing:border-box;font-family:'Poppins','Roboto',sans-serif;}
-body {color:white;background:#000;min-height:100vh; touch-action: manipulation; user-select:none; overflow-x: hidden;}
-#bg-video {position:fixed;top:0;left:0;width:100vw;height:100vh;object-fit:cover;z-index:-1;}
-
-/* New Modern Navigation Bar Styles */
-nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: rgba(0, 0, 0, 0.6);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(15px);
-    border-bottom: 1px solid rgba(28, 181, 224, 0.3);
-    z-index: 1000;
-    min-height: 80px;
-    padding: 0 20px;
-    transition: all 0.4s ease;
-}
-
-nav.scrolled {
-    min-height: 70px;
-    background: rgba(0, 0, 0, 0.8);
-    box-shadow: 0 5px 25px rgba(28, 181, 224, 0.2);
-}
-
-.nav-content {
-    width: 100%;
-    max-width: 1200px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    transition: transform 0.3s ease;
-}
-
-.logo:hover {
-    transform: scale(1.05);
-}
-
-.logo img {
-    height: 45px;
-    filter: drop-shadow(0 0 8px rgba(28, 181, 224, 0.6));
-    transition: filter 0.3s ease;
-}
-
-.logo:hover img {
-    filter: drop-shadow(0 0 12px rgba(28, 181, 224, 0.8));
-}
-
-.nav-links {
-    display: flex;
-    gap: 30px;
-    list-style: none;
-    align-items: center;
-}
-
-.nav-links li a {
-    text-decoration: none;
-    color: #fff;
-    font-size: 1.1rem;
-    font-weight: 500;
-    padding: 10px 18px;
-    border-radius: 30px;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.4s ease;
-    letter-spacing: 0.5px;
-    display: inline-block;
-}
-
-.nav-links li a::before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0;
-    height: 2px;
-    background: linear-gradient(90deg, #1CB5E0, #00c9ff);
-    transition: width 0.4s ease;
-}
-
-.nav-links li a:hover::before,
-.nav-links li a.active::before {
-    width: 70%;
-}
-
-.nav-links li a:hover,
-.nav-links li a.active {
-    color: #1CB5E0;
-    background: rgba(28, 181, 224, 0.1);
-    box-shadow: 0 5px 15px rgba(28, 181, 224, 0.2), inset 0 0 5px rgba(28, 181, 224, 0.1);
-    transform: translateY(-2px);
-}
-
-.nav-links li a.active {
-    background: rgba(28, 181, 224, 0.15);
-    box-shadow: 0 5px 20px rgba(28, 181, 224, 0.3), inset 0 0 8px rgba(28, 181, 224, 0.2);
-}
-
-.auth-btn {
-    background: linear-gradient(135deg, #1CB5E0, #000851);
-    color: white !important;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 30px;
-    font-weight: 600;
-    box-shadow: 0 4px 15px rgba(28, 181, 224, 0.3);
-    transition: all 0.3s ease;
-}
-
-.auth-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(28, 181, 224, 0.5);
-    background: linear-gradient(135deg, #00c9ff, #1CB5E0);
-}
-
-#signin-btn-pc, #signin-btn-mobile {
-    background: linear-gradient(135deg, #00c9ff, #1CB5E0);
-}
-
-#signout-btn-pc, #signout-btn-mobile {
-    background: linear-gradient(135deg, #1CB5E0, #000851);
-}
-
-/* Hamburger Menu */
-.hamburger {
-    display: none;
-    flex-direction: column;
-    gap: 6px;
-    cursor: pointer;
-    z-index: 1100;
-    padding: 10px;
-    border-radius: 8px;
-    transition: background 0.3s ease;
-}
-
-.hamburger:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-.hamburger div {
-    width: 30px;
-    height: 3px;
-    border-radius: 3px;
-    background: linear-gradient(90deg, #1CB5E0, #00c9ff);
-    transition: all 0.4s ease;
-}
-
-.hamburger.active {
-    background: transparent;
-}
-
-.hamburger.active div:nth-child(1) {
-    transform: rotate(45deg) translate(7px, 7px);
-    background: #1CB5E0;
-}
-
-.hamburger.active div:nth-child(2) {
-    opacity: 0;
-    transform: translateX(-20px);
-}
-
-.hamburger.active div:nth-child(3) {
-    transform: rotate(-45deg) translate(7px, -7px);
-    background: #1CB5E0;
-}
-
-/* Mobile Menu */
-.mobile-menu {
-    display: none;
-    position: fixed;
-    top: 0;
-    right: -100%;
-    width: 80vw;
-    max-width: 350px;
-    height: 100vh;
-    padding: 80px 30px 30px;
-    flex-direction: column;
-    gap: 25px;
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(28, 181, 224, 0.1));
-    backdrop-filter: blur(20px);
-    transition: right 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-    z-index: 1050;
-    touch-action: none;
-    border-left: 1px solid rgba(28, 181, 224, 0.2);
-    box-shadow: -5px 0 30px rgba(0, 0, 0, 0.5);
-}
-
-.mobile-menu.show {
-    right: 0;
-    display: flex;
-}
-
-.mobile-menu .close-btn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    font-size: 2rem;
-    font-weight: bold;
-    color: #1CB5E0;
-    cursor: pointer;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.05);
-    transition: all 0.3s ease;
-}
-
-.mobile-menu .close-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    transform: rotate(90deg);
-}
-
-.mobile-menu a {
-    text-decoration: none;
-    font-size: 1.2rem;
-    font-weight: 500;
-    color: #fff;
-    padding: 12px 20px;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.05);
-    text-align: center;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.mobile-menu a:hover {
-    background: rgba(28, 181, 224, 0.15);
-    border-color: rgba(28, 181, 224, 0.3);
-    transform: translateX(5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-}
-
-#signout-btn-mobile {
-    margin-top: 20px;
-    background: linear-gradient(135deg, #1CB5E0, #000851);
-    border: none;
-    color: white;
-    font-weight: 600;
-}
-
-#signout-btn-mobile:hover {
-    background: linear-gradient(135deg, #00c9ff, #1CB5E0);
-    transform: translateX(5px);
-    box-shadow: 0 5px 15px rgba(28, 181, 224, 0.3);
-}
-
-/* New Hero Section CSS */
-.hero-section {
-    position: relative;
-    width: 100vw;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 0 20px;
-    background-image: url('https://wkeo8cvbv1n9mxmr.public.blob.vercel-storage.com/asim.png'); /* Use your chosen image URL here */
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    /* Optional: Add an overlay for better text readability */
-    z-index: 1;
-}
-
-.hero-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.4);
-    z-index: -1;
-}
-
-.hero-content {
-    max-width: 800px;
-    padding: 30px;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    transform: translateY(0);
-    opacity: 1;
-    animation: fadeIn 1.5s ease-out;
-}
-
-.hero-title {
-    font-size: clamp(2rem, 5vw, 4.5rem);
-    font-weight: 700;
-    margin-bottom: 20px;
-    background: linear-gradient(45deg, #1CB5E0, #fff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.hero-subtitle {
-    font-size: clamp(1rem, 2.5vw, 1.5rem);
-    font-weight: 400;
-    color: rgba(255, 255, 255, 0.9);
-    margin-bottom: 40px;
-}
-
-.cta-button {
-    display: inline-block;
-    padding: 14px 28px;
-    border: 2px solid #1CB5E0;
-    border-radius: 50px;
-    color: #fff;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 1.1rem;
-    transition: all 0.3s ease;
-}
-
-.cta-button:hover {
-    background: #1CB5E0;
-    box-shadow: 0 0 20px rgba(28, 181, 224, 0.6);
-    transform: translateY(-3px);
-}
-.quotes-container {width:95vw;max-width:900px;margin:40px auto;padding:40px 10px;border-radius:15px;background:rgba(0,0,0,0.35);backdrop-filter:blur(8px);text-align:center;position:relative;min-height:160px;}
-.quote {font-size:2rem;font-weight:bold;line-height:1.3;background:linear-gradient(90deg,#ff4b2b,#ff416c,#ff9933,#00c9ff,#92fe9d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;opacity:0;transform:translateY(60px) scale(0.9) rotateX(60deg) skewX(-10deg);filter:blur(8px) brightness(1.2);transition:0.6s;position:absolute;top:50%;left:50%;width:90%;padding:0 10px;word-break:break-word;}
-.quote.active {opacity:1;transform:translate(-50%,-50%) scale(1.07) rotateX(0deg) skewX(0deg);filter:blur(0px) brightness(1.05);}
-.quote.exit {opacity:0;transform:translate(-50%,60%) scale(0.7) rotateX(-60deg) skewX(10deg);filter:blur(12px) brightness(0.8);}
-
-.content-section {
-  width: 98vw; max-width: 1200px; margin: 40px auto 100px; display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: 30px; padding: 20px; perspective: 1000px;
-}
-.content-box {
-  display: block; background: rgba(255,255,255,0.08); backdrop-filter: blur(12px); border-radius: 18px;
-  padding: 30px; text-align: center; text-decoration: none; color: #fff; border: 1px solid rgba(255,255,255,0.15);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.25); transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-  opacity: 0; transform: translateY(40px) scale(0.95);
-}
-.content-box.visible { opacity: 1; transform: translateY(0) scale(1); }
-.content-box:nth-child(1) { transition-delay: 0.1s; }
-.content-box:nth-child(2) { transition-delay: 0.2s; }
-.content-box:nth-child(3) { transition-delay: 0.3s; }
-.content-box:hover {
-  transform: translateY(-12px) scale(1.05) rotateX(10deg) rotateY(5deg); background: rgba(28, 181, 224, 0.1);
-  border-color: rgba(28, 181, 224, 0.5); box-shadow: 0 15px 40px rgba(28, 181, 224, 0.2);
-}
-.content-box .icon {
-    font-size: 3.5rem; margin-bottom: 1rem; background: linear-gradient(45deg, #1CB5E0, #fff);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; transition: transform 0.4s ease;
-}
-.content-box:hover .icon { transform: scale(1.15) rotate(-8deg); }
-.content-box h2 { font-size: 1.6rem; margin-bottom: 12px; }
-.content-box p { font-size: 1rem; opacity: 0.85; }
-
-.site-footer {width:100vw;background:rgba(0,0,0,0.4);backdrop-filter:blur(10px);border-top:1px solid rgba(255,255,255,0.2);padding:60px 20px 20px;color:#fff;font-size:1rem;}
-.footer-container {max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;gap:40px;padding-bottom:30px;}
-.footer-about,.footer-links,.footer-contact{flex:1 1 250px;}
-.footer-about h3 {font-size:2rem;font-weight:bold;background:linear-gradient(45deg,#ff6a00,#ee0979);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:15px;}
-.footer-about p,.footer-contact p,.footer-links ul li a{color:rgba(255,255,255,0.8);}
-.footer-links ul {list-style:none; padding: 0;}
-.footer-bottom{text-align:center;padding-top:20px;border-top:1px solid rgba(255,255,255,0.1);margin-top:20px;}
-@media(max-width:1024px) {
-    .nav-links li a {
-        padding: 8px 14px;
-        font-size: 1rem;
-    }
-    .nav-links {
-        gap: 15px;
-    }
-}
-
-@media(max-width:900px) {
-    .nav-links {
-        display: none;
-    }
-    .hamburger {
-        display: flex;
-    }
-    .slider-container {
-        width: 95vw;
-    }
-    .footer-container {
-        flex-direction: column;
-        gap: 20px;
-    }
-    .logo img {
-        height: 40px;
-    }
-    nav {
-        min-height: 70px;
-    }
-    nav.scrolled {
-        min-height: 60px;
-    }
-}
-
-@media(max-width:600px) {
-    .slider-container {
-        height: 70vw;
-        max-height: 320px;
-    }
-    .quotes-container {
-        padding: 20px;
-        min-height: 100px;
-    }
-    .quote {
-        font-size: clamp(0.9rem,4vw,1.1rem);
-        width: 99%;
-    }
-    .logo img {
-        height: 35px;
-    }
-    .mobile-menu {
-        width: 85vw;
-        padding: 70px 20px 20px;
-    }
-    .mobile-menu a {
-        font-size: 1.1rem;
-        padding: 10px 15px;
-    }
-    .hamburger div {
-        width: 28px;
-        height: 2.5px;
-    }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - ASIMSAADZ</title>
+    <!-- Authentication Check -->
+    <script type="module" src="auth-check.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        #bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+        }
+        .video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: -1;
+        }
+        .card-container {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        .google-button {
+            transition: all 0.3s ease;
+        }
+        .google-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.3);
+        }
+        .message-box {
+            background-color: #fefefe;
+            color: #4a5568;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+    </style>
 </head>
-<body>
+<body class="bg-black">
+    <video autoplay loop muted playsinline id="bg-video">
+        <source src="https://storage.cloud.google.com/asimsaadz/butterfly.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div class="video-overlay"></div>
 
-<video autoplay muted loop playsinline preload="auto" id="bg-video">
-<source src="https://storage.cloud.google.com/asimsaadz/Mobile_Video_Generation_Request.mp4" type="video/mp4">
-</video>
+    <div class="flex items-center justify-center min-h-screen p-4 relative z-10">
+        <div class="w-full max-w-sm mx-auto overflow-hidden text-center">
+            
+            <div id="signin-card" class="bg-white/20 card-container rounded-2xl shadow-2xl p-8 md:p-10">
+                <div class="mb-8">
+                    <img src="asimsaad.png" alt="ASIMSAADZ Logo" class="mx-auto h-16 w-auto mb-4 rounded-lg">
+                    <h1 class="text-3xl font-bold text-white">Welcome to ASIMSAADZ</h1>
+                    <p class="text-indigo-100 mt-2">Sign in to continue.</p>
+                </div>
+                
+                <div id="message-container" class="hidden">
+                    <div class="message-box">
+                        <p id="message-text" class="font-medium mb-4"></p>
+                        <button id="try-again-btn" class="google-button w-full inline-flex items-center justify-center bg-gray-200 text-gray-700 font-medium py-3 px-4 rounded-lg shadow-lg focus:outline-none focus:ring-4 focus:ring-gray-300">
+                            Try Again
+                        </button>
+                    </div>
+                </div>
 
-<nav id="navbar">
-    <div class="nav-content">
-        <!-- Logo Image with Animation -->
-        <a href="#" class="logo">
-            <img src="asimsaad.png" alt="Logo">
-        </a>
+                <button id="google-signin-btn" 
+                   class="google-button w-full inline-flex items-center justify-center bg-white text-gray-700 font-medium py-3 px-4 rounded-lg shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-300">
+                    <svg class="w-6 h-6 mr-3" viewBox="0 0 48 48">
+                        <path fill="#4285F4" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12s5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20s20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"></path>
+                        <path fill="#34A853" d="M43.611,20.083L43.595,20L42,20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571l0.002-0.002l5.657,5.657C40.074,36.316,44,30.824,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path>
+                        <path fill="#FBBC05" d="M10.21,28.641l5.657,5.657C17.93,36.888,20.803,38,24,38c3.197,0,6.07-1.112,8.21-2.9l-5.657-5.657C25.5,29.608,24.789,30,24,30C20.44,30,17.222,28.32,15.25,25.8l-5.04,3.841C11.373,26.425,10.66,27.524,10.21,28.641z"></path>
+                        <path fill="#EA4335" d="M24,16c-1.898,0-3.64,0.73-4.95,2.05l-5.657-5.657C15.96,10.193,19.758,8,24,8c5.268,0,10.046,2.053,13.571,6.021l-5.657,5.657C30.151,17.154,27.359,16,24,16z"></path>
+                    </svg>
+                    Sign in with Google
+                </button>
 
-        <!-- Navigation Links with Hover Effects -->
-        <ul class="nav-links">
-            <li><a href="#" class="active"><i class="fas fa-home"></i> Home</a></li>
-            <li><a href="searchbar.html"><i class="fas fa-play-circle"></i> Videos</a></li>
-            <li><a href="pyqs.html"><i class="fas fa-file-alt"></i> PYQs</a></li>
-            <li><a href="blog.html"><i class="fas fa-feather-alt"></i> Blogs</a></li>
-            <li><a href="#"><i class="fas fa-info-circle"></i> About</a></li>
-            <li><a href="#"><i class="fas fa-envelope"></i> Contact</a></li>
-            <!-- Sign In/Out Button with Gradient -->
-            <li><a href="sign.html" id="signin-btn-pc" class="auth-btn"><i class="fas fa-sign-in-alt"></i> Sign In</a></li>
-            <li><a href="#" id="signout-btn-pc" class="auth-btn"><i class="fas fa-sign-out-alt"></i> Sign Out</a></li>
-        </ul>
-
-        <!-- Improved Hamburger for Mobile -->
-        <div class="hamburger" id="hamburger">
-            <div></div>
-            <div></div>
-            <div></div>
+                <div class="text-center text-xs text-indigo-200 mt-8">
+                    <p>By signing in, you agree to our</p>
+                    <p><a href="#" class="font-medium hover:underline">Terms of Service</a> & <a href="#" class="font-medium hover:underline">Privacy Policy</a>.</p>
+                </div>
+            </div>
         </div>
     </div>
-</nav>
-
-<!-- Enhanced Mobile Menu with Icons -->
-<div class="mobile-menu" id="mobile-menu">
-    <div class="close-btn" id="close-btn">&times;</div>
-    <a href="#"><i class="fas fa-home"></i> Home</a>
-    <a href="searchbar.html"><i class="fas fa-play-circle"></i> Videos</a>
-    <a href="pyqs.html"><i class="fas fa-file-alt"></i> PYQs</a>
-    <a href="blog.html"><i class="fas fa-feather-alt"></i> Blogs</a>
-    <a href="#"><i class="fas fa-info-circle"></i> About</a>
-    <a href="#"><i class="fas fa-envelope"></i> Contact</a>
-    <!-- Sign In/Out Buttons for Mobile with Icon -->
-    <a href="sign.html" id="signin-btn-mobile" class="auth-btn"><i class="fas fa-sign-in-alt"></i> Sign In</a>
-    <a href="#" id="signout-btn-mobile" class="auth-btn"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
-</div>
-<section class="hero-section">
-    <div class="hero-content">
-      
-        <a href="https://storage.cloud.google.com/asimsaadz/Gemini_Generated_Image_uflpkauflpkauflp.png" class="cta-button">Explore Now <i class="fas fa-arrow-right"></i></a>
-    </div>
-</section>
-
-
-<!-- UPDATED: Added an ID to the section -->
-<section id="protected-links" class="content-section">
-    <!-- Video Lectures Box -->
-    <a href="searchbar.html" class="content-box">
-        <i class="fas fa-play-circle icon"></i>
-        <h2>Video Lectures</h2>
-        <p>Watch engaging video lectures at your own pace.</p>
-    </a>
-    <!-- PYQs Box -->
-    <a href="pyqs.html" class="content-box">
-        <i class="fas fa-file-alt icon"></i>
-        <h2>PYQs</h2>
-        <p>Access previous year's questions for practice.</p>
-    </a>
-    <!-- Blogs Box -->
-    <a href="blog.html" class="content-box">
-        <i class="fas fa-feather-alt icon"></i>
-        <h2>Blogs</h2>
-        <p>Read insightful blogs and articles by experts.</p>
-    </a>
-</section>
-
-<footer class="site-footer">
-<div class="footer-container">
-    <div class="footer-about">
-        <a href="#"><img src="00c22b83efd527a497544ab5c5cd8ca3.png" alt="Logo" class="logo-img"/></a>
-        <p>Providing the best resources for students to excel in their studies.</p>
-    </div>
-    <div class="footer-links"><h4>Quick Links</h4>
-        <ul><li><a href="#">Home</a></li><li><a href="#">About Us</a></li><li><a href="#">Services</a></li><li><a href="#">Blog</a></li><li><a href="#">Contact</a></li></ul>
-    </div>
-    <div class="footer-contact"><h4>Contact Info</h4>
-        <p><i class="fas fa-map-marker-alt"></i> Hyderabad</p>
-        <p><i class="fas fa-phone"></i> 7815979515</p>
-        <p><i class="fas fa-envelope"></i>mohammadasimsaad@gmail.com</p>
-    </div>
-</div>
-<div class="footer-bottom"><p>&copy; 2025. All Rights Reserved.</p></div>
-</footer>
-
+    
 <script type="module">
   // Import Firebase modules
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-analytics.js";
-  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
-
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+  import { 
+    getAuth, 
+    onAuthStateChanged,
+    GoogleAuthProvider, 
+    signInWithPopup
+  } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+  
   // Your web app's Firebase configuration
   const firebaseConfig = {
     apiKey: "AIzaSyD2nIB45KU_b4d7ggIP-ZKDIk82UY1ElJ8",
     authDomain: "asimsaadz-db8a5.firebaseapp.com",
     projectId: "asimsaadz-db8a5",
-    storageBucket: "asimsaadz-db8a5.appspot.com", 
+    storageBucket: "asimsaadz-db8a5.appspot.com",
     messagingSenderId: "201921568991",
     appId: "1:201921568991:web:46e4a57cd2bee11f3bc96a",
     measurementId: "G-P9NDKNYZFL"
@@ -573,158 +121,59 @@ nav.scrolled {
 
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
   const auth = getAuth(app);
-  
-  // Updated authentication state listener to toggle between sign-in and sign-out buttons
-  onAuthStateChanged(auth, (user) => {
-    // Update auth buttons visibility
-    updateAuthButtonsVisibility();
-    
-    if (user) {
-        // Update user display name if available
-        const userName = user.displayName || user.email || 'User';
-        console.log(`Signed in as: ${userName}`);
-    }
+  const provider = new GoogleAuthProvider();
+
+  const googleSignInBtn = document.getElementById('google-signin-btn');
+  const tryAgainBtn = document.getElementById('try-again-btn');
+  const messageContainer = document.getElementById('message-container');
+  const messageText = document.getElementById('message-text');
+
+  function showMessage(message) {
+    messageText.textContent = message;
+    messageContainer.classList.remove('hidden');
+    googleSignInBtn.style.display = 'none';
+  }
+
+  function resetUI() {
+    messageContainer.classList.add('hidden');
+    googleSignInBtn.style.display = 'inline-flex';
+  }
+
+  googleSignInBtn.addEventListener('click', () => {
+    signInWithPopup(auth, provider).catch((error) => {
+        if (error.code === 'auth/popup-closed-by-user') {
+            showMessage('Sign-in process cancelled. Please try again.');
+        } else {
+            showMessage('Sorry, we could not sign you in. Please try again.');
+        }
+    });
   });
 
+  tryAgainBtn.addEventListener('click', () => {
+    resetUI();
+  });
 
-document.addEventListener('DOMContentLoaded', function(){
-    const navbar = document.getElementById('navbar');
-    const hamburger = document.getElementById('hamburger');
-    const mobileMenu = document.getElementById('mobile-menu');
-    const closeBtn = document.getElementById('close-btn');
-    
-    // --- NAVBAR SCROLL EFFECT ---
-    function handleScroll() {
-        if (window.scrollY > 50) {
-            navbar.classList.add('scrolled');
+  // Listen for authentication state changes to handle redirects
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+        // User is authenticated. Any Google user is allowed.
+        
+        // Check for a redirect URL that was saved before signing in.
+        const redirectUrl = sessionStorage.getItem('redirectUrl');
+
+        if (redirectUrl) {
+          // If a URL was saved, redirect the user there.
+          sessionStorage.removeItem('redirectUrl'); // Clear the saved URL
+          window.location.href = redirectUrl;
         } else {
-            navbar.classList.remove('scrolled');
+          // If no specific page was requested, go to the main page.
+          window.location.href = 'index.html'; 
         }
-    }
-    
-    // Add scroll event listener
-    window.addEventListener('scroll', handleScroll);
-    
-    // Initialize navbar state on page load
-    handleScroll();
-    
-    // --- SIGN OUT LOGIC ---
-    const signoutBtnPC = document.getElementById('signout-btn-pc');
-    const signoutBtnMobile = document.getElementById('signout-btn-mobile');
-
-    const handleSignOut = (e) => {
-        e.preventDefault(); // Prevent the link from navigating
-        signOut(auth).catch((error) => {
-            console.error('Sign out error', error);
-        });
-    };
-    
-    if (signoutBtnPC) {
-        signoutBtnPC.addEventListener('click', handleSignOut);
-    }
-    if (signoutBtnMobile) {
-        signoutBtnMobile.addEventListener('click', handleSignOut);
-    }
-    
-    // --- ENHANCED MOBILE MENU ---
-    if (hamburger && mobileMenu && closeBtn) {
-        // Toggle mobile menu
-        hamburger.addEventListener('click', () => {
-            mobileMenu.classList.toggle('show');
-            hamburger.classList.toggle('active');
-            document.body.style.overflow = mobileMenu.classList.contains('show') ? 'hidden' : '';
-        });
-        
-        // Close mobile menu
-        closeBtn.addEventListener('click', () => {
-            mobileMenu.classList.remove('show');
-            hamburger.classList.remove('active');
-            document.body.style.overflow = '';
-        });
-        
-        // Close menu when clicking outside
-        document.addEventListener('click', (e) => {
-            if (mobileMenu.classList.contains('show') && 
-                !mobileMenu.contains(e.target) && 
-                !hamburger.contains(e.target)) {
-                mobileMenu.classList.remove('show');
-                hamburger.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-        });
-        
-        // Close menu when pressing escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && mobileMenu.classList.contains('show')) {
-                mobileMenu.classList.remove('show');
-                hamburger.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-        });
-    }
-    
-    // --- NEW: PROTECTED LINK LOGIC ---
-    // This handles clicks on the content boxes for lectures, PYQs, and blogs.
-    const protectedLinksContainer = document.getElementById('protected-links');
-    if (protectedLinksContainer) {
-        protectedLinksContainer.addEventListener('click', function(e) {
-            const link = e.target.closest('a.content-box');
-            if (link) {
-                e.preventDefault(); // Stop the link from navigating immediately
-                const pageUrl = link.getAttribute('href');
-                const user = auth.currentUser;
-
-                if (user) {
-                    // If the user is already logged in, let them proceed.
-                    window.location.href = pageUrl;
-                } else {
-                    // If not logged in, save the target page and redirect to sign-in.
-                    localStorage.setItem('redirectAfterSignIn', pageUrl);
-                    window.location.href = 'sign.html';
-                }
-            }
-        });
-    }
-    
-    // Initialize auth buttons visibility
-    function updateAuthButtonsVisibility() {
-        const signinBtnPC = document.getElementById('signin-btn-pc');
-        const signinBtnMobile = document.getElementById('signin-btn-mobile');
-        const signoutBtnPC = document.getElementById('signout-btn-pc');
-        const signoutBtnMobile = document.getElementById('signout-btn-mobile');
-        
-        const isLoggedIn = auth.currentUser !== null;
-        
-        if(signinBtnPC) signinBtnPC.style.display = isLoggedIn ? 'none' : 'block';
-        if(signinBtnMobile) signinBtnMobile.style.display = isLoggedIn ? 'none' : 'block';
-        if(signoutBtnPC) signoutBtnPC.style.display = isLoggedIn ? 'block' : 'none';
-        if(signoutBtnMobile) signoutBtnMobile.style.display = isLoggedIn ? 'block' : 'none';
-    }
-    
-    // Call once at page load
-    updateAuthButtonsVisibility();
-
-
-    // Quotes
-    const quotes=document.querySelectorAll('.quote'); let quoteIndex=0;
-    function showQuote(idx){quotes.forEach((q,i)=>{q.classList.remove('active','exit');if(i===idx) q.classList.add('active');else if(i===((idx-1+quotes.length)%quotes.length)) q.classList.add('exit');});}
-    function autoQuote(){setTimeout(()=>{quoteIndex=(quoteIndex+1)%quotes.length;showQuote(quoteIndex);autoQuote();},window.innerWidth<500?2000:3500);}
-    showQuote(quoteIndex); autoQuote();
-    
-    // Content Box Animation
-    const contentBoxes = document.querySelectorAll('.content-box');
-    const observer = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                observer.unobserve(entry.target);
-            }
-        });
-    }, { root: null, rootMargin: '0px', threshold: 0.1 });
-    contentBoxes.forEach(box => { observer.observe(box); });
-});
+    } 
+    // No 'else' block needed, as unauthenticated users will just stay on the sign-in page.
+  });
 </script>
 </body>
 </html>
+
