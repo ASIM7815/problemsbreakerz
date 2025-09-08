@@ -22,6 +22,7 @@
 body {color:white;background:#000;min-height:100vh; touch-action: manipulation; user-select:none; overflow-x: hidden;}
 #bg-video {position:fixed;top:0;left:0;width:100vw;height:100vh;object-fit:cover;z-index:-1;}
 
+/* New Modern Navigation Bar Styles */
 nav {
     position: fixed;
     top: 0;
@@ -30,14 +31,22 @@ nav {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: rgba(0, 0, 0, 0.4);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.6);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(15px);
+    border-bottom: 1px solid rgba(28, 181, 224, 0.3);
     z-index: 1000;
     min-height: 80px;
     padding: 0 20px;
+    transition: all 0.4s ease;
 }
+
+nav.scrolled {
+    min-height: 70px;
+    background: rgba(0, 0, 0, 0.8);
+    box-shadow: 0 5px 25px rgba(28, 181, 224, 0.2);
+}
+
 .nav-content {
     width: 100%;
     max-width: 1200px;
@@ -45,57 +54,231 @@ nav {
     justify-content: space-between;
     align-items: center;
 }
+
 .logo {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: #fff;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    transition: transform 0.3s ease;
 }
+
+.logo:hover {
+    transform: scale(1.05);
+}
+
+.logo img {
+    height: 45px;
+    filter: drop-shadow(0 0 8px rgba(28, 181, 224, 0.6));
+    transition: filter 0.3s ease;
+}
+
+.logo:hover img {
+    filter: drop-shadow(0 0 12px rgba(28, 181, 224, 0.8));
+}
+
 .nav-links {
     display: flex;
-    gap: 40px;
+    gap: 30px;
     list-style: none;
     align-items: center;
 }
+
 .nav-links li a {
     text-decoration: none;
     color: #fff;
-    font-size: 1.15rem;
+    font-size: 1.1rem;
     font-weight: 500;
-    padding: 8px 16px;
-    border-radius: 8px;
-    transition: background 0.3s, box-shadow 0.3s;
+    padding: 10px 18px;
+    border-radius: 30px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    letter-spacing: 0.5px;
+    display: inline-block;
 }
+
+.nav-links li a::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #1CB5E0, #00c9ff);
+    transition: width 0.4s ease;
+}
+
+.nav-links li a:hover::before,
+.nav-links li a.active::before {
+    width: 70%;
+}
+
 .nav-links li a:hover,
 .nav-links li a.active {
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.4), inset 0 0 5px rgba(255, 255, 255, 0.2);
-    transform: translateY(0);
+    color: #1CB5E0;
+    background: rgba(28, 181, 224, 0.1);
+    box-shadow: 0 5px 15px rgba(28, 181, 224, 0.2), inset 0 0 5px rgba(28, 181, 224, 0.1);
+    transform: translateY(-2px);
 }
-.hamburger {display:none;flex-direction:column;gap:6px;cursor:pointer;z-index:1100;}
-.hamburger div {width:32px;height:3px;border-radius:2px;background:linear-gradient(90deg,#1CB5E0,#000851);transition:0.3s;}
-.hamburger.active div:nth-child(1){transform:rotate(45deg) translate(7px,7px);background:#fff;}
-.hamburger.active div:nth-child(2){opacity:0;}
-.hamburger.active div:nth-child(3){transform:rotate(-45deg) translate(8px,-8px);background:#fff;}
 
-.mobile-menu {display:none;position:fixed;top:0;right:-100%;width:78vw;max-width:340px;height:100vh;padding:64px 32px 20px;flex-direction:column;gap:32px;background:linear-gradient(180deg,#232526 0%,#414345 100%);backdrop-filter:blur(10px);transition:right 0.34s;z-index:1050; touch-action:none;}
-.mobile-menu.show{right:0;display:flex;}
-.mobile-menu .close-btn {font-size:2.3rem;font-weight:bold;color:#fff;align-self:flex-end;cursor:pointer;margin-bottom:20px;}
+.nav-links li a.active {
+    background: rgba(28, 181, 224, 0.15);
+    box-shadow: 0 5px 20px rgba(28, 181, 224, 0.3), inset 0 0 8px rgba(28, 181, 224, 0.2);
+}
+
+.auth-btn {
+    background: linear-gradient(135deg, #1CB5E0, #000851);
+    color: white !important;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(28, 181, 224, 0.3);
+    transition: all 0.3s ease;
+}
+
+.auth-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(28, 181, 224, 0.5);
+    background: linear-gradient(135deg, #00c9ff, #1CB5E0);
+}
+
+#signin-btn-pc, #signin-btn-mobile {
+    background: linear-gradient(135deg, #00c9ff, #1CB5E0);
+}
+
+#signout-btn-pc, #signout-btn-mobile {
+    background: linear-gradient(135deg, #1CB5E0, #000851);
+}
+
+/* Hamburger Menu */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    cursor: pointer;
+    z-index: 1100;
+    padding: 10px;
+    border-radius: 8px;
+    transition: background 0.3s ease;
+}
+
+.hamburger:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.hamburger div {
+    width: 30px;
+    height: 3px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, #1CB5E0, #00c9ff);
+    transition: all 0.4s ease;
+}
+
+.hamburger.active {
+    background: transparent;
+}
+
+.hamburger.active div:nth-child(1) {
+    transform: rotate(45deg) translate(7px, 7px);
+    background: #1CB5E0;
+}
+
+.hamburger.active div:nth-child(2) {
+    opacity: 0;
+    transform: translateX(-20px);
+}
+
+.hamburger.active div:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+    background: #1CB5E0;
+}
+
+/* Mobile Menu */
+.mobile-menu {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 80vw;
+    max-width: 350px;
+    height: 100vh;
+    padding: 80px 30px 30px;
+    flex-direction: column;
+    gap: 25px;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(28, 181, 224, 0.1));
+    backdrop-filter: blur(20px);
+    transition: right 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    z-index: 1050;
+    touch-action: none;
+    border-left: 1px solid rgba(28, 181, 224, 0.2);
+    box-shadow: -5px 0 30px rgba(0, 0, 0, 0.5);
+}
+
+.mobile-menu.show {
+    right: 0;
+    display: flex;
+}
+
+.mobile-menu .close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #1CB5E0;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+}
+
+.mobile-menu .close-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(90deg);
+}
+
 .mobile-menu a {
     text-decoration: none;
-    font-size: 1.22rem;
-    font-weight: 600;
+    font-size: 1.2rem;
+    font-weight: 500;
     color: #fff;
-    padding: 10px 0;
-    border-radius: 8px;
-    background: transparent;
+    padding: 12px 20px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
     text-align: center;
-    border: 1px solid transparent;
-    transition: background 0.3s, border-color 0.3s;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
+
 .mobile-menu a:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(28, 181, 224, 0.15);
+    border-color: rgba(28, 181, 224, 0.3);
+    transform: translateX(5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+#signout-btn-mobile {
+    margin-top: 20px;
+    background: linear-gradient(135deg, #1CB5E0, #000851);
+    border: none;
+    color: white;
+    font-weight: 600;
+}
+
+#signout-btn-mobile:hover {
+    background: linear-gradient(135deg, #00c9ff, #1CB5E0);
+    transform: translateX(5px);
+    box-shadow: 0 5px 15px rgba(28, 181, 224, 0.3);
 }
 
 /* New Hero Section CSS */
@@ -209,8 +392,70 @@ nav {
 .footer-about p,.footer-contact p,.footer-links ul li a{color:rgba(255,255,255,0.8);}
 .footer-links ul {list-style:none; padding: 0;}
 .footer-bottom{text-align:center;padding-top:20px;border-top:1px solid rgba(255,255,255,0.1);margin-top:20px;}
-@media(max-width:900px){.nav-links{display:none;}.hamburger{display:flex;}.slider-container{width:95vw;}.footer-container{flex-direction:column;gap:20px;}}
-@media(max-width:600px){.slider-container{height:70vw;max-height:320px;}.quotes-container{padding:20px;min-height:100px;}.quote{font-size:clamp(0.9rem,4vw,1.1rem);width:99%;}}
+@media(max-width:1024px) {
+    .nav-links li a {
+        padding: 8px 14px;
+        font-size: 1rem;
+    }
+    .nav-links {
+        gap: 15px;
+    }
+}
+
+@media(max-width:900px) {
+    .nav-links {
+        display: none;
+    }
+    .hamburger {
+        display: flex;
+    }
+    .slider-container {
+        width: 95vw;
+    }
+    .footer-container {
+        flex-direction: column;
+        gap: 20px;
+    }
+    .logo img {
+        height: 40px;
+    }
+    nav {
+        min-height: 70px;
+    }
+    nav.scrolled {
+        min-height: 60px;
+    }
+}
+
+@media(max-width:600px) {
+    .slider-container {
+        height: 70vw;
+        max-height: 320px;
+    }
+    .quotes-container {
+        padding: 20px;
+        min-height: 100px;
+    }
+    .quote {
+        font-size: clamp(0.9rem,4vw,1.1rem);
+        width: 99%;
+    }
+    .logo img {
+        height: 35px;
+    }
+    .mobile-menu {
+        width: 85vw;
+        padding: 70px 20px 20px;
+    }
+    .mobile-menu a {
+        font-size: 1.1rem;
+        padding: 10px 15px;
+    }
+    .hamburger div {
+        width: 28px;
+        height: 2.5px;
+    }
+}
 </style>
 </head>
 <body>
@@ -221,21 +466,25 @@ nav {
 
 <nav id="navbar">
     <div class="nav-content">
-        <!-- Logo Image -->
+        <!-- Logo Image with Animation -->
         <a href="#" class="logo">
-            <img src="asimsaad.png" alt="Logo" style="height:40px;">
+            <img src="asimsaad.png" alt="Logo">
         </a>
 
-        <!-- Navigation Links -->
+        <!-- Navigation Links with Hover Effects -->
         <ul class="nav-links">
-            <li><a href="#" class="active">Home</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Contact</a></li>
-            <!-- Added Sign Out for PC -->
-            <li><a href="#" id="signout-btn-pc">Sign Out</a></li>
+            <li><a href="#" class="active"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="searchbar.html"><i class="fas fa-play-circle"></i> Videos</a></li>
+            <li><a href="pyqs.html"><i class="fas fa-file-alt"></i> PYQs</a></li>
+            <li><a href="blog.html"><i class="fas fa-feather-alt"></i> Blogs</a></li>
+            <li><a href="#"><i class="fas fa-info-circle"></i> About</a></li>
+            <li><a href="#"><i class="fas fa-envelope"></i> Contact</a></li>
+            <!-- Sign In/Out Button with Gradient -->
+            <li><a href="sign.html" id="signin-btn-pc" class="auth-btn"><i class="fas fa-sign-in-alt"></i> Sign In</a></li>
+            <li><a href="#" id="signout-btn-pc" class="auth-btn"><i class="fas fa-sign-out-alt"></i> Sign Out</a></li>
         </ul>
 
-        <!-- Hamburger for mobile -->
+        <!-- Improved Hamburger for Mobile -->
         <div class="hamburger" id="hamburger">
             <div></div>
             <div></div>
@@ -244,16 +493,18 @@ nav {
     </div>
 </nav>
 
-<!-- Mobile Menu -->
+<!-- Enhanced Mobile Menu with Icons -->
 <div class="mobile-menu" id="mobile-menu">
     <div class="close-btn" id="close-btn">&times;</div>
-    <a href="#">Home</a>
-    <a href="#">About</a>
-    <a href="#">Gallery</a>
-    <a href="#">Services</a>
-    <a href="#">Contact</a>
-    <!-- Sign Out Button for Mobile -->
-    <a href="#" id="signout-btn-mobile">Sign Out</a>
+    <a href="#"><i class="fas fa-home"></i> Home</a>
+    <a href="searchbar.html"><i class="fas fa-play-circle"></i> Videos</a>
+    <a href="pyqs.html"><i class="fas fa-file-alt"></i> PYQs</a>
+    <a href="blog.html"><i class="fas fa-feather-alt"></i> Blogs</a>
+    <a href="#"><i class="fas fa-info-circle"></i> About</a>
+    <a href="#"><i class="fas fa-envelope"></i> Contact</a>
+    <!-- Sign In/Out Buttons for Mobile with Icon -->
+    <a href="sign.html" id="signin-btn-mobile" class="auth-btn"><i class="fas fa-sign-in-alt"></i> Sign In</a>
+    <a href="#" id="signout-btn-mobile" class="auth-btn"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
 </div>
 <section class="hero-section">
     <div class="hero-content">
@@ -325,28 +576,39 @@ nav {
   const analytics = getAnalytics(app);
   const auth = getAuth(app);
   
-  // UPDATED: Listen for authentication state changes to manage UI (e.g., show/hide sign out button)
+  // Updated authentication state listener to toggle between sign-in and sign-out buttons
   onAuthStateChanged(auth, (user) => {
-    const signoutBtnPC = document.getElementById('signout-btn-pc');
-    const signoutBtnMobile = document.getElementById('signout-btn-mobile');
+    // Update auth buttons visibility
+    updateAuthButtonsVisibility();
+    
     if (user) {
-        // User is signed in
-        if(signoutBtnPC) signoutBtnPC.style.display = 'block';
-        if(signoutBtnMobile) signoutBtnMobile.style.display = 'block';
-    } else {
-        // User is signed out
-        if(signoutBtnPC) signoutBtnPC.style.display = 'none';
-        if(signoutBtnMobile) signoutBtnMobile.style.display = 'none';
+        // Update user display name if available
+        const userName = user.displayName || user.email || 'User';
+        console.log(`Signed in as: ${userName}`);
     }
   });
 
 
 document.addEventListener('DOMContentLoaded', function(){
-    const navbar=document.getElementById('navbar');
-    const hamburger=document.getElementById('hamburger');
-    const mobileMenu=document.getElementById('mobile-menu');
-    const closeBtn=document.getElementById('close-btn');
-
+    const navbar = document.getElementById('navbar');
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const closeBtn = document.getElementById('close-btn');
+    
+    // --- NAVBAR SCROLL EFFECT ---
+    function handleScroll() {
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    }
+    
+    // Add scroll event listener
+    window.addEventListener('scroll', handleScroll);
+    
+    // Initialize navbar state on page load
+    handleScroll();
     
     // --- SIGN OUT LOGIC ---
     const signoutBtnPC = document.getElementById('signout-btn-pc');
@@ -366,15 +628,40 @@ document.addEventListener('DOMContentLoaded', function(){
         signoutBtnMobile.addEventListener('click', handleSignOut);
     }
     
-    // Mobile Menu
+    // --- ENHANCED MOBILE MENU ---
     if (hamburger && mobileMenu && closeBtn) {
-        hamburger.addEventListener('click',()=>{
+        // Toggle mobile menu
+        hamburger.addEventListener('click', () => {
             mobileMenu.classList.toggle('show');
             hamburger.classList.toggle('active');
+            document.body.style.overflow = mobileMenu.classList.contains('show') ? 'hidden' : '';
         });
-        closeBtn.addEventListener('click',()=>{
+        
+        // Close mobile menu
+        closeBtn.addEventListener('click', () => {
             mobileMenu.classList.remove('show');
             hamburger.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (mobileMenu.classList.contains('show') && 
+                !mobileMenu.contains(e.target) && 
+                !hamburger.contains(e.target)) {
+                mobileMenu.classList.remove('show');
+                hamburger.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+        
+        // Close menu when pressing escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && mobileMenu.classList.contains('show')) {
+                mobileMenu.classList.remove('show');
+                hamburger.classList.remove('active');
+                document.body.style.overflow = '';
+            }
         });
     }
     
@@ -394,12 +681,30 @@ document.addEventListener('DOMContentLoaded', function(){
                     window.location.href = pageUrl;
                 } else {
                     // If not logged in, save the target page and redirect to sign-in.
-                    sessionStorage.setItem('redirectUrl', pageUrl);
+                    localStorage.setItem('redirectAfterSignIn', pageUrl);
                     window.location.href = 'sign.html';
                 }
             }
         });
     }
+    
+    // Initialize auth buttons visibility
+    function updateAuthButtonsVisibility() {
+        const signinBtnPC = document.getElementById('signin-btn-pc');
+        const signinBtnMobile = document.getElementById('signin-btn-mobile');
+        const signoutBtnPC = document.getElementById('signout-btn-pc');
+        const signoutBtnMobile = document.getElementById('signout-btn-mobile');
+        
+        const isLoggedIn = auth.currentUser !== null;
+        
+        if(signinBtnPC) signinBtnPC.style.display = isLoggedIn ? 'none' : 'block';
+        if(signinBtnMobile) signinBtnMobile.style.display = isLoggedIn ? 'none' : 'block';
+        if(signoutBtnPC) signoutBtnPC.style.display = isLoggedIn ? 'block' : 'none';
+        if(signoutBtnMobile) signoutBtnMobile.style.display = isLoggedIn ? 'block' : 'none';
+    }
+    
+    // Call once at page load
+    updateAuthButtonsVisibility();
 
 
     // Quotes
