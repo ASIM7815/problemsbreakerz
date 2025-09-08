@@ -158,11 +158,11 @@
         // User is authenticated. Any Google user is allowed.
         
         // Check for a redirect URL that was saved before signing in.
-        const redirectUrl = sessionStorage.getItem('redirectUrl');
+        const redirectUrl = localStorage.getItem('redirectAfterSignIn');
 
         if (redirectUrl) {
           // If a URL was saved, redirect the user there.
-          sessionStorage.removeItem('redirectUrl'); // Clear the saved URL
+          localStorage.removeItem('redirectAfterSignIn'); // Clear the saved URL
           window.location.href = redirectUrl;
         } else {
           // If no specific page was requested, go to the main page.
