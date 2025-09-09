@@ -136,17 +136,18 @@
             googleSignInBtn.style.display = 'inline-flex';
         }
 
-        googleSignInBtn.addEventListener('click', () => {
-            signInWithPopup(auth, provider).then((result) => {
+        googleSignInBtn.addEventListener('click', async () => {
+            try {
+                const result = await signInWithPopup(auth, provider);
                 // Redirect to the main page after successful sign-in
                 window.location.assign('asimsaadz.html');
-            }).catch((error) => {
+            } catch (error) {
                 if (error.code === 'auth/popup-closed-by-user') {
                     showMessage('Sign-in process cancelled. Please try again.');
                 } else {
                     showMessage('Sorry, we could not sign you in. Please try again.');
                 }
-            });
+            }
         });
 
         tryAgainBtn.addEventListener('click', () => {
