@@ -40,15 +40,6 @@
             transform: translateY(-3px);
             box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.3);
         }
-        .message-box {
-            background-color: #fefefe;
-            color: #4a5568;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            margin-bottom: 1rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
     </style>
 </head>
 <body class="bg-black">
@@ -65,15 +56,6 @@
                     <img src="asimsaad.png" alt="ASIMSAADZ Logo" class="mx-auto h-16 w-auto mb-4 rounded-lg">
                     <h1 class="text-3xl font-bold text-white">Welcome to ASIMSAADZ</h1>
                     <p class="text-indigo-100 mt-2">Sign in to continue.</p>
-                </div>
-                
-                <div id="message-container" class="hidden">
-                    <div class="message-box">
-                        <p id="message-text" class="font-medium mb-4"></p>
-                        <button id="try-again-btn" class="google-button w-full inline-flex items-center justify-center bg-gray-200 text-gray-700 font-medium py-3 px-4 rounded-lg shadow-lg focus:outline-none focus:ring-4 focus:ring-gray-300">
-                            Try Again
-                        </button>
-                    </div>
                 </div>
 
                 <button id="google-signin-btn" 
@@ -121,37 +103,15 @@
         const provider = new GoogleAuthProvider();
 
         const googleSignInBtn = document.getElementById('google-signin-btn');
-        const tryAgainBtn = document.getElementById('try-again-btn');
-        const messageContainer = document.getElementById('message-container');
-        const messageText = document.getElementById('message-text');
-
-        function showMessage(message) {
-            messageText.textContent = message;
-            messageContainer.classList.remove('hidden');
-            googleSignInBtn.style.display = 'none';
-        }
-
-        function resetUI() {
-            messageContainer.classList.add('hidden');
-            googleSignInBtn.style.display = 'inline-flex';
-        }
 
         googleSignInBtn.addEventListener('click', async () => {
             try {
                 const result = await signInWithPopup(auth, provider);
                 // Redirect to the main page after successful sign-in
-                window.location.assign('asimsaadz.html');
+                window.location.href = 'asimsaadz.html';
             } catch (error) {
-                if (error.code === 'auth/popup-closed-by-user') {
-                    showMessage('Sign-in process cancelled. Please try again.');
-                } else {
-                    showMessage('Sorry, we could not sign you in. Please try again.');
-                }
+                alert('Error signing in. Please try again.');
             }
-        });
-
-        tryAgainBtn.addEventListener('click', () => {
-            resetUI();
         });
     </script>
 </body>
