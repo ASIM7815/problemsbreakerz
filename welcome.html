@@ -140,6 +140,7 @@ nav.sticky {
     background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(4px);
     -webkit-mask-image: -webkit-radial-gradient(white, black); /* Fix for border-radius on Safari */
+    mask-image: radial-gradient(white, black);
 }
 
 .slides {
@@ -223,6 +224,7 @@ nav.sticky {
 
 .quotes-container {width:95vw;max-width:900px;margin:40px auto;padding:40px 10px;border-radius:15px;background:rgba(0,0,0,0.35);backdrop-filter:blur(8px);text-align:center;position:relative;min-height:160px;}
 .quote {font-size:2rem;font-weight:bold;line-height:1.3;background:linear-gradient(90deg,#ff4b2b,#ff416c,#ff9933,#00c9ff,#92fe9d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;opacity:0;transform:translateY(60px) scale(0.9) rotateX(60deg) skewX(-10deg);filter:blur(8px) brightness(1.2);transition:0.6s;position:absolute;top:50%;left:50%;width:90%;padding:0 10px;word-break:break-word;}
+.quote {background-clip:text;}
 .quote.active {opacity:1;transform:translate(-50%,-50%) scale(1.07) rotateX(0deg) skewX(0deg);filter:blur(0px) brightness(1.05);}
 .quote.exit {opacity:0;transform:translate(-50%,60%) scale(0.7) rotateX(-60deg) skewX(10deg);filter:blur(12px) brightness(0.8);}
 
@@ -276,6 +278,7 @@ nav.sticky {
     margin-bottom: 1rem;
     background: linear-gradient(45deg, #1CB5E0, #fff);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     transition: transform 0.4s ease;
 }
@@ -298,7 +301,7 @@ nav.sticky {
 .site-footer {width:100vw;background:rgba(0,0,0,0.4);backdrop-filter:blur(10px);border-top:1px solid rgba(255,255,255,0.2);padding:60px 20px 20px;color:#fff;font-size:1rem; margin-top:auto;}
 .footer-container {max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;gap:40px;padding-bottom:30px;}
 .footer-about,.footer-links,.footer-contact{flex:1 1 250px;}
-.footer-about h3 {font-size:2rem;font-weight:bold;background:linear-gradient(45deg,#ff6a00,#ee0979);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:15px;}
+.footer-about h3 {font-size:2rem;font-weight:bold;background:linear-gradient(45deg,#ff6a00,#ee0979);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:15px;}
 .footer-about p,.footer-contact p,.footer-links ul li a{color:rgba(255,255,255,0.8);}
 .footer-links ul {list-style:none; padding: 0;}
 .footer-bottom{text-align:center;padding-top:20px;border-top:1px solid rgba(255,255,255,0.1);margin-top:20px;}
@@ -319,9 +322,36 @@ nav.sticky {
 </head>
 <body>
 
-<video autoplay muted loop playsinline preload="auto" id="bg-video">
-<source src="https://storage.cloud.google.com/asimsaadz/Mobile_Video_Generation_Request.mp4?authuser=0" type="video/mp4">
+<video autoplay muted loop playsinline preload="none" poster="paper.jpg" id="bg-video">
+<source data-src="https://storage.cloud.google.com/asimsaadz/Mobile_Video_Generation_Request%20(1).mp4" type="video/mp4">
 </video>
+
+<script>
+// Defer background video loading based on connection and Data Saver
+(function(){
+  const video = document.getElementById('bg-video');
+  const source = video ? video.querySelector('source') : null;
+  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  const saveData = connection && connection.saveData;
+  const downlink = connection && connection.downlink; // Mbps
+
+  if (video && source) {
+    // Only load the video if Data Saver is OFF and connection is decent
+    if (!saveData && (!downlink || downlink > 1.5)) {
+      const src = source.getAttribute('data-src');
+      if (src) {
+        source.setAttribute('src', src);
+        const loadVideo = () => video.load();
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(loadVideo, { timeout: 2000 });
+        } else {
+          setTimeout(loadVideo, 800);
+        }
+      }
+    }
+  }
+})();
+</script>
 
 <nav id="navbar">
     <div class="logo"><a href="#"><img src="00c22b83efd527a497544ab5c5cd8ca3.png" alt="Logo" class="logo-img"/></a></div>
