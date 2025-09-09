@@ -368,21 +368,64 @@
 
         googleSignInBtn.addEventListener('click', async () => {
             try {
+                console.log('Sign-in button clicked');
+                
+                // Show loading state
+                googleSignInBtn.disabled = true;
+                googleSignInBtn.textContent = 'Signing in...';
+                
                 // Dynamically import Firebase only when needed (on click)
+                console.log('Loading Firebase modules...');
                 const [{ initializeApp }, { getAuth, GoogleAuthProvider, signInWithPopup }] = await Promise.all([
                     import('https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js'),
                     import('https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js')
                 ]);
 
+                console.log('Firebase modules loaded');
                 const app = initializeApp(firebaseConfig);
                 const auth = getAuth(app);
                 const provider = new GoogleAuthProvider();
+                
+                // Add additional scopes for better user info
+                provider.addScope('email');
+                provider.addScope('profile');
 
+                console.log('Starting sign-in popup...');
                 const result = await signInWithPopup(auth, provider);
+                console.log('Sign-in successful:', result.user.email);
+                
+                // Store user info in localStorage for welcome page
+                localStorage.setItem('user', JSON.stringify({
+                    name: result.user.displayName,
+                    email: result.user.email,
+                    photo: result.user.photoURL
+                }));
+                
                 // Redirect to the main page after successful sign-in
                 window.location.href = 'welcome.html';
             } catch (error) {
-                alert('Error signing in. Please try again.');
+                console.error('Sign-in error:', error);
+                
+                // Reset button state
+                googleSignInBtn.disabled = false;
+                googleSignInBtn.innerHTML = `
+                    <svg class="w-6 h-6 mr-3" viewBox="0 0 48 48">
+                        <path fill="#4285F4" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12s5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20s20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"></path>
+                        <path fill="#34A853" d="M43.611,20.083L43.595,20L42,20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571l0.002-0.002l5.657,5.657C40.074,36.316,44,30.824,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path>
+                        <path fill="#FBBC05" d="M10.21,28.641l5.657,5.657C17.93,36.888,20.803,38,24,38c3.197,0,6.07-1.112,8.21-2.9l-5.657-5.657C25.5,29.608,24.789,30,24,30C20.44,30,17.222,28.32,15.25,25.8l-5.04,3.841C11.373,26.425,10.66,27.524,10.21,28.641z"></path>
+                        <path fill="#EA4335" d="M24,16c-1.898,0-3.64,0.73-4.95,2.05l-5.657-5.657C15.96,10.193,19.758,8,24,8c5.268,0,10.046,2.053,13.571,6.021l-5.657,5.657C30.151,17.154,27.359,16,24,16z"></path>
+                    </svg>
+                    Continue with Google
+                `;
+                
+                // Show specific error messages
+                if (error.code === 'auth/popup-blocked') {
+                    alert('Popup was blocked. Please allow popups for this site and try again.');
+                } else if (error.code === 'auth/popup-closed-by-user') {
+                    alert('Sign-in was cancelled. Please try again.');
+                } else {
+                    alert(`Error signing in: ${error.message}`);
+                }
             }
         });
     </script>
