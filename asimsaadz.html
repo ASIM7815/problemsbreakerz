@@ -60,7 +60,8 @@
     </video>
     <div class="video-overlay"></div>
 
-    <div class="flex items-center justify-center min-h-screen p-4 relative z-10">
+    <!-- Sign-in section (shown when not authenticated) -->
+    <div id="signin-section" class="flex items-center justify-center min-h-screen p-4 relative z-10">
         <div class="w-full max-w-sm mx-auto overflow-hidden text-center">
             
             <div id="signin-card" class="bg-white/20 card-container rounded-2xl shadow-2xl p-8 md:p-10">
@@ -97,6 +98,52 @@
             </div>
         </div>
     </div>
+
+    <!-- Main content section (shown when authenticated) -->
+    <div id="main-content" class="hidden min-h-screen relative z-10">
+        <!-- Header with sign-out button -->
+        <header class="bg-transparent text-white sticky top-0 z-50 p-4">
+            <div class="container mx-auto flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <img src="asimsaad.png" alt="ASIMSAADZ Logo" class="h-12 w-auto rounded-lg">
+                    <span class="text-xl font-bold">ASIMSAADZ</span>
+                </div>
+                <button id="sign-out-btn" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition duration-300">
+                    Sign Out
+                </button>
+            </div>
+        </header>
+
+        <!-- Main content -->
+        <main class="container mx-auto px-4 py-16">
+            <div class="text-center text-white">
+                <h1 class="text-4xl md:text-6xl font-bold mb-8">Welcome to ASIMSAADZ</h1>
+                <p class="text-xl mb-8">You have successfully signed in!</p>
+                
+                <!-- Add your main content here -->
+                <div class="bg-white/10 card-container rounded-2xl p-8 max-w-4xl mx-auto">
+                    <h2 class="text-2xl font-bold mb-4">Your Dashboard</h2>
+                    <p class="text-gray-300 mb-6">This is your main content area. You can add any content you want here.</p>
+                    
+                    <!-- Example content cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+                        <div class="bg-white/5 rounded-lg p-6">
+                            <h3 class="text-lg font-semibold mb-2">Feature 1</h3>
+                            <p class="text-gray-400">Description of your first feature</p>
+                        </div>
+                        <div class="bg-white/5 rounded-lg p-6">
+                            <h3 class="text-lg font-semibold mb-2">Feature 2</h3>
+                            <p class="text-gray-400">Description of your second feature</p>
+                        </div>
+                        <div class="bg-white/5 rounded-lg p-6">
+                            <h3 class="text-lg font-semibold mb-2">Feature 3</h3>
+                            <p class="text-gray-400">Description of your third feature</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
     
 <script type="module">
   // Import Firebase modules
@@ -105,7 +152,8 @@
     getAuth, 
     onAuthStateChanged,
     GoogleAuthProvider, 
-    signInWithPopup
+    signInWithPopup,
+    signOut
   } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
   
   // Your web app's Firebase configuration
@@ -128,6 +176,9 @@
   const tryAgainBtn = document.getElementById('try-again-btn');
   const messageContainer = document.getElementById('message-container');
   const messageText = document.getElementById('message-text');
+  const signinSection = document.getElementById('signin-section');
+  const mainContent = document.getElementById('main-content');
+  const signOutBtn = document.getElementById('sign-out-btn');
 
   function showMessage(message) {
     messageText.textContent = message;
@@ -138,6 +189,16 @@
   function resetUI() {
     messageContainer.classList.add('hidden');
     googleSignInBtn.style.display = 'inline-flex';
+  }
+
+  function showMainContent() {
+    signinSection.classList.add('hidden');
+    mainContent.classList.remove('hidden');
+  }
+
+  function showSigninContent() {
+    signinSection.classList.remove('hidden');
+    mainContent.classList.add('hidden');
   }
 
   googleSignInBtn.addEventListener('click', () => {
@@ -154,24 +215,23 @@
     resetUI();
   });
 
-  // Listen for authentication state changes to handle redirects
+  signOutBtn.addEventListener('click', () => {
+    signOut(auth).then(() => {
+      showSigninContent();
+    }).catch((error) => {
+      console.error('Error signing out:', error);
+    });
+  });
+
+  // Listen for authentication state changes
   onAuthStateChanged(auth, (user) => {
     if (user) {
-        // User is authenticated. Any Google user is allowed.
-        
-        // Check for a redirect URL that was saved before signing in.
-        const redirectUrl = sessionStorage.getItem('redirectUrl');
-
-        if (redirectUrl) {
-          // If a URL was saved, redirect the user there.
-          sessionStorage.removeItem('redirectUrl'); // Clear the saved URL
-          window.location.href = redirectUrl;
-        } else {
-          // If no specific page was requested, go to the main page.
-          window.location.href = 'index.html'; 
-        }
-    } 
-    // No 'else' block needed, as unauthenticated users will just stay on the sign-in page.
+        // User is authenticated - show main content
+        showMainContent();
+    } else {
+        // User is not authenticated - show sign-in form
+        showSigninContent();
+    }
   });
 </script>
 </body>
