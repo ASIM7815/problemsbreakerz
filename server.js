@@ -12,8 +12,11 @@ app.use(express.json());
 
 // Initialize Google Cloud Storage
 const storage = new Storage({
-  projectId: 'trim-glazing-468422-d6', // Your actual project ID from service account
-  keyFilename: './service-account-key.json' // Path to your service account key
+  projectId: process.env.GOOGLE_CLOUD_PROJECT_ID || 'trim-glazing-468422-d6',
+  credentials: {
+    client_email: process.env.GOOGLE_CLOUD_CLIENT_EMAIL,
+    private_key: process.env.GOOGLE_CLOUD_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+  }
 });
 
 const bucketName = 'asimsaadz';
@@ -25,17 +28,30 @@ let uploadedVideos = [];
 // Generate signed URL for upload
 app.post('/api/generate-upload-url', async (req, res) => {
   try {
+    console.log('📤 Upload request received:', req.body);
     const { fileName, fileType } = req.body;
     
     if (!fileName || !fileType) {
+      console.log('❌ Missing fileName or fileType');
       return res.status(400).json({ error: 'fileName and fileType are required' });
     }
 
     // Generate unique file key
     const timestamp = Date.now();
     const fileKey = `videos/${timestamp}-${fileName}`;
+    console.log('🔑 Generated file key:', fileKey);
+
+    // Check if bucket exists
+    console.log('🪣 Checking bucket:', bucketName);
+    const [exists] = await bucket.exists();
+    if (!exists) {
+      console.log('❌ Bucket does not exist:', bucketName);
+      return res.status(500).json({ error: `Bucket '${bucketName}' does not exist. Please create it in Google Cloud Console.` });
+    }
+    console.log('✅ Bucket exists');
 
     // Generate signed URL for upload (expires in 15 minutes)
+    console.log('🔗 Generating signed URL...');
     const [uploadUrl] = await bucket.file(fileKey).getSignedUrl({
       version: 'v4',
       action: 'write',
@@ -43,10 +59,17 @@ app.post('/api/generate-upload-url', async (req, res) => {
       contentType: fileType,
     });
 
+    console.log('✅ Signed URL generated successfully');
     res.json({ uploadUrl, fileKey });
   } catch (error) {
-    console.error('Error generating upload URL:', error);
-    res.status(500).json({ error: 'Failed to generate upload URL' });
+    console.error('❌ Error generating upload URL:', error);
+    console.error('Error details:', error.message);
+    console.error('Error code:', error.code);
+    res.status(500).json({ 
+      error: 'Failed to generate upload URL', 
+      details: error.message,
+      code: error.code 
+    });
   }
 });
 
@@ -134,3 +157,6 @@ app.listen(PORT, () => {
   console.log('2. Add your service account key file as "service-account-key.json"');
   console.log('3. Enable Google Cloud Storage API in your project');
 });
+
+// Export for Vercel
+module.exports = app;
