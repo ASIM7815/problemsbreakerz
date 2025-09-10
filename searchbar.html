@@ -980,7 +980,7 @@
         // This is the URL to YOUR backend server. You need to create this server.
         // Example: 'https://your-app-name.herokuapp.com/api'
         // You MUST replace this with the actual URL where your server is running.
-        const YOUR_BACKEND_SERVER_URL = 'http://localhost:3000/api'; 
+        const YOUR_BACKEND_SERVER_URL = 'https://your-vercel-app-name.vercel.app/api'; 
         
         uploadBtn.disabled = true;
         uploadBtn.textContent = 'Preparing...';
@@ -1292,7 +1292,7 @@
         videoGrid.innerHTML = '<p style="grid-column: 1 / -1; text-align: center;">Loading your videos...</p>';
 
         try {
-            const response = await fetch('http://localhost:3000/api/my-videos');
+            const response = await fetch('https://your-vercel-app-name.vercel.app/api/my-videos');
             if (!response.ok) {
                 throw new Error('Could not fetch your videos. Make sure the server is running.');
             }
@@ -1366,7 +1366,7 @@
         }
 
         try {
-            const response = await fetch(`http://localhost:3000/api/videos/${videoId}`, {
+            const response = await fetch(`https://your-vercel-app-name.vercel.app/api/videos/${videoId}`, {
                 method: 'DELETE'
             });
 
@@ -1396,5 +1396,3 @@
   </script>
 </body>
 </html>
-
-
