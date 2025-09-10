@@ -10,6 +10,14 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
+// Serve static files from the root directory
+app.use(express.static(path.join(__dirname, '/')));
+
+// Route to serve index.html for the root path
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 // Initialize Google Cloud Storage
 let storage;
 try {
@@ -154,26 +162,9 @@ app.delete('/api/videos/:id', async (req, res) => {
   }
 });
 
-// Serve the main page
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'searchbar.html'));
-});
-
-// Also serve searchbar.html directly
-app.get('/searchbar.html', (req, res) => {
-  res.sendFile(path.join(__dirname, 'searchbar.html'));
-});
-
-// Serve static files AFTER defining routes
-app.use(express.static('.'));
-
+// Start the server
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-  console.log('Make sure to:');
-  console.log('1. Replace "your-project-id" with your actual Google Cloud project ID');
-  console.log('2. Add your service account key file as "service-account-key.json"');
-  console.log('3. Enable Google Cloud Storage API in your project');
+  console.log(`Server is running on port ${PORT}`);
 });
 
-// Export for Vercel
 module.exports = app;
