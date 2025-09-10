@@ -1,0 +1,21 @@
+{
+  "name": "problemsbreakerz-video-platform",
+  "version": "1.0.0",
+  "description": "Educational video platform with Google Cloud Storage integration",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "@google-cloud/storage": "^7.7.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "keywords": ["education", "video", "platform", "google-cloud"],
+  "author": "Asim Saad",
+  "license": "MIT"
+}
