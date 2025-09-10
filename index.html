@@ -364,6 +364,34 @@
             });
         }
 
+        // Check for redirect result on page load
+        (async function checkRedirectResult() {
+            try {
+                const { initializeApp } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js');
+                const { getAuth, getRedirectResult } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js');
+                
+                const app = initializeApp(firebaseConfig);
+                const auth = getAuth(app);
+                
+                const result = await getRedirectResult(auth);
+                if (result && result.user) {
+                    console.log('Redirect sign-in successful:', result.user.email);
+                    
+                    // Store user info in localStorage
+                    localStorage.setItem('user', JSON.stringify({
+                        name: result.user.displayName,
+                        email: result.user.email,
+                        photo: result.user.photoURL
+                    }));
+                    
+                    // Redirect to welcome page
+                    window.location.href = 'welcome.html';
+                }
+            } catch (error) {
+                console.log('No redirect result or error:', error);
+            }
+        })();
+
         const googleSignInBtn = document.getElementById('google-signin-btn');
 
         googleSignInBtn.addEventListener('click', async () => {
@@ -376,7 +404,7 @@
                 
                 // Dynamically import Firebase only when needed (on click)
                 console.log('Loading Firebase modules...');
-                const [{ initializeApp }, { getAuth, GoogleAuthProvider, signInWithPopup }] = await Promise.all([
+                const [{ initializeApp }, { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect }] = await Promise.all([
                     import('https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js'),
                     import('https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js')
                 ]);
@@ -390,9 +418,27 @@
                 provider.addScope('email');
                 provider.addScope('profile');
 
-                console.log('Starting sign-in popup...');
-                const result = await signInWithPopup(auth, provider);
-                console.log('Sign-in successful:', result.user.email);
+                console.log('Starting sign-in...');
+                
+                // Try popup first, fallback to redirect if blocked
+                try {
+                    const testPopup = window.open('', '_blank', 'width=1,height=1');
+                    if (!testPopup || testPopup.closed || typeof testPopup.closed == 'undefined') {
+                        throw new Error('popup-blocked');
+                    }
+                    testPopup.close();
+                    
+                    console.log('Using popup method');
+                    const result = await signInWithPopup(auth, provider);
+                    console.log('Sign-in successful:', result.user.email);
+                } catch (popupError) {
+                    if (popupError.message === 'popup-blocked' || popupError.code === 'auth/popup-blocked') {
+                        console.log('Popup blocked, using redirect method');
+                        await signInWithRedirect(auth, provider);
+                        return; // Redirect will handle the rest
+                    }
+                    throw popupError; // Re-throw other errors
+                }
                 
                 // Store user info in localStorage for welcome page
                 localStorage.setItem('user', JSON.stringify({
