@@ -11,13 +11,30 @@ app.use(cors());
 app.use(express.json());
 
 // Initialize Google Cloud Storage
-const storage = new Storage({
-  projectId: process.env.GOOGLE_CLOUD_PROJECT_ID || 'trim-glazing-468422-d6',
-  credentials: {
-    client_email: process.env.GOOGLE_CLOUD_CLIENT_EMAIL,
-    private_key: process.env.GOOGLE_CLOUD_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+let storage;
+try {
+  if (process.env.GOOGLE_CLOUD_PRIVATE_KEY && process.env.GOOGLE_CLOUD_CLIENT_EMAIL) {
+    // Use environment variables (for Vercel deployment)
+    storage = new Storage({
+      projectId: process.env.GOOGLE_CLOUD_PROJECT_ID || 'trim-glazing-468422-d6',
+      credentials: {
+        client_email: process.env.GOOGLE_CLOUD_CLIENT_EMAIL,
+        private_key: process.env.GOOGLE_CLOUD_PRIVATE_KEY.replace(/\\n/g, '\n'),
+      }
+    });
+    console.log('✅ Google Cloud Storage initialized with environment variables');
+  } else {
+    // Fallback to service account file (for local development)
+    storage = new Storage({
+      projectId: 'trim-glazing-468422-d6',
+      keyFilename: './service-account-key.json'
+    });
+    console.log('✅ Google Cloud Storage initialized with service account file');
   }
-});
+} catch (error) {
+  console.error('❌ Failed to initialize Google Cloud Storage:', error.message);
+  console.log('Make sure environment variables are set or service-account-key.json exists');
+}
 
 const bucketName = 'asimsaadz';
 const bucket = storage.bucket(bucketName);
