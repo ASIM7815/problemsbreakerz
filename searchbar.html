@@ -578,21 +578,22 @@
   </video>
   <nav class="navbar">
     <ul>
-      <li><a href="#" id="homeLink" class="active">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        Home</a></li>
-      <li><a href="#" id="uploadLink">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg>
-        Upload</a></li>
-      <li><a href="#">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
-        History</a></li>
-      <li><a href="#">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-        Trending</a></li>
-      <li><a href="#">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2V4"/><path d="M16 2v20"/><path d="M8 7h4"/><path d="M8 12h4"/><path d="M8 17h4"/></svg>
-        News</a></li>
+      <li><a href="#" class="active" onclick="showHomePage()">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.1L1 12h3v9h6v-6h4v6h6v-9h3L12 2.1z"/></svg>
+        Home
+      </a></li>
+      <li><a href="#" onclick="showSearchPage()">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zM10 15a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/></svg>
+        Search
+      </a></li>
+      <li><a href="#" onclick="openUploadModal()">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/></svg>
+        Upload
+      </a></li>
+      <li><a href="#" onclick="showMyVideos()">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 3v2h-2V3H8v2H6V3H4v18h2v-2h2v2h8v-2h2v2h2V3h-2zM8 17H6v-2h2v2zm0-4H6v-2h2v2zm0-4H6V7h2v2zm10 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2z"/></svg>
+        My Videos
+      </a></li>
     </ul>
   </nav>
 
@@ -602,6 +603,7 @@
         <div class="logo" id="logo">
             <img src="asimsaad.png" alt="EduTube Logo" style="height:40px; vertical-align:middle; border-radius: 8px;">
         </div>
+
 
         <div class="search-wrap">
           <form id="searchForm" class="search-form" autocomplete="off">
@@ -886,7 +888,6 @@
 
     // --- Upload Modal Logic ---
     const uploadModal = document.getElementById('uploadModal');
-    const uploadLink = document.getElementById('uploadLink');
     const closeUploadModalBtn = document.getElementById('closeUploadModal');
     const uploadForm = document.getElementById('uploadForm');
     const videoFileInput = document.getElementById('videoFileInput');
@@ -896,11 +897,6 @@
     const progressContainer = document.getElementById('progressContainer');
     const progressBarInner = document.getElementById('progressBarInner');
     const uploadStatus = document.getElementById('uploadStatus');
-
-    uploadLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        uploadModal.style.display = 'flex';
-    });
 
     closeUploadModalBtn.addEventListener('click', () => {
         uploadModal.style.display = 'none';
@@ -984,7 +980,7 @@
         // This is the URL to YOUR backend server. You need to create this server.
         // Example: 'https://your-app-name.herokuapp.com/api'
         // You MUST replace this with the actual URL where your server is running.
-        const YOUR_BACKEND_SERVER_URL = 'https://example.com'; 
+        const YOUR_BACKEND_SERVER_URL = 'http://localhost:3000/api'; 
         
         uploadBtn.disabled = true;
         uploadBtn.textContent = 'Preparing...';
@@ -1033,8 +1029,8 @@
                     uploadStatus.textContent = '✅ Upload Complete!';
                     uploadBtn.textContent = 'Done!';
 
-                    // --- STEP 3 (Optional): Tell your backend the upload is done ---
-                    // This is where you would save the video's title, description, and fileKey to your database.
+                    // --- STEP 3: Tell your backend the upload is done ---
+                    // This saves the video's title, description, and fileKey to display in My Videos
                     await fetch(`${YOUR_BACKEND_SERVER_URL}/upload-complete`, {
                         method: 'POST',
                         headers: {
@@ -1247,39 +1243,156 @@
         input.value='';
         clearBtn.hidden=true;
         suggest.classList.remove('open');
-        input.focus();
-        handleHomeNavigation();
     });
 
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.search-field')) {
-            suggest.classList.remove('open');
-        }
+    input.addEventListener('blur',()=>{
+        setTimeout(()=>suggest.classList.remove('open'),200);
     });
 
-    function handleHomeNavigation(e) {
-        if (e) e.preventDefault();
+    // --- Navigation Functions ---
+    function showHomePage() {
+        // Update active nav link
+        document.querySelectorAll('.navbar a').forEach(a => a.classList.remove('active'));
+        document.querySelector('a[onclick="showHomePage()"]').classList.add('active');
+        
         renderHomePage();
-        navLinks.forEach(l => l.classList.remove('active'));
-        document.getElementById('homeLink').classList.add('active');
-        input.value = '';
-        clearBtn.hidden = true;
     }
 
-    document.getElementById('logo').addEventListener('click', handleHomeNavigation);
-    document.getElementById('homeLink').addEventListener('click', handleHomeNavigation);
-    
-    document.addEventListener('DOMContentLoaded', renderHomePage);
+    function showSearchPage() {
+        // Update active nav link
+        document.querySelectorAll('.navbar a').forEach(a => a.classList.remove('active'));
+        document.querySelector('a[onclick="showSearchPage()"]').classList.add('active');
+        
+        // Focus on search input
+        input.focus();
+        
+        // Show search results if there's a query
+        if (input.value.trim()) {
+            searchYouTube(input.value.trim());
+        } else {
+            homePageContent.style.display = 'none';
+            searchResultsContent.style.display = 'block';
+            mainTitle.textContent = 'Enter a search term';
+            videoGrid.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; font-size: 18px;">Start typing to search for videos...</p>';
+        }
+    }
 
-    const navLinks = document.querySelectorAll('.navbar a');
-    navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            if (this.id !== 'uploadLink') { // Let the upload link handler manage its own state
-                navLinks.forEach(l => l.classList.remove('active'));
-                this.classList.add('active');
+    function openUploadModal() {
+        uploadModal.style.display = 'flex';
+    }
+
+    async function showMyVideos() {
+        // Update active nav link
+        document.querySelectorAll('.navbar a').forEach(a => a.classList.remove('active'));
+        document.querySelector('a[onclick="showMyVideos()"]').classList.add('active');
+        
+        homePageContent.style.display = 'none';
+        searchResultsContent.style.display = 'block';
+        mainTitle.textContent = 'My Uploaded Videos';
+        videoGrid.innerHTML = '<p style="grid-column: 1 / -1; text-align: center;">Loading your videos...</p>';
+
+        try {
+            const response = await fetch('http://localhost:3000/api/my-videos');
+            if (!response.ok) {
+                throw new Error('Could not fetch your videos. Make sure the server is running.');
             }
-        });
-    });
+            
+            const myVideos = await response.json();
+            
+            if (myVideos.length === 0) {
+                videoGrid.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; font-size: 18px;">No videos uploaded yet. <a href="#" onclick="openUploadModal()" style="color: var(--accent);">Upload your first video!</a></p>';
+            } else {
+                // Create custom video cards for uploaded videos
+                videoGrid.innerHTML = '';
+                myVideos.forEach(video => {
+                    const videoCard = document.createElement('div');
+                    videoCard.className = 'video-card';
+                    
+                    videoCard.innerHTML = `
+                        <div class="thumbnail-container">
+                            <img src="${video.thumbnailUrl}" alt="${video.title}" class="thumbnail" loading="lazy">
+                            <div class="video-duration" style="position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.8); color: white; padding: 2px 6px; border-radius: 4px; font-size: 12px;">Uploaded</div>
+                        </div>
+                        <div class="video-info">
+                            <h3 class="video-title">${video.title}</h3>
+                            <p class="video-meta">${video.channel}</p>
+                            <p class="video-meta">Uploaded ${new Date(video.uploadedAt).toLocaleDateString()}</p>
+                            <div style="margin-top: 8px;">
+                                <button onclick="playUploadedVideo('${video.publicUrl}', '${video.title}')" style="background: var(--accent); color: black; border: none; padding: 4px 8px; border-radius: 4px; margin-right: 8px; cursor: pointer;">Play</button>
+                                <button onclick="deleteVideo('${video.id}')" style="background: #ff4444; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer;">Delete</button>
+                            </div>
+                        </div>
+                    `;
+                    videoGrid.appendChild(videoCard);
+                });
+            }
+        } catch (error) {
+            console.error('Error fetching my videos:', error);
+            videoGrid.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; color: #ff4444;">Error loading videos: ${error.message}</p>`;
+        }
+    }
+
+    function playUploadedVideo(videoUrl, title) {
+        // Create a simple video player for uploaded videos
+        const videoModal = document.getElementById('videoPlayerModal');
+        const videoPlayer = document.getElementById('videoPlayer');
+        const videoTitle = document.getElementById('videoTitle');
+        const videoChannel = document.getElementById('videoChannel');
+        
+        // Replace iframe with video element for direct video playback
+        videoPlayer.style.display = 'none';
+        
+        let customVideoPlayer = document.getElementById('customVideoPlayer');
+        if (!customVideoPlayer) {
+            customVideoPlayer = document.createElement('video');
+            customVideoPlayer.id = 'customVideoPlayer';
+            customVideoPlayer.controls = true;
+            customVideoPlayer.style.width = '100%';
+            customVideoPlayer.style.height = '400px';
+            customVideoPlayer.style.backgroundColor = '#000';
+            videoPlayer.parentNode.insertBefore(customVideoPlayer, videoPlayer);
+        }
+        
+        customVideoPlayer.src = videoUrl;
+        customVideoPlayer.style.display = 'block';
+        videoTitle.textContent = title;
+        videoChannel.textContent = 'Your Upload';
+        videoModal.style.display = 'flex';
+    }
+
+    async function deleteVideo(videoId) {
+        if (!confirm('Are you sure you want to delete this video? This action cannot be undone.')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:3000/api/videos/${videoId}`, {
+                method: 'DELETE'
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete video');
+            }
+
+            showCustomAlert('Video deleted successfully!');
+            showMyVideos(); // Refresh the list
+        } catch (error) {
+            console.error('Error deleting video:', error);
+            showCustomAlert(`Error deleting video: ${error.message}`);
+        }
+    }
+
+    // Update close video modal to handle custom video player
+    const originalCloseVideoPlayer = closeVideoPlayer;
+    closeVideoPlayer = function() {
+        const customVideoPlayer = document.getElementById('customVideoPlayer');
+        if (customVideoPlayer) {
+            customVideoPlayer.pause();
+            customVideoPlayer.style.display = 'none';
+        }
+        document.getElementById('videoPlayer').style.display = 'block';
+        originalCloseVideoPlayer();
+    };
   </script>
 </body>
 </html>
